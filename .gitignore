@@ -55,3 +55,6 @@ fonts/*.ttf
 
 *.g.dart
 git_info.dart
+
+# FVM Version Cache
+.fvm/
