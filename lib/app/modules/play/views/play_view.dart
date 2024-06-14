@@ -142,12 +142,23 @@ class _PlayViewState extends State<PlayView> {
           shortcuts: <ShortcutActivator, Intent>{
             LogicalKeySet(LogicalKeyboardKey.escape): const DismissIntent(),
             LogicalKeySet(LogicalKeyboardKey.backspace): const DismissIntent(),
+            LogicalKeySet(LogicalKeyboardKey.enter): const ActivateIntent(),
           },
           child: Actions(
             actions: {
               DismissIntent: CallbackAction<DismissIntent>(
                 onInvoke: (_) {
                   Get.back();
+                  return null;
+                },
+              ),
+              ActivateIntent: CallbackAction<ActivateIntent>(
+                onInvoke: (_) {
+                  // 如果只有一集的话, 敲击 `enter` 键自动播放
+                  var cx = playlist[play.tabIndex].datas;
+                  if (cx.length == 1) {
+                    play.handleTapPlayerButtom(cx[0]);
+                  }
                   return null;
                 },
               ),
@@ -207,7 +218,11 @@ class _PlayViewState extends State<PlayView> {
                                         play.movieItem.title,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .titleLarge?.copyWith(color: Get.isDarkMode ? Colors.white : Colors.black),
+                                            .titleLarge
+                                            ?.copyWith(
+                                                color: Get.isDarkMode
+                                                    ? Colors.white
+                                                    : Colors.black),
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 4,
                                       ),
