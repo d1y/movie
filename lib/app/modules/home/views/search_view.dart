@@ -277,7 +277,9 @@ class _SearchViewState extends State<SearchView>
                               maxLines: 2,
                               style: TextStyle(
                                 fontSize: 18,
-                                color: !Get.isDarkMode ? Colors.black : Colors.white,
+                                color: !Get.isDarkMode
+                                    ? Colors.black
+                                    : Colors.white,
                               ),
                             ),
                           ),
@@ -358,7 +360,7 @@ class _SearchViewState extends State<SearchView>
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
+                    horizontal: 18,
                     vertical: 1,
                   ),
                   child: SingleChildScrollView(
@@ -370,28 +372,9 @@ class _SearchViewState extends State<SearchView>
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Stack(
-                              children: [
-                                Positioned(
-                                  left: 6,
-                                  bottom: 0,
-                                  child: Opacity(
-                                    opacity: .72,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Container(
-                                        width: 60,
-                                        height: 6,
-                                        color: CupertinoColors.activeBlue,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const Text(
-                                  "搜索历史",
-                                  style: TextStyle(fontSize: 18),
-                                ),
-                              ],
+                            const Text(
+                              "搜索历史",
+                              style: TextStyle(fontSize: 16),
                             ),
                             IconButton(
                               iconSize: 18,
@@ -410,12 +393,15 @@ class _SearchViewState extends State<SearchView>
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 12,
+                        SizedBox(
+                          height: searchHistory.isEmpty ? 8 : 12,
                         ),
                         Builder(builder: (context) {
                           if (searchHistory.isEmpty) {
-                            return const Text("暂无历史记录");
+                            return const Text(
+                              "暂无历史记录",
+                              style: TextStyle(fontSize: 13, color: Colors.grey),
+                            );
                           }
                           return Wrap(
                             children: searchHistory
