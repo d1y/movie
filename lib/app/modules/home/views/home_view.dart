@@ -67,7 +67,7 @@ class HomeView extends GetView<HomeController> {
             actionLabelTextAlign: TextAlign.left,
             borderRadius: BorderRadius.circular(12),
             textFieldInputDecoration: const InputDecoration(
-              hintText: "Enter Something",
+              hintText: "今天要做什么呢?",
               contentPadding: EdgeInsets.all(16),
             ),
           ),
@@ -76,7 +76,7 @@ class HomeView extends GetView<HomeController> {
         actions: [
           CommandPaletteAction.nested(
             label: "切换镜像",
-            leading: const Icon(Icons.burst_mode),
+            leading: const Icon(CupertinoIcons.book_circle, size: 26,),
             childrenActions: mirror.map((e) {
               var currIndex = mirror.indexOf(e);
               return CommandPaletteAction.single(

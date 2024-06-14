@@ -34,7 +34,7 @@ class CommandPaletteInstructions extends StatelessWidget {
                       color: color,
                     ),
                   ],
-                  instruction: "to select",
+                  instruction: "确认",
                 ),
                 _KeyboardInstruction(
                   icons: [
@@ -47,7 +47,7 @@ class CommandPaletteInstructions extends StatelessWidget {
                       color: color,
                     ),
                   ],
-                  instruction: "to navigate",
+                  instruction: "导航",
                 ),
                 if (controller.currentlySelectedAction != null)
                   _KeyboardInstruction(
@@ -57,7 +57,7 @@ class CommandPaletteInstructions extends StatelessWidget {
                         color: color,
                       ),
                     ],
-                    instruction: "to cancel selected action",
+                    instruction: "取消所选操作",
                   ),
                 _KeyboardInstruction(
                   icons: [
@@ -66,7 +66,7 @@ class CommandPaletteInstructions extends StatelessWidget {
                       color: color,
                     ),
                   ],
-                  instruction: "to close",
+                  instruction: "取消",
                 ),
               ],
             ),
