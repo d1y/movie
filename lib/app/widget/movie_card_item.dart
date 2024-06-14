@@ -41,7 +41,7 @@ class _MovieCardItemState extends State<MovieCardItem> {
                 child: CachedNetworkImage(
                   imageUrl: widget.imageUrl,
                   width: double.infinity,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fill,
                   progressIndicatorBuilder: (context, url, progress) => Center(
                     child: CircularProgressIndicator(
                       value: progress.progress,
