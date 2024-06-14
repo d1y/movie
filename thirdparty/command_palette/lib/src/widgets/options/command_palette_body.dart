@@ -83,7 +83,7 @@ class _CommandPaletteBodyState extends State<CommandPaletteBody> {
               itemBuilder: (context, index) {
                 final CommandPaletteAction item = filteredActions[index];
 
-                return controller.config.builder(
+                var child = controller.config.builder(
                   context,
                   controller.style,
                   item,
@@ -91,6 +91,15 @@ class _CommandPaletteBodyState extends State<CommandPaletteBody> {
                   () => controller.handleAction(context, action: item),
                   controller.textEditingController.text.split(" "),
                 );
+                // var isLast = index == filteredActions.length - 1;
+                var isFirst = index == 0;
+                if (/*isLast ||*/ isFirst) {
+                  child = Padding(
+                    padding: EdgeInsets.only(top: isFirst ? 8 : 0, bottom: 0),// isLast ? 8 : 0),
+                    child: child,
+                  );
+                }
+                return child;
               },
             ),
           ),
@@ -170,60 +179,70 @@ class _DefaultItem extends StatelessWidget {
       );
     }
 
-    final bool hasDescription = action.description != null;
-    return Material(
-      color: isHighlighted ? style.selectedColor : style.actionColor,
-      child: SizedBox(
-        height: itemHeight,
-        child: InkWell(
-          onTap: onSelected,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (action.leading != null)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: action.leading!,
-                  ),
-                Flexible(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Flexible(
-                        child: Row(
-                          children: [
-                            Expanded(child: label),
-                          ],
-                        ),
+    final bool hasDescription =
+        action.description != null && action.description!.isNotEmpty;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+      child: Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Material(
+          color: isHighlighted ? style.selectedColor : style.actionColor,
+          child: SizedBox(
+            height: itemHeight,
+            child: InkWell(
+              onTap: onSelected,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (action.leading != null)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: action.leading!,
                       ),
-                      if (hasDescription)
-                        Flexible(
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  action.description!,
-                                  textAlign: style.actionLabelTextAlign,
-                                  style: style.actionDescriptionTextStyle,
-                                  overflow: TextOverflow.fade,
-                                ),
-                              ),
-                            ],
+                    Flexible(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Row(
+                              children: [
+                                Expanded(child: label),
+                              ],
+                            ),
                           ),
-                        ),
-                    ],
-                  ),
+                          if (hasDescription)
+                            Flexible(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      action.description!,
+                                      textAlign: style.actionLabelTextAlign,
+                                      style: style.actionDescriptionTextStyle,
+                                      overflow: TextOverflow.fade,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    if (shortcuts != null)
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: shortcuts,
+                      ),
+                  ],
                 ),
-                if (shortcuts != null)
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: shortcuts,
-                  ),
-              ],
+              ),
             ),
           ),
         ),

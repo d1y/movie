@@ -201,6 +201,7 @@ class _CommandPaletteInnerState extends State<_CommandPaletteInner> {
       actionDescriptionTextStyle: styleToCopy.actionDescriptionTextStyle ??
           Theme.of(context).primaryTextTheme.titleSmall?.copyWith(
                 color: Theme.of(context).colorScheme.onSurface,
+                fontSize: 10,
               ),
       actionLabelTextAlign: styleToCopy.actionLabelTextAlign,
       borderRadius: styleToCopy.borderRadius,
