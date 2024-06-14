@@ -319,9 +319,8 @@ class _PlayViewState extends State<PlayView> {
                             return CupertinoButton.filled(
                               padding: EdgeInsets.zero,
                               child: Builder(builder: (_) {
-                                // NOTE: `长度 = 1` 实际上会没有标题, 所以文字为默认
                                 var len = playlist[play.tabIndex].datas.length;
-                                var text = len <= 1 ? "默认" : curr.name;
+                                var text = len <= 1 ? "播放" : curr.name;
                                 return Text(text);
                               }),
                               onPressed: () {
