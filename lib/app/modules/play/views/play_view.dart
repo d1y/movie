@@ -141,6 +141,7 @@ class _PlayViewState extends State<PlayView> {
         body: Shortcuts(
           shortcuts: <ShortcutActivator, Intent>{
             LogicalKeySet(LogicalKeyboardKey.escape): const DismissIntent(),
+            LogicalKeySet(LogicalKeyboardKey.backspace): const DismissIntent(),
           },
           child: Actions(
             actions: {
