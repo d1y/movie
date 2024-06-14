@@ -42,7 +42,12 @@ class KEmptyMirror extends StatelessWidget {
           const SizedBox(
             height: 12,
           ),
-          const Text('无数据源 :('),
+          Text(
+            '无数据源 :(',
+            style: TextStyle(
+              color: !Get.isDarkMode ? Colors.black : Colors.white,
+            ),
+          ),
           const SizedBox(
             height: 12,
           ),
