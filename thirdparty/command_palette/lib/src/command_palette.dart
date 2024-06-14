@@ -142,11 +142,13 @@ class _CommandPaletteInnerState extends State<_CommandPaletteInner> {
   void didUpdateWidget(covariant _CommandPaletteInner oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    final bool actionsChanged = !listEquals(oldWidget.actions, widget.actions);
+    // final bool actionsChanged = !listEquals(oldWidget.actions, widget.actions);
+    // if (oldWidget.config != widget.config || actionsChanged) {
+    //   _initStyle();
+    // }
 
-    if (oldWidget.config != widget.config || actionsChanged) {
-      _initStyle();
-    }
+    // 这里如果不初始化, _style 里的对象就会没有默认值
+    _initStyle();
 
     // if (actionsChanged) {
     //   widget.controller.actions = widget.actions;
