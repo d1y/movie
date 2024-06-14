@@ -103,14 +103,15 @@ jobs:
       # build all arch
       - run: flutter build apk --release
 
-      - run: |
-          flutter build ios --release --no-codesign
-          cd build/ios/iphoneos
-          mkdir Payload
-          cd Payload
-          ln -s ../Runner.app
-          cd ..
-          zip -r app.ipa Payload
+      # 我的iOS都升到18.0了, 还搞鸡毛啊
+      # - run: |
+      #     flutter build ios --release --no-codesign
+      #     cd build/ios/iphoneos
+      #     mkdir Payload
+      #     cd Payload
+      #     ln -s ../Runner.app
+      #     cd ..
+      #     zip -r app.ipa Payload
 
       - run: |
           flutter config --enable-macos-desktop
@@ -126,11 +127,11 @@ jobs:
         with:
           name: windows
 
+      # build/ios/iphoneos/app.ipa
       - uses: softprops/action-gh-release@v1
         with:
           files: |
             build/app/outputs/flutter-apk/*.apk
-            build/ios/iphoneos/app.ipa
             build/macos/Build/Products/Release/yoyo.mac.zip
             yy-linux-x86_64.tar.gz
             yy-windows.zip
