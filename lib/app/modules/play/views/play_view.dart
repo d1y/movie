@@ -109,7 +109,7 @@ class _PlayViewState extends State<PlayView> {
   Widget build(BuildContext context) {
     return GetBuilder<PlayController>(
       builder: (play) => Scaffold(
-        appBar: CupertinoEasyAppBar( // TODO: reimpl this
+        appBar: CupertinoEasyAppBar(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -139,7 +139,9 @@ class _PlayViewState extends State<PlayView> {
         ),
         body: SafeArea(
           child: DefaultTextStyle(
-            style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),
+            style: TextStyle(
+              color: Get.isDarkMode ? Colors.white : Colors.black,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -392,7 +394,9 @@ class _PlayViewState extends State<PlayView> {
   }
 
   Widget get _buildWithDesc {
-    var desc = play.movieItem.desc.replaceAll('\\\\n', '\n');
+    var desc =
+        // fuck hard-code
+        play.movieItem.desc.replaceAll(r'\r\\n\t', '\n');
     if (desc.isEmpty) {
       return Container(
         margin: const EdgeInsets.symmetric(
