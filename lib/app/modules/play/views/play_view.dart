@@ -98,7 +98,7 @@ class _PlayViewState extends State<PlayView> {
   }
 
   final double offsetSize = 12;
-  final coverHeightScale = .3;
+  final coverHeightScale = .48;
 
   @override
   void initState() {
@@ -157,7 +157,7 @@ class _PlayViewState extends State<PlayView> {
                       Positioned.fill(
                         child: Image.network(
                           play.movieItem.smallCoverImage,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                           errorBuilder: (_, __, ___) {
                             return Image.asset(
                               K_DEFAULT_IMAGE,
