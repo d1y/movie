@@ -210,6 +210,7 @@ class IndexHomeViewPage extends GetView {
                 child: Builder(builder: (context) {
                   if (home.mirrorListIsEmpty) {
                     return KEmptyMirror(
+                      cx: home,
                       width: _calcImageWidth,
                     );
                   }

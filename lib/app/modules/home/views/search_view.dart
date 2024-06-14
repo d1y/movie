@@ -161,6 +161,7 @@ class _SearchViewState extends State<SearchView>
           child: Builder(builder: (context) {
             if (showEmptyStack) {
               return KEmptyMirror(
+                cx: home,
                 width: _kEmptyMirrorWidth,
               );
             }

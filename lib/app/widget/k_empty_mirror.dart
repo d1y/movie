@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:movie/app/modules/home/controllers/home_controller.dart';
 
 class KEmptyMirror extends StatelessWidget {
   const KEmptyMirror({
     Key? key,
     this.width,
+    required this.cx,
   }) : super(key: key);
 
   final double? width;
+  final HomeController cx;
 
   double get _width {
     if (width == null) {
@@ -43,9 +46,15 @@ class KEmptyMirror extends StatelessWidget {
           const SizedBox(
             height: 12,
           ),
-          Text(
-            "设置 -> 视频源帮助",
-            style: _style,
+          GestureDetector(
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Text(
+                "设置 -> 视频源帮助",
+                style: _style,
+              ),
+            ),
+            onTap: () => cx.changeCurrentBarIndex(2 /*设置*/),
           ),
         ],
       ),
