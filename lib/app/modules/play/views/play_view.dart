@@ -207,7 +207,7 @@ class _PlayViewState extends State<PlayView> {
                                         play.movieItem.title,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .titleLarge,
+                                            .titleLarge?.copyWith(color: Get.isDarkMode ? Colors.white : Colors.black),
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 4,
                                       ),
