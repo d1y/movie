@@ -5,10 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:movie/app/extension.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/app/modules/home/views/index_home_view.dart';
 import 'package:movie/app/modules/home/views/search_view.dart';
 import 'package:movie/app/modules/home/views/settings_view.dart';
+import 'package:movie/shared/enum.dart';
 import 'package:movie/spider/abstract/spider_movie.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
@@ -76,12 +78,12 @@ class HomeView extends GetView<HomeController> {
         actions: [
           CommandPaletteAction.nested(
             label: "切换镜像",
-            leading: const Icon(CupertinoIcons.book_circle, size: 26,),
+            leading: const Icon(CupertinoIcons.book_circle, size: 26),
             childrenActions: mirror.map((e) {
               var currIndex = mirror.indexOf(e);
               return CommandPaletteAction.single(
                 label: e.meta.name,
-                description: currIndex == home.mirrorIndex ? '当前使用'  : '',
+                description: currIndex == home.mirrorIndex ? '当前使用' : '',
                 onSelect: () {
                   var idx = mirror.indexOf(e);
                   home.updateMirrorIndex(idx);
@@ -90,6 +92,22 @@ class HomeView extends GetView<HomeController> {
               );
             }).toList(),
           ),
+          CommandPaletteAction.single(
+            label: context.isDarkMode ? "切换亮色主题" : "切换暗色主题",
+            leading: Text(
+              context.isDarkMode ? "🌃" : "🌇",
+              style: const TextStyle(fontSize: 24),
+            ),
+            onSelect: () {
+              var newTheme = !context.isDarkMode
+                  ? SystemThemeMode.dark
+                  : SystemThemeMode.light;
+              updateSetting(SettingsAllKey.themeMode, newTheme);
+              Get.changeThemeMode(
+                  !context.isDarkMode ? ThemeMode.dark : ThemeMode.light);
+              home.update();
+            },
+          )
         ],
         child: Scaffold(
           body: PageView.builder(
