@@ -168,7 +168,7 @@ class _PlayViewState extends State<PlayView> {
               child: SafeArea(
                 child: DefaultTextStyle(
                   style: TextStyle(
-                    color: Get.isDarkMode ? Colors.white : Colors.black,
+                    color: context.isDarkMode ? Colors.white : Colors.black,
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -220,7 +220,7 @@ class _PlayViewState extends State<PlayView> {
                                             .textTheme
                                             .titleLarge
                                             ?.copyWith(
-                                                color: Get.isDarkMode
+                                                color: context.isDarkMode
                                                     ? Colors.white
                                                     : Colors.black),
                                         overflow: TextOverflow.ellipsis,
@@ -279,7 +279,7 @@ class _PlayViewState extends State<PlayView> {
                                 var current = playlist[index];
                                 var currentBorderColor = isCurrentIndex
                                     ? CupertinoTheme.of(context).primaryColor
-                                    : (Get.isDarkMode
+                                    : (context.isDarkMode
                                             ? Colors.white
                                             : Colors.black)
                                         .withOpacity(.42);
@@ -319,7 +319,7 @@ class _PlayViewState extends State<PlayView> {
                           return CupertinoSlidingSegmentedControl(
                             backgroundColor: Colors.black26,
                             thumbColor:
-                                Get.isDarkMode ? Colors.blue : Colors.white,
+                                context.isDarkMode ? Colors.blue : Colors.white,
                             onValueChanged: (value) {
                               if (value == null) return;
                               play.changeTabIndex(value);
@@ -426,7 +426,7 @@ class _PlayViewState extends State<PlayView> {
         style: TextStyle(
           overflow: TextOverflow.ellipsis,
           fontSize: 12,
-          color: Get.isDarkMode ? Colors.white : Colors.black,
+          color: context.isDarkMode ? Colors.white : Colors.black,
         ),
       );
     }
@@ -456,7 +456,7 @@ class _PlayViewState extends State<PlayView> {
         '查看简介',
         style: TextStyle(
           fontSize: 18,
-          color: Get.isDarkMode ? Colors.white : Colors.black,
+          color: context.isDarkMode ? Colors.white : Colors.black,
         ),
       ),
       children: [

@@ -57,7 +57,7 @@ class _MovieCardItemState extends State<MovieCardItem> {
               maxLines: 1,
               style: TextStyle(
                 fontSize: 12,
-                color: Get.isDarkMode ? Colors.white : Colors.black,
+                color: context.isDarkMode ? Colors.white : Colors.black,
               ),
               overflow: TextOverflow.ellipsis,
             ),

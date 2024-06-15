@@ -45,7 +45,7 @@ class KEmptyMirror extends StatelessWidget {
           Text(
             '无数据源 :(',
             style: TextStyle(
-              color: !Get.isDarkMode ? Colors.black : Colors.white,
+              color: !context.isDarkMode ? Colors.black : Colors.white,
             ),
           ),
           const SizedBox(

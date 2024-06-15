@@ -38,14 +38,6 @@ class KPaginationActionButton extends StatelessWidget {
     return "下一页";
   }
 
-  Color get borderColor {
-    return (Get.isDarkMode ? Colors.white : Colors.black);
-  }
-
-  Color get textColor {
-    return (Get.isDarkMode ? Colors.white : Colors.black);
-  }
-
   double get boxOpacity {
     return disable ? .3 : 1;
   }
@@ -57,6 +49,9 @@ class KPaginationActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color borderColor = context.isDarkMode ? Colors.white : Colors.black;
+    Color textColor = context.isDarkMode ? Colors.white : Colors.black;
+
     List<Widget> children = [
       Text(
         directionStr,
@@ -210,7 +205,7 @@ class _KPaginationState extends State<KPagination> {
                     forceStrutHeight: true,
                   ),
                   style: TextStyle(
-                    color: Get.isDarkMode ? Colors.white : Colors.black,
+                    color: context.isDarkMode ? Colors.white : Colors.black,
                   ),
                 ),
                 width: 66,

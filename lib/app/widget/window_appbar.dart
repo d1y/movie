@@ -115,7 +115,8 @@ class _CupertinoEasyAppBarState extends State<CupertinoEasyAppBar> {
 }
 
 class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const WindowAppBar({super.key, 
+  const WindowAppBar({
+    super.key,
     this.toolBarHeigth,
     this.title,
     this.iosBackStyle = false,
@@ -147,11 +148,7 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
     return kToolbarHeight + _macosPaddingHeight;
   }
 
-  Color get purueColor {
-    return Get.isDarkMode ? Colors.blue : Colors.white;
-  }
-
-  Widget get titleWidget {
+  Widget titleWidget(Color purueColor) {
     var _ = Get.context;
     if (_ == null) {
       return BackButton(
@@ -177,8 +174,10 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    var childrens = [
-      titleWidget,
+    Color purueColor = context.isDarkMode ? Colors.blue : Colors.white;
+
+    List<Widget> childrens = [
+      titleWidget(purueColor),
       IconTheme(
         data: Theme.of(context).primaryIconTheme,
         child: Row(

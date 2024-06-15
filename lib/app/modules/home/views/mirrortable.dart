@@ -361,18 +361,17 @@ class MirrorCard extends StatelessWidget {
 
   /// 如果是 [ISpider.isNsfw] => [Colors.red]
   /// 如果是 [current] => [Colors.blue] (优先级高一点)
-  Color get _color {
+  Color _color(bool isDark) {
     if (current) return Colors.blue;
-    return item.isNsfw
-        ? Colors.red
-        : (Get.isDarkMode ? Colors.white : Colors.black45);
+    return item.isNsfw ? Colors.red : (isDark ? Colors.white : Colors.black45);
   }
 
   @override
   Widget build(BuildContext context) {
-    Color _borderColor = Get.isDarkMode
+    Color _borderColor = context.isDarkMode
         ? Colors.white.withOpacity(.1)
         : Colors.black.withOpacity(.1);
+    Color _textColor = _color(context.isDarkMode);
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -419,7 +418,7 @@ class MirrorCard extends StatelessWidget {
                         Text(
                           _title,
                           style: TextStyle(
-                            color: _color,
+                            color: _textColor,
                             fontSize: 14,
                             decoration: TextDecoration.none,
                             fontWeight: FontWeight.w300,
@@ -433,7 +432,7 @@ class MirrorCard extends StatelessWidget {
                             : Text(
                                 _desc,
                                 style: TextStyle(
-                                  color: _color,
+                                  color: _textColor,
                                   fontSize: 9,
                                   decoration: TextDecoration.none,
                                   fontWeight: FontWeight.w300,
@@ -458,7 +457,7 @@ class MirrorCard extends StatelessWidget {
                     children: [
                       Icon(
                         current ? Icons.done : CupertinoIcons.right_chevron,
-                        color: _color,
+                        color: _textColor,
                       ),
                       const SizedBox(
                         width: 8,

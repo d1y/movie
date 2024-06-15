@@ -327,7 +327,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle(
-      style: TextStyle(color: Get.isDarkMode ? Colors.white : Colors.black),
+      style: TextStyle(color: context.isDarkMode ? Colors.white : Colors.black),
       child: CupertinoPageScaffold(
         navigationBar: CupertinoEasyAppBar(
           child: Column(
@@ -398,7 +398,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                             title: Text(
                               item.title ?? "",
                               style: TextStyle(
-                                color: Get.isDarkMode
+                                color: context.isDarkMode
                                     ? Colors.white54
                                     : Colors.black54,
                               ),

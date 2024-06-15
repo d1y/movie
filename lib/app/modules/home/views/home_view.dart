@@ -19,8 +19,6 @@ import '../controllers/home_controller.dart';
 class HomeView extends GetView<HomeController> {
   HomeView({super.key});
 
-  bool get isDark => Get.isDarkMode;
-
   final HomeController home = Get.find();
 
   final List<Widget> _views = [
@@ -49,16 +47,16 @@ class HomeView extends GetView<HomeController> {
 
   final FocusNode focusNode = FocusNode();
 
-  Color get _color => isDark
-      ? const Color.fromRGBO(0, 0, 0, .63)
-      : const Color.fromRGBO(255, 255, 255, .63);
-
   List<ISpider> get mirror => home.mirrorList;
 
   int get mirrorIndex => home.mirrorIndex;
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = context.isDarkMode;
+    Color _color = isDark
+        ? const Color.fromRGBO(0, 0, 0, .63)
+        : const Color.fromRGBO(255, 255, 255, .63);
     return GetBuilder<HomeController>(
       builder: (homeview) => CommandPalette(
         focusNode: focusNode,

@@ -194,7 +194,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
       child: Center(
         child: Container(
           decoration: BoxDecoration(
-            color: Get.isDarkMode ? Colors.black : Colors.white,
+            color: context.isDarkMode ? Colors.black : Colors.white,
             borderRadius: BorderRadius.circular(12),
           ),
           width: _checkBoxWidth,
@@ -247,7 +247,7 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
                     Builder(builder: (context) {
                       if (easyDone) return const SizedBox.shrink();
                       Color bgColor = Colors.white;
-                      if (!Get.isDarkMode) {
+                      if (!context.isDarkMode) {
                         bgColor = Colors.black;
                       }
                       return Padding(

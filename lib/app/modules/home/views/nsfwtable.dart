@@ -84,7 +84,7 @@ class _NsfwTableViewState extends State<NsfwTableView> {
 
   @override
   Widget build(BuildContext context) {
-    Color currTextColor = Get.isDarkMode ? Colors.white : Colors.black;
+    Color currTextColor = context.isDarkMode ? Colors.white : Colors.black;
     return DefaultTextStyle(
       style: TextStyle(
         color: currTextColor,

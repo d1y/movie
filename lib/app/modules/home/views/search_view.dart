@@ -167,7 +167,7 @@ class _SearchViewState extends State<SearchView>
             }
             return extend_search_bar.SearchBar<MirrorOnceItemSerialize?>(
               textStyle: TextStyle(
-                color: Get.isDarkMode ? Colors.white : Colors.black,
+                color: context.isDarkMode ? Colors.white : Colors.black,
               ),
               searchBarController: _searchBarController,
               header: Builder(builder: (context) {
@@ -277,7 +277,7 @@ class _SearchViewState extends State<SearchView>
                               maxLines: 2,
                               style: TextStyle(
                                 fontSize: 18,
-                                color: !Get.isDarkMode
+                                color: !context.isDarkMode
                                     ? Colors.black
                                     : Colors.white,
                               ),
@@ -356,7 +356,7 @@ class _SearchViewState extends State<SearchView>
               ),
               placeHolder: DefaultTextStyle(
                 style: TextStyle(
-                  color: !Get.isDarkMode ? Colors.black : Colors.white,
+                  color: !context.isDarkMode ? Colors.black : Colors.white,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -408,7 +408,7 @@ class _SearchViewState extends State<SearchView>
                                 .map(
                                   (e) => KTag(
                                     child: Text(e),
-                                    backgroundColor: Get.isDarkMode
+                                    backgroundColor: context.isDarkMode
                                         ? Colors.black26
                                         : Colors.black12,
                                     onTap: (type) {
