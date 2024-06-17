@@ -175,7 +175,7 @@ class PlayController extends GetxController {
 
   String webviewShowMessage = "请勿相信广告";
 
-  handleTapPlayerButtom(MirrorSerializeVideoInfo e) async {
+  Future<bool> handleTapPlayerButtom(MirrorSerializeVideoInfo e) async {
     var url = e.url;
     url = getPlayUrl(url);
 
@@ -197,7 +197,7 @@ class PlayController extends GetxController {
           Get.back();
         },
       );
-      return;
+      return false;
     }
 
     if (needParse) {
@@ -227,8 +227,8 @@ class PlayController extends GetxController {
       final bool typeIsM3u8 = e.type == MirrorSerializeVideoType.m3u8;
 
       if (isMacos && home.macosPlayUseIINA) {
-        easyPlayToIINA(url);
-        return;
+        easyPlayToIINA(url); // 家人们, 我们就假装安装了
+        return true;
       }
 
       if (isWindows) {
@@ -277,7 +277,7 @@ class PlayController extends GetxController {
             ),
             context: Get.context as BuildContext,
           );
-          return;
+          return false;
         }
       }
 
@@ -300,7 +300,7 @@ class PlayController extends GetxController {
 
       webview.launch(url);
 
-      return;
+      return true;
     }
 
     /// (`m3u8` | `mp4`) 资源
@@ -310,7 +310,7 @@ class PlayController extends GetxController {
     /// iOS
     if (home.iosCanBeUseSystemBrowser) {
       LaunchURL(url);
-      return;
+      return true;
     }
 
     if (e.type == MirrorSerializeVideoType.iframe) {
@@ -327,6 +327,7 @@ class PlayController extends GetxController {
         },
       );
     }
+    return true;
   }
 
   loadAsset() async {

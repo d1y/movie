@@ -15,6 +15,12 @@ import 'package:movie/widget/simple_html/flutter_html.dart';
 
 import '../controllers/play_controller.dart';
 
+class PlayState {
+  const PlayState(this.tabIndex, this.index);
+  final int tabIndex;
+  final int index;
+}
+
 class PlayListData {
   final String title;
 
@@ -36,6 +42,8 @@ class PlayView extends StatefulWidget {
 class _PlayViewState extends State<PlayView> {
   final PlayController play = Get.find<PlayController>();
   final HomeController home = Get.find<HomeController>();
+
+  PlayState playState = const PlayState(-1, -1);
 
   bool get canBeShowParseVipButton {
     return home.parseVipList.isNotEmpty;
@@ -106,6 +114,15 @@ class _PlayViewState extends State<PlayView> {
     super.initState();
   }
 
+  handlePlay(int tabIndex, int index) async {
+    var cx = playlist[tabIndex].datas[index];
+    if (!await play.handleTapPlayerButtom(cx)) return;
+    Future.delayed(const Duration(milliseconds: 420), () {
+      playState = PlayState(tabIndex, index);
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<PlayController>(
@@ -157,7 +174,7 @@ class _PlayViewState extends State<PlayView> {
                   // 如果只有一集的话, 敲击 `enter` 键自动播放
                   var cx = playlist[play.tabIndex].datas;
                   if (cx.length == 1) {
-                    play.handleTapPlayerButtom(cx[0]);
+                    handlePlay(play.tabIndex, 0);
                   }
                   return null;
                 },
@@ -363,10 +380,14 @@ class _PlayViewState extends State<PlayView> {
                                       var len =
                                           playlist[play.tabIndex].datas.length;
                                       var text = len <= 1 ? "播放" : curr.name;
+                                      if (playState.tabIndex == play.tabIndex &&
+                                          index == playState.index) {
+                                        text += "(上次播放)";
+                                      }
                                       return Text(text);
                                     }),
                                     onPressed: () {
-                                      play.handleTapPlayerButtom(curr);
+                                      handlePlay(play.tabIndex, index);
                                     },
                                   );
                                 },
