@@ -180,8 +180,9 @@ class _PlayViewState extends State<PlayView> {
                 },
               ),
             },
-            child: FocusScope(
+            child: RawKeyboardListener(
               autofocus: true,
+              focusNode: FocusScopeNode(),
               child: SafeArea(
                 child: DefaultTextStyle(
                   style: TextStyle(

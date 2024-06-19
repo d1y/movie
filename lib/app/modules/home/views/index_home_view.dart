@@ -215,11 +215,9 @@ class IndexHomeViewPage extends GetView<HomeController> {
                 },
               ),
             },
-            child: Focus(
-              parentNode: controller.focusNode,
+            child: RawKeyboardListener(
               focusNode: controller.homeFocusNode,
               autofocus: true,
-              skipTraversal: true,
               child: KBody(
                 child: Column(
                   children: [
