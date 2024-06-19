@@ -44,6 +44,10 @@ Function _showLoading(String msg) {
 }
 
 class HomeController extends GetxController with WidgetsBindingObserver {
+
+  final FocusScopeNode focusNode = FocusScopeNode();
+  final FocusNode homeFocusNode = FocusNode();
+
   late Size windowLastSize;
 
   var currentBarIndex = 0;
