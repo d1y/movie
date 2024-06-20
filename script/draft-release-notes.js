@@ -72,6 +72,6 @@ function getTagNote(tag) {
     }
   }
   let releaseNote = getTagNote(now)
-  releaseNote += notes.join("\n")
+  releaseNote += notes.map(item=> `- ${item}`).join("\n")
   console.log(releaseNote)
 })()
