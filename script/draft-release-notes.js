@@ -29,6 +29,11 @@ function parseCommitBody(body) {
   return result
 }
 
+/**
+ * @param {string} a 
+ * @param {string} b 
+ * @returns 
+ */
 function getTwoTagCommitHashs(a, b) {
   return execSync(`git log --oneline --format="%h" ${a}...${b}`).toString('utf-8').trim().split("\n")
 }
@@ -37,6 +42,9 @@ function getLatestTags(size = 2) {
   return execSync(`git tag -l --sort=-v:refname | head -${size}`).toString('utf-8').trim().split("\n")
 }
 
+/**
+ * @param {string} tag 
+ */
 function getTagNote(tag) {
   const _ = execSync(`git show ${tag} --stat=0 --no-patch --format="%N"`).toString('utf-8').trim()
   const note = _.split("\n").filter(item=> { return !!item.trim() })
@@ -47,8 +55,14 @@ function getTagNote(tag) {
 }
 
 ;(async()=> {
-  const tags = getLatestTags() 
-  const hashs = getTwoTagCommitHashs(tags[0], tags[1])
+  const repo = "waifu-project/movie"
+  const resp = await fetch(`https://api.github.com/repos/${repo}/tags`)
+  /** @type {GithubTagResponse} */
+  const tags = await resp.json()
+  const now = tags[0].name
+  const old = tags[1].name//我赌你枪里没有子弹
+  // const tags = getLatestTags() 
+  const hashs = getTwoTagCommitHashs(now, old)
   let notes = []
   for (const hash of hashs) {
     const body = getCommitBody(hash)
@@ -57,7 +71,7 @@ function getTagNote(tag) {
       notes = [...notes, ..._]
     }
   }
-  let releaseNote = getTagNote(tags[0])
+  let releaseNote = getTagNote(now)
   releaseNote += notes.join("\n")
   console.log(releaseNote)
 })()
