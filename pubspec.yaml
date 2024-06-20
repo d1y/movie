@@ -29,7 +29,7 @@ dependencies:
   path_provider: ^2.0.6
   # flutter_html: ^2.1.5
   clipboard: ^0.1.3
-  wakelock: ^0.6.2
+  wakelock: ^0.4.0
   desktop_webview_window: ^0.2.3
   bitsdojo_window:
     git:
