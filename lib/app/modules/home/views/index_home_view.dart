@@ -1,4 +1,3 @@
-import 'package:command_palette/command_palette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,6 +24,16 @@ class CategoryNextIntent extends Intent {}
 
 class CategoryPrevIntent extends Intent {}
 
+const scrollSize = 240;
+
+shortcutCallback<T extends Intent>(int curr, VoidCallback cb) {
+  return CallbackAction(onInvoke: (_) {
+    if (curr != 0) return;
+    cb();
+    return null;
+  });
+}
+
 class IndexHomeView extends StatefulWidget {
   const IndexHomeView({Key? key}) : super(key: key);
 
@@ -34,18 +43,9 @@ class IndexHomeView extends StatefulWidget {
 
 class _IndexHomeViewState extends State<IndexHomeView>
     with AutomaticKeepAliveClientMixin {
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return const IndexHomeViewPage();
-  }
+  HomeController controller = Get.find<HomeController>();
 
-  @override
-  bool get wantKeepAlive => true;
-}
-
-class IndexHomeViewPage extends GetView<HomeController> {
-  const IndexHomeViewPage({super.key});
+  ScrollController scrollController = ScrollController();
 
   int get cardCount {
     bool isLandscape = Get.context!.isLandscape;
@@ -61,7 +61,7 @@ class IndexHomeViewPage extends GetView<HomeController> {
   /// 错误日志最大展示行数
   int get errorMsgMaxLines => 12;
 
-  handleClickItem(MirrorOnceItemSerialize subItem) async {
+  handleClickItem(MirrorOnceItemSerialize subItem, HomeController cx) async {
     var data = subItem;
     if (subItem.videos.isEmpty) {
       var id = subItem.id;
@@ -90,9 +90,7 @@ class IndexHomeViewPage extends GetView<HomeController> {
         ),
         barrierColor: CupertinoColors.inactiveGray.withOpacity(.9),
       );
-      data = await controller.currentMirrorItem.getDetail(
-        id,
-      );
+      data = await controller.currentMirrorItem.getDetail(id);
       Get.back();
     }
     Get.toNamed(
@@ -133,8 +131,26 @@ class IndexHomeViewPage extends GetView<HomeController> {
     }
   }
 
+  bool get categoryIsEmpty {
+    return controller.currentCategoryer.isEmpty;
+  }
+
+  int get currCategoryIndex {
+    var now = controller.currentCategoryerNow;
+    if (now == null) return -1;
+    return controller.currentCategoryer.indexOf(now);
+  }
+
+  switchCategory(SpiderQueryCategory curr) {
+    if (curr == controller.currentCategoryerNow) {
+      return;
+    }
+    controller.setCurrentCategoryerNow(curr);
+  }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return GetBuilder<HomeController>(
       builder: (homeview) => Scaffold(
         appBar: WindowAppBar(
@@ -168,52 +184,60 @@ class IndexHomeViewPage extends GetView<HomeController> {
           ],
         ),
         body: Shortcuts(
-          shortcuts: <ShortcutActivator, Intent>{
+          shortcuts: {
             // ctrl-p
-            LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyP):
+            const SingleActivator(LogicalKeyboardKey.keyP, control: true):
                 ScrollUpIntent(),
             // ctrl-n
-            LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyN):
+            const SingleActivator(LogicalKeyboardKey.keyN, control: true):
                 ScrollDownIntent(),
-            // cmd-shift-[
-            LogicalKeySet(LogicalKeyboardKey.meta, LogicalKeyboardKey.shift,
-                LogicalKeyboardKey.braceLeft): CategoryPrevIntent(),
-            // cmd-shift-]
-            LogicalKeySet(LogicalKeyboardKey.meta, LogicalKeyboardKey.shift,
-                LogicalKeyboardKey.braceRight): CategoryNextIntent(),
+            // cmd-[
+            const SingleActivator(LogicalKeyboardKey.bracketLeft, meta: true):
+                CategoryPrevIntent(),
+            // cmd-]
+            const SingleActivator(LogicalKeyboardKey.bracketRight, meta: true):
+                CategoryNextIntent(),
           },
           child: Actions(
             actions: {
-              ScrollUpIntent: CallbackAction(
-                onInvoke: (_) {
-                  print("upupupup");
-                  return null;
-                },
-              ),
-              ScrollDownIntent: CallbackAction(
-                onInvoke: (_) {
-                  print("downdowndowndown");
-                  return null;
-                },
-              ),
-              CategoryPrevIntent: CallbackAction(
-                onInvoke: (_) {
-                  print("prev");
-                  return null;
-                },
-              ),
-              CategoryNextIntent: CallbackAction(
-                onInvoke: (_) {
-                  print("next");
-                  return null;
-                },
-              ),
-              TabSwitchLeftIntent: CallbackAction(
-                onInvoke: (_) {
-                  print("333");
-                  return null;
-                },
-              ),
+              ScrollUpIntent: shortcutCallback(controller.currentBarIndex, () {
+                var curr = scrollController.offset;
+                if (curr == 0) return;
+                var exec = curr - scrollSize;
+                if (exec < 0) exec = 0;
+                scrollController.animateTo(
+                  exec,
+                  duration: const Duration(milliseconds: 420),
+                  curve: Curves.ease,
+                );
+              }),
+              ScrollDownIntent:
+                  shortcutCallback(controller.currentBarIndex, () {
+                var curr = scrollController.offset;
+                var max = scrollController.position.maxScrollExtent;
+                if (curr == max) return;
+                var exec = curr + scrollSize;
+                if (exec > max) exec = max;
+                scrollController.animateTo(
+                  exec,
+                  duration: const Duration(milliseconds: 420),
+                  curve: Curves.ease,
+                );
+              }),
+              CategoryPrevIntent:
+                  shortcutCallback(controller.currentBarIndex, () {
+                if (categoryIsEmpty || currCategoryIndex == 0) return;
+                var cx = controller.currentCategoryer[currCategoryIndex - 1];
+                switchCategory(cx);
+              }),
+              CategoryNextIntent:
+                  shortcutCallback(controller.currentBarIndex, () {
+                if (categoryIsEmpty ||
+                    currCategoryIndex ==
+                        controller.currentCategoryer.length - 1) return;
+                var cx = controller.currentCategoryer[currCategoryIndex + 1];
+                switchCategory(cx);
+              }),
             },
             child: RawKeyboardListener(
               focusNode: controller.homeFocusNode,
@@ -223,7 +247,7 @@ class IndexHomeViewPage extends GetView<HomeController> {
                   children: [
                     AnimatedContainer(
                       width: double.infinity,
-                      height: controller.currentCategoryer.isNotEmpty ? 42 : 0,
+                      height: !categoryIsEmpty ? 42 : 0,
                       duration: const Duration(
                         milliseconds: 420,
                       ),
@@ -234,10 +258,7 @@ class IndexHomeViewPage extends GetView<HomeController> {
                         itemBuilder: ((context, index) {
                           SpiderQueryCategory curr =
                               controller.currentCategoryer[index];
-                          // XXX(d1y): 默认为全部
-                          bool isCurr = curr.id ==
-                              (controller.currentCategoryerNow?.id ??
-                                  kAllCategoryPoint);
+                          bool isCurr = curr == controller.currentCategoryerNow;
                           return Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 4.2,
@@ -261,10 +282,7 @@ class IndexHomeViewPage extends GetView<HomeController> {
                                 ),
                               ),
                               onPressed: () {
-                                // XXX(d1y): 不允许点击当前分类
-                                if (curr.id ==
-                                    controller.currentCategoryerNow?.id) return;
-                                controller.setCurrentCategoryerNow(curr);
+                                switchCategory(curr);
                               },
                             ),
                           );
@@ -323,7 +341,7 @@ class IndexHomeViewPage extends GetView<HomeController> {
                               );
                             },
                           ),
-                          scrollController: ScrollController(),
+                          scrollController: scrollController,
                           controller: homeview.refreshController,
                           onLoading: homeview.refreshOnLoading,
                           onRefresh: homeview.refreshOnRefresh,
@@ -404,7 +422,7 @@ class IndexHomeViewPage extends GetView<HomeController> {
                                       imageUrl: subItem.smallCoverImage,
                                       title: subItem.title,
                                       onTap: () {
-                                        handleClickItem(subItem);
+                                        handleClickItem(subItem, controller);
                                       },
                                     ),
                                   );
@@ -424,4 +442,7 @@ class IndexHomeViewPage extends GetView<HomeController> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

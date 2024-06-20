@@ -71,19 +71,12 @@ class HomeView extends GetView<HomeController> {
           ),
           showInstructions: true,
         ),
-        // TODO: impl this
-        // 这里并没有实现哦!
-        onTabSwitch: (direction) {
-          // if (direction == TabSwitchDirection.left) {
-          //   homeview.changeCurrentBarIndex(homeview.currentBarIndex - 1);
-          // } else {
-          //   homeview.changeCurrentBarIndex(homeview.currentBarIndex + 1);
-          // }
-        },
+        onTabSwitch: home.switchTabview,
         onClose: () {
           if (homeview.currentBarIndex == 0) {
             Future.delayed(const Duration(milliseconds: 100), () {
               home.focusNode.requestFocus();
+              home.homeFocusNode.requestFocus();
             });
           }
         },
@@ -141,10 +134,6 @@ class HomeView extends GetView<HomeController> {
               var currentFocus = FocusScope.of(context);
               currentFocus.unfocus();
               home.focusNode.requestFocus();
-              // 如果回到了首页, 则需要重新获取焦点
-              if (index > 0) {
-                home.homeFocusNode.requestFocus();
-              }
               homeview.changeCurrentBarIndex(index);
             },
           ),

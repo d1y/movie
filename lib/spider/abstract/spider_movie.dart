@@ -44,9 +44,21 @@ class SpiderQueryCategory {
   SpiderQueryCategory(this.name, this.id);
 
   @override
+  bool operator ==(Object other) {
+    if (other is SpiderQueryCategory) {
+      return other.name == name;
+    }
+    return false;
+  }
+
+  @override
   String toString() {
     return '$id: $name';
   }
+  
+  @override
+  int get hashCode => name.hashCode;
+  
 }
 
 abstract class ISpider {

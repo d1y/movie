@@ -45,6 +45,8 @@ class _PlayViewState extends State<PlayView> {
 
   PlayState playState = const PlayState(-1, -1);
 
+  FocusNode focusNode = FocusNode();
+
   bool get canBeShowParseVipButton {
     return home.parseVipList.isNotEmpty;
   }
@@ -111,6 +113,7 @@ class _PlayViewState extends State<PlayView> {
 
   @override
   void initState() {
+    focusNode.requestFocus();
     super.initState();
   }
 
@@ -156,10 +159,10 @@ class _PlayViewState extends State<PlayView> {
           ),
         ),
         body: Shortcuts(
-          shortcuts: <ShortcutActivator, Intent>{
-            LogicalKeySet(LogicalKeyboardKey.escape): const DismissIntent(),
-            LogicalKeySet(LogicalKeyboardKey.backspace): const DismissIntent(),
-            LogicalKeySet(LogicalKeyboardKey.enter): const ActivateIntent(),
+          shortcuts: const {
+            SingleActivator(LogicalKeyboardKey.escape): DismissIntent(),
+            SingleActivator(LogicalKeyboardKey.backspace): DismissIntent(),
+            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
           },
           child: Actions(
             actions: {
@@ -180,9 +183,9 @@ class _PlayViewState extends State<PlayView> {
                 },
               ),
             },
-            child: RawKeyboardListener(
+            child: Focus(
               autofocus: true,
-              focusNode: FocusScopeNode(),
+              focusNode: focusNode,
               child: SafeArea(
                 child: DefaultTextStyle(
                   style: TextStyle(

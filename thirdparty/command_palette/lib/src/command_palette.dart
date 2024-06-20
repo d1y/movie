@@ -248,32 +248,32 @@ class _CommandPaletteInnerState extends State<_CommandPaletteInner> {
         builder: (context) {
           return Shortcuts(
             shortcuts: {
+              // cmd+k
               widget.config.openKeySet: OpenCommandPaletteIntent(),
-              // // cmd+[
-              LogicalKeySet(
-                      LogicalKeyboardKey.meta, LogicalKeyboardKey.braceLeft):
-                  TabSwitchLeftIntent(),
-              // // cmd+]
-              // LogicalKeySet(
-              //         LogicalKeyboardKey.meta, LogicalKeyboardKey.braceRight):
-              //     TabSwitchLeftIntent(),
+              // cmd-shift-[
+              const SingleActivator(LogicalKeyboardKey.braceLeft /* { */,
+                  meta: true, shift: true): TabSwitchLeftIntent(),
+              // cmd-shift-]
+              const SingleActivator(LogicalKeyboardKey.braceRight /* } */,
+                  meta: true, shift: true): TabSwitchRightIntent(),
             },
             child: Actions(
               actions: {
                 OpenCommandPaletteIntent: CallbackAction(
                   onInvoke: (_) => _openCommandPalette(context),
                 ),
-                // TabSwitchLeftIntent: CallbackAction(
-                //   onInvoke: (_) => widget.onTabSwitch.call(TabSwitchDirection.left),
-                // ),
-                // TabSwitchRightIntent: CallbackAction(
-                //   onInvoke: (_) => widget.onTabSwitch.call(TabSwitchDirection.right),
-                // ),
+                TabSwitchLeftIntent: CallbackAction(
+                  onInvoke: (_) =>
+                      widget.onTabSwitch?.call(TabSwitchDirection.left),
+                ),
+                TabSwitchRightIntent: CallbackAction(
+                  onInvoke: (_) =>
+                      widget.onTabSwitch?.call(TabSwitchDirection.right),
+                ),
               },
-              child: Focus(
-                focusNode: widget.focusNode,
+              child: RawKeyboardListener(
+                focusNode: widget.focusNode ?? FocusNode(),
                 autofocus: true,
-                skipTraversal: false,
                 child: widget.child,
               ),
             ),
