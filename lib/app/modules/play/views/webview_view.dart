@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -8,22 +6,31 @@ import 'package:wakelock/wakelock.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebviewView extends StatefulWidget {
-  const WebviewView({Key? key}) : super(key: key);
+  const WebviewView({super.key});
 
   @override
-  _WebviewViewState createState() => _WebviewViewState();
+  createState() => _WebviewViewState();
 }
 
 class _WebviewViewState extends State<WebviewView> {
   final url = Get.arguments;
 
-  // bool isLand = false;
+  late final WebViewController controller;
 
   @override
   void initState() {
     Wakelock.enable();
     execScreenDirction(ScreenDirction.x);
+    init();
     super.initState();
+  }
+
+  init() {
+    // https://github.com/flutter/packages/blob/853c6773177a32be019c55c2ff45c9908196dadd/packages/webview_flutter/webview_flutter/example/lib/simple_example.dart#L27C5-L48C40
+    controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..loadRequest(Uri.parse(url));
   }
 
   @override
@@ -33,11 +40,8 @@ class _WebviewViewState extends State<WebviewView> {
     execScreenDirction(ScreenDirction.y);
   }
 
-  // bool showBackButton = true;
-
   @override
   Widget build(BuildContext context) {
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButton: Container(
@@ -56,43 +60,7 @@ class _WebviewViewState extends State<WebviewView> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
-      body: Stack(
-        children: [
-          WebView(
-            initialUrl: url,
-            javascriptMode: JavascriptMode.unrestricted,
-          ),
-          // Positioned(
-          //   child: GestureDetector(
-          //     child: Container(
-          //       width: 42,
-          //       height: 42,
-          //       decoration: BoxDecoration(
-          //         color: Colors.black,
-          //         borderRadius: BorderRadius.circular(12),
-          //       ),
-          //       child: Icon(
-          //         CupertinoIcons.fullscreen,
-          //         color: Colors.white,
-          //       ),
-          //     ),
-          //     onTap: () {
-          //       // setState(() {
-          //       //   if (isLand) {
-          //       //     isLand = !isLand;
-          //       //     AutoOrientation.portraitUpMode();
-          //       //   } else {
-          //       //     isLand = !isLand;
-          //       //     AutoOrientation.landscapeLeftMode();
-          //       //   }
-          //       // });
-          //     },
-          //   ),
-          //   top: 33,
-          //   right: 18,
-          // )
-        ],
-      ),
+      body: WebViewWidget(controller: controller),
     );
   }
 }
