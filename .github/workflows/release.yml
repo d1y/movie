@@ -93,8 +93,12 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
           channel: "stable"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
       - run: |
           bash script/fetch_git_info.sh
+          node script/draft-release-notes.js > release-notes.txt
           flutter pub get
           flutter pub run build_runner build
           flutter pub deps
@@ -128,8 +132,9 @@ jobs:
           name: windows
 
       # build/ios/iphoneos/app.ipa
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
         with:
+          body_path: release-notes.txt
           files: |
             build/app/outputs/flutter-apk/*.apk
             build/macos/Build/Products/Release/yoyo.mac.zip
