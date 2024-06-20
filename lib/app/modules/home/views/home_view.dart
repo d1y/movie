@@ -45,8 +45,6 @@ class HomeView extends GetView<HomeController> {
     },
   ];
 
-  final FocusNode focusNode = FocusNode();
-
   List<ISpider> get mirror => home.mirrorList;
 
   int get mirrorIndex => home.mirrorIndex;
@@ -59,7 +57,7 @@ class HomeView extends GetView<HomeController> {
         : const Color.fromRGBO(255, 255, 255, .63);
     return GetBuilder<HomeController>(
       builder: (homeview) => CommandPalette(
-        focusNode: focusNode,
+        focusNode: home.focusNode,
         config: CommandPaletteConfig(
           transitionCurve: Curves.easeOutQuart,
           style: CommandPaletteStyle(
@@ -73,6 +71,15 @@ class HomeView extends GetView<HomeController> {
           ),
           showInstructions: true,
         ),
+        onTabSwitch: home.switchTabview,
+        onClose: () {
+          if (homeview.currentBarIndex == 0) {
+            Future.delayed(const Duration(milliseconds: 100), () {
+              home.focusNode.requestFocus();
+              home.homeFocusNode.requestFocus();
+            });
+          }
+        },
         actions: [
           CommandPaletteAction.nested(
             label: "切换镜像",
@@ -126,8 +133,7 @@ class HomeView extends GetView<HomeController> {
               // fix ios keyboard auto up
               var currentFocus = FocusScope.of(context);
               currentFocus.unfocus();
-              focusNode.requestFocus();
-
+              home.focusNode.requestFocus();
               homeview.changeCurrentBarIndex(index);
             },
           ),

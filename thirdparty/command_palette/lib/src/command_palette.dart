@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../command_palette.dart';
 import 'controller/command_palette_controller.dart';
@@ -24,6 +25,9 @@ class CommandPalette extends InheritedWidget {
   /// functional configuration
   final CommandPaletteConfig config;
 
+  final ValueChanged<TabSwitchDirection>? onTabSwitch;
+  final VoidCallback? onClose;
+
   final FocusNode? focusNode;
 
   late final _CommandPaletteToggler _toggler;
@@ -35,6 +39,8 @@ class CommandPalette extends InheritedWidget {
     CommandPaletteConfig? config,
     required this.actions,
     required Widget child,
+    this.onTabSwitch,
+    this.onClose,
     this.focusNode,
   })  : config = config ?? CommandPaletteConfig(),
         super(
@@ -46,9 +52,11 @@ class CommandPalette extends InheritedWidget {
               actions,
               config: config ?? CommandPaletteConfig(),
             ),
+            onTabSwitch: onTabSwitch,
+            onClose: onClose,
             config: config ?? CommandPaletteConfig(),
             toggler: _CommandPaletteToggler(false),
-            focusNode: focusNode, 
+            focusNode: focusNode,
             child: child,
           ),
         ) {
@@ -114,6 +122,8 @@ class _CommandPaletteInner extends StatefulWidget {
   final _CommandPaletteToggler toggler;
   final CommandPaletteController controller;
   final FocusNode? focusNode;
+  final ValueChanged<TabSwitchDirection>? onTabSwitch;
+  final VoidCallback? onClose;
   const _CommandPaletteInner({
     Key? key,
     required this.child,
@@ -122,6 +132,8 @@ class _CommandPaletteInner extends StatefulWidget {
     required this.toggler,
     required this.controller,
     required this.focusNode,
+    required this.onTabSwitch,
+    required this.onClose,
   }) : super(key: key);
 
   @override
@@ -236,18 +248,31 @@ class _CommandPaletteInnerState extends State<_CommandPaletteInner> {
         builder: (context) {
           return Shortcuts(
             shortcuts: {
-              widget.config.openKeySet: const _OpenCommandPaletteIntent()
+              // cmd+k
+              widget.config.openKeySet: OpenCommandPaletteIntent(),
+              // cmd-shift-[
+              const SingleActivator(LogicalKeyboardKey.braceLeft /* { */,
+                  meta: true, shift: true): TabSwitchLeftIntent(),
+              // cmd-shift-]
+              const SingleActivator(LogicalKeyboardKey.braceRight /* } */,
+                  meta: true, shift: true): TabSwitchRightIntent(),
             },
             child: Actions(
               actions: {
-                _OpenCommandPaletteIntent:
-                    CallbackAction<_OpenCommandPaletteIntent>(
-                  // ignore: body_might_complete_normally_nullable
+                OpenCommandPaletteIntent: CallbackAction(
                   onInvoke: (_) => _openCommandPalette(context),
-                )
+                ),
+                TabSwitchLeftIntent: CallbackAction(
+                  onInvoke: (_) =>
+                      widget.onTabSwitch?.call(TabSwitchDirection.left),
+                ),
+                TabSwitchRightIntent: CallbackAction(
+                  onInvoke: (_) =>
+                      widget.onTabSwitch?.call(TabSwitchDirection.right),
+                ),
               },
-              child: Focus(
-                focusNode: widget.focusNode,
+              child: RawKeyboardListener(
+                focusNode: widget.focusNode ?? FocusNode(),
                 autofocus: true,
                 child: widget.child,
               ),
@@ -283,6 +308,7 @@ class _CommandPaletteInnerState extends State<_CommandPaletteInner> {
           (value) => setState(() {
             _commandPaletteOpen = false;
             widget.toggler.value = false;
+            widget.onClose?.call();
           }),
         );
   }
@@ -297,6 +323,10 @@ class _CommandPaletteInnerState extends State<_CommandPaletteInner> {
   }
 }
 
-class _OpenCommandPaletteIntent extends Intent {
-  const _OpenCommandPaletteIntent();
-}
+class OpenCommandPaletteIntent extends Intent {}
+
+enum TabSwitchDirection { left, right }
+
+class TabSwitchLeftIntent extends Intent {}
+
+class TabSwitchRightIntent extends Intent {}

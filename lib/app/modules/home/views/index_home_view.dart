@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
@@ -15,6 +16,24 @@ import 'package:movie/spider/abstract/spider_serialize.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
+class ScrollDownIntent extends Intent {}
+
+class ScrollUpIntent extends Intent {}
+
+class CategoryNextIntent extends Intent {}
+
+class CategoryPrevIntent extends Intent {}
+
+const scrollSize = 240;
+
+shortcutCallback<T extends Intent>(int curr, VoidCallback cb) {
+  return CallbackAction(onInvoke: (_) {
+    if (curr != 0) return;
+    cb();
+    return null;
+  });
+}
+
 class IndexHomeView extends StatefulWidget {
   const IndexHomeView({Key? key}) : super(key: key);
 
@@ -24,36 +43,25 @@ class IndexHomeView extends StatefulWidget {
 
 class _IndexHomeViewState extends State<IndexHomeView>
     with AutomaticKeepAliveClientMixin {
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return IndexHomeViewPage();
-  }
+  HomeController controller = Get.find<HomeController>();
 
-  @override
-  bool get wantKeepAlive => true;
-}
-
-class IndexHomeViewPage extends GetView {
-  final HomeController home = Get.find();
-
-  IndexHomeViewPage({super.key});
+  ScrollController scrollController = ScrollController();
 
   int get cardCount {
     bool isLandscape = Get.context!.isLandscape;
     if (GetPlatform.isMobile && !isLandscape) return 3;
-    var w = home.windowLastSize.width;
+    var w = controller.windowLastSize.width;
     if (w >= 1000) return 5;
     return 3;
   }
 
   /// 错误日志
-  String get errorMsg => home.indexHomeLoadDataErrorMessage;
+  String get errorMsg => controller.indexHomeLoadDataErrorMessage;
 
   /// 错误日志最大展示行数
   int get errorMsgMaxLines => 12;
 
-  handleClickItem(MirrorOnceItemSerialize subItem) async {
+  handleClickItem(MirrorOnceItemSerialize subItem, HomeController cx) async {
     var data = subItem;
     if (subItem.videos.isEmpty) {
       var id = subItem.id;
@@ -82,9 +90,7 @@ class IndexHomeViewPage extends GetView {
         ),
         barrierColor: CupertinoColors.inactiveGray.withOpacity(.9),
       );
-      data = await home.currentMirrorItem.getDetail(
-        id,
-      );
+      data = await controller.currentMirrorItem.getDetail(id);
       Get.back();
     }
     Get.toNamed(
@@ -103,30 +109,48 @@ class IndexHomeViewPage extends GetView {
   }
 
   double get _calcImageWidth {
-    var width = home.windowLastSize.width;
+    var width = controller.windowLastSize.width;
     // 桌面平台
     if (width >= 500) return 120;
     return width * .6;
   }
 
   bool get indexEnablePullDown {
-    return !home.isLoading;
+    return !controller.isLoading;
   }
 
   bool get indexEnablePullUp {
-    return !home.isLoading && home.homedata.isNotEmpty;
+    return !controller.isLoading && controller.homedata.isNotEmpty;
   }
 
   String get currentTitle {
     try {
-      return home.currentMirrorItem.meta.name;
+      return controller.currentMirrorItem.meta.name;
     } catch (e) {
       return APP_TITLE;
     }
   }
 
+  bool get categoryIsEmpty {
+    return controller.currentCategoryer.isEmpty;
+  }
+
+  int get currCategoryIndex {
+    var now = controller.currentCategoryerNow;
+    if (now == null) return -1;
+    return controller.currentCategoryer.indexOf(now);
+  }
+
+  switchCategory(SpiderQueryCategory curr) {
+    if (curr == controller.currentCategoryerNow) {
+      return;
+    }
+    controller.setCurrentCategoryerNow(curr);
+  }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return GetBuilder<HomeController>(
       builder: (homeview) => Scaffold(
         appBar: WindowAppBar(
@@ -144,7 +168,7 @@ class IndexHomeViewPage extends GetView {
             ),
           ),
           actions: [
-            if (!home.mirrorListIsEmpty)
+            if (!controller.mirrorListIsEmpty)
               MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: CupertinoButton(
@@ -159,200 +183,266 @@ class IndexHomeViewPage extends GetView {
               ),
           ],
         ),
-        body: KBody(
-          child: Column(
-            children: [
-              AnimatedContainer(
-                width: double.infinity,
-                height: home.currentCategoryer.isNotEmpty ? 42 : 0,
-                duration: const Duration(
-                  milliseconds: 420,
-                ),
-                curve: Curves.decelerate,
-                child: ListView.builder(
-                  itemCount: home.currentCategoryer.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: ((context, index) {
-                    SpiderQueryCategory curr = home.currentCategoryer[index];
-                    // XXX(d1y): 默认为全部
-                    bool isCurr = curr.id ==
-                        (home.currentCategoryerNow?.id ?? kAllCategoryPoint);
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 4.2,
-                        vertical: 6.2,
+        body: Shortcuts(
+          shortcuts: {
+            // ctrl-p
+            const SingleActivator(LogicalKeyboardKey.keyP, control: true):
+                ScrollUpIntent(),
+            // ctrl-n
+            const SingleActivator(LogicalKeyboardKey.keyN, control: true):
+                ScrollDownIntent(),
+            // cmd-[
+            const SingleActivator(LogicalKeyboardKey.bracketLeft, meta: true):
+                CategoryPrevIntent(),
+            // cmd-]
+            const SingleActivator(LogicalKeyboardKey.bracketRight, meta: true):
+                CategoryNextIntent(),
+          },
+          child: Actions(
+            actions: {
+              ScrollUpIntent: shortcutCallback(controller.currentBarIndex, () {
+                var curr = scrollController.offset;
+                if (curr == 0) return;
+                var exec = curr - scrollSize;
+                if (exec < 0) exec = 0;
+                scrollController.animateTo(
+                  exec,
+                  duration: const Duration(milliseconds: 420),
+                  curve: Curves.ease,
+                );
+              }),
+              ScrollDownIntent:
+                  shortcutCallback(controller.currentBarIndex, () {
+                var curr = scrollController.offset;
+                var max = scrollController.position.maxScrollExtent;
+                if (curr == max) return;
+                var exec = curr + scrollSize;
+                if (exec > max) exec = max;
+                scrollController.animateTo(
+                  exec,
+                  duration: const Duration(milliseconds: 420),
+                  curve: Curves.ease,
+                );
+              }),
+              CategoryPrevIntent:
+                  shortcutCallback(controller.currentBarIndex, () {
+                if (categoryIsEmpty || currCategoryIndex == 0) return;
+                var cx = controller.currentCategoryer[currCategoryIndex - 1];
+                switchCategory(cx);
+              }),
+              CategoryNextIntent:
+                  shortcutCallback(controller.currentBarIndex, () {
+                if (categoryIsEmpty ||
+                    currCategoryIndex ==
+                        controller.currentCategoryer.length - 1) return;
+                var cx = controller.currentCategoryer[currCategoryIndex + 1];
+                switchCategory(cx);
+              }),
+            },
+            child: RawKeyboardListener(
+              focusNode: controller.homeFocusNode,
+              autofocus: true,
+              child: KBody(
+                child: Column(
+                  children: [
+                    AnimatedContainer(
+                      width: double.infinity,
+                      height: !categoryIsEmpty ? 42 : 0,
+                      duration: const Duration(
+                        milliseconds: 420,
                       ),
-                      child: CupertinoButton(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24.0,
-                        ),
-                        color: isCurr ? CupertinoColors.systemBlue : null,
-                        child: Text(
-                          curr.name,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: isCurr
-                                ? Colors.white
-                                : Theme.of(context).textTheme.labelLarge!.color,
-                          ),
-                        ),
-                        onPressed: () {
-                          // XXX(d1y): 不允许点击当前分类
-                          if (curr.id == home.currentCategoryerNow?.id) return;
-                          home.setCurrentCategoryerNow(curr);
-                        },
-                      ),
-                    );
-                  }),
-                ),
-              ),
-              Expanded(
-                child: Builder(builder: (context) {
-                  if (home.mirrorListIsEmpty) {
-                    return KEmptyMirror(
-                      cx: home,
-                      width: _calcImageWidth,
-                    );
-                  }
-                  return SmartRefresher(
-                    enablePullDown: indexEnablePullDown,
-                    enablePullUp: indexEnablePullUp,
-                    header: const WaterDropHeader(
-                      refresh: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CupertinoActivityIndicator(),
-                          SizedBox(
-                            width: 12,
-                          ),
-                          Text("加载中"),
-                        ],
-                      ),
-                      complete: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(CupertinoIcons.smiley),
-                          SizedBox(
-                            width: 12,
-                          ),
-                          Text("加载完成"),
-                        ],
+                      curve: Curves.decelerate,
+                      child: ListView.builder(
+                        itemCount: controller.currentCategoryer.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: ((context, index) {
+                          SpiderQueryCategory curr =
+                              controller.currentCategoryer[index];
+                          bool isCurr = curr == controller.currentCategoryerNow;
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4.2,
+                              vertical: 6.2,
+                            ),
+                            child: CupertinoButton(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24.0,
+                              ),
+                              color: isCurr ? CupertinoColors.systemBlue : null,
+                              child: Text(
+                                curr.name,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: isCurr
+                                      ? Colors.white
+                                      : Theme.of(context)
+                                          .textTheme
+                                          .labelLarge!
+                                          .color,
+                                ),
+                              ),
+                              onPressed: () {
+                                switchCategory(curr);
+                              },
+                            ),
+                          );
+                        }),
                       ),
                     ),
-                    footer: CustomFooter(
-                      builder: (BuildContext context, LoadStatus? mode) {
-                        Widget body;
-                        if (mode == LoadStatus.idle) {
-                          body = const Text("上划加载更多");
-                        } else if (mode == LoadStatus.loading) {
-                          body = const CupertinoActivityIndicator();
-                        } else if (mode == LoadStatus.failed) {
-                          body = const Text("加载失败, 请重试");
-                        } else if (mode == LoadStatus.canLoading) {
-                          body = const Text("释放以加载更多");
-                        } else {
-                          body = const Text("没有更多数据");
+                    Expanded(
+                      child: Builder(builder: (context) {
+                        if (controller.mirrorListIsEmpty) {
+                          return KEmptyMirror(
+                            cx: controller,
+                            width: _calcImageWidth,
+                          );
                         }
-                        return Center(
-                          child: body,
-                        );
-                      },
-                    ),
-                    scrollController: ScrollController(),
-                    controller: homeview.refreshController,
-                    onLoading: homeview.refreshOnLoading,
-                    onRefresh: homeview.refreshOnRefresh,
-                    child: Builder(
-                      builder: (_) {
-                        if (homeview.isLoading) {
-                          return const SizedBox.shrink();
-                        }
-                        if (homeview.homedata.isEmpty) {
-                          if (errorMsg.isNotEmpty) {
-                            return Center(
-                              child: SingleChildScrollView(
-                                child: Column(
+                        return SmartRefresher(
+                          enablePullDown: indexEnablePullDown,
+                          enablePullUp: indexEnablePullUp,
+                          header: const WaterDropHeader(
+                            refresh: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CupertinoActivityIndicator(),
+                                SizedBox(
+                                  width: 12,
+                                ),
+                                Text("加载中"),
+                              ],
+                            ),
+                            complete: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(CupertinoIcons.smiley),
+                                SizedBox(
+                                  width: 12,
+                                ),
+                                Text("加载完成"),
+                              ],
+                            ),
+                          ),
+                          footer: CustomFooter(
+                            builder: (BuildContext context, LoadStatus? mode) {
+                              Widget body;
+                              if (mode == LoadStatus.idle) {
+                                body = const Text("上划加载更多");
+                              } else if (mode == LoadStatus.loading) {
+                                body = const CupertinoActivityIndicator();
+                              } else if (mode == LoadStatus.failed) {
+                                body = const Text("加载失败, 请重试");
+                              } else if (mode == LoadStatus.canLoading) {
+                                body = const Text("释放以加载更多");
+                              } else {
+                                body = const Text("没有更多数据");
+                              }
+                              return Center(
+                                child: body,
+                              );
+                            },
+                          ),
+                          scrollController: scrollController,
+                          controller: homeview.refreshController,
+                          onLoading: homeview.refreshOnLoading,
+                          onRefresh: homeview.refreshOnRefresh,
+                          child: Builder(
+                            builder: (_) {
+                              if (homeview.isLoading) {
+                                return const SizedBox.shrink();
+                              }
+                              if (homeview.homedata.isEmpty) {
+                                if (errorMsg.isNotEmpty) {
+                                  return Center(
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          Image.asset(
+                                            "assets/images/error.png",
+                                            width: Get.width * .24,
+                                          ),
+                                          const SizedBox(
+                                            height: 24,
+                                          ),
+                                          CupertinoButton.filled(
+                                            child: const Text(
+                                              "重新加载",
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 12.0,
+                                              horizontal: 24.0,
+                                            ),
+                                            onPressed: () {
+                                              homeview.updateHomeData(
+                                                  isFirst: true);
+                                            },
+                                          ),
+                                          const SizedBox(
+                                            height: 6,
+                                          ),
+                                          KErrorStack(
+                                            msg: errorMsg,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return Center(
+                                    child: Column(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Image.asset(
                                       "assets/images/error.png",
                                       width: Get.width * .24,
                                     ),
-                                    const SizedBox(
-                                      height: 24,
-                                    ),
-                                    CupertinoButton.filled(
-                                      child: const Text(
-                                        "重新加载",
-                                        style: TextStyle(fontSize: 12),
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 12.0,
-                                        horizontal: 24.0,
-                                      ),
-                                      onPressed: () {
-                                        homeview.updateHomeData(isFirst: true);
+                                    const SizedBox(height: 24),
+                                    const Text("当前请求列表为空"),
+                                  ],
+                                ));
+                              }
+                              return WaterfallFlow.builder(
+                                controller: ScrollController(),
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                gridDelegate:
+                                    SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: cardCount,
+                                  crossAxisSpacing: 5.0,
+                                  mainAxisSpacing: 5.0,
+                                ),
+                                itemCount: homeview.homedata.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  var subItem = homeview.homedata[index];
+                                  var _scale = index % 2 == 0 ? 1 : .8;
+                                  var _h = _cardOnceHeight * _scale;
+                                  return SizedBox(
+                                    height: _h,
+                                    child: MovieCardItem(
+                                      imageUrl: subItem.smallCoverImage,
+                                      title: subItem.title,
+                                      onTap: () {
+                                        handleClickItem(subItem, controller);
                                       },
                                     ),
-                                    const SizedBox(
-                                      height: 6,
-                                    ),
-                                    KErrorStack(
-                                      msg: errorMsg,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }
-                          return Center(
-                              child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Image.asset(
-                                "assets/images/error.png",
-                                width: Get.width * .24,
-                              ),
-                              const SizedBox(height: 24),
-                              const Text("当前请求列表为空"),
-                            ],
-                          ));
-                        }
-                        return WaterfallFlow.builder(
-                          controller: ScrollController(),
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          gridDelegate:
-                              SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: cardCount,
-                            crossAxisSpacing: 5.0,
-                            mainAxisSpacing: 5.0,
-                          ),
-                          itemCount: homeview.homedata.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            var subItem = homeview.homedata[index];
-                            var _scale = index % 2 == 0 ? 1 : .8;
-                            var _h = _cardOnceHeight * _scale;
-                            return SizedBox(
-                              height: _h,
-                              child: MovieCardItem(
-                                imageUrl: subItem.smallCoverImage,
-                                title: subItem.title,
-                                onTap: () {
-                                  handleClickItem(subItem);
+                                  );
                                 },
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         );
-                      },
+                      }),
                     ),
-                  );
-                }),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

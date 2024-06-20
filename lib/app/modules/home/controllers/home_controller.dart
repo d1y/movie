@@ -1,3 +1,4 @@
+import 'package:command_palette/command_palette.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -44,6 +45,9 @@ Function _showLoading(String msg) {
 }
 
 class HomeController extends GetxController with WidgetsBindingObserver {
+  final FocusScopeNode focusNode = FocusScopeNode();
+  final FocusNode homeFocusNode = FocusNode();
+
   late Size windowLastSize;
 
   var currentBarIndex = 0;
@@ -494,6 +498,18 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   @override
   void didChangeMetrics() {
     updateWindowLastSize();
+  }
+
+  void switchTabview(TabSwitchDirection direction) {
+    if (currentBarIndex == 0 && direction == TabSwitchDirection.left) return;
+    if (currentBarIndex == 2 && direction == TabSwitchDirection.right) return;
+    if (direction == TabSwitchDirection.left) {
+      currentBarIndex--;
+    } else {
+      currentBarIndex++;
+    }
+    currentBarController.jumpToPage(currentBarIndex);
+    update();
   }
 
   void changeCurrentBarIndex(int i) {
