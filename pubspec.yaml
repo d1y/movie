@@ -14,7 +14,8 @@ dependencies:
   cookie_jar: ^4.0.3
   dio_cookie_manager: ^3.0.0
   html: ^0.15.0
-  flutter_cupertino_settings: ^0.5.0
+  flutter_cupertino_settings:
+    path: ./thirdparty/flutter_cupertino_settings
   webview_flutter: ^4.8.0
   xml2json: ^6.1.0
   modal_bottom_sheet: ^3.0.0-pre
