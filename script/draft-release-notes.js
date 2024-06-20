@@ -56,7 +56,12 @@ function getTagNote(tag) {
 
 ;(async()=> {
   const repo = "waifu-project/movie"
-  const resp = await fetch(`https://api.github.com/repos/${repo}/tags`)
+  const token = process.env.GITHUB_TOKEN
+  const resp = await fetch(`https://api.github.com/repos/${repo}/tags`, {
+    headers: {
+      "Authorization": `Bearer ${token}`
+    }
+  })
   /** @type {GithubTagResponse} */
   const tags = await resp.json()
   const now = tags[0].name
