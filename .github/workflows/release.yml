@@ -96,9 +96,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - run: node script/draft-release-notes.js > release-notes.txt
       - run: |
           bash script/fetch_git_info.sh
-          node script/draft-release-notes.js > release-notes.txt
           flutter pub get
           flutter pub run build_runner build
           flutter pub deps
