@@ -239,7 +239,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                 switchCategory(cx);
               }),
             },
-            child: RawKeyboardListener(
+            child: KeyboardListener(
               focusNode: controller.homeFocusNode,
               autofocus: true,
               child: KBody(

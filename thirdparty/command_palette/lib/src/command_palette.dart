@@ -271,7 +271,7 @@ class _CommandPaletteInnerState extends State<_CommandPaletteInner> {
                       widget.onTabSwitch?.call(TabSwitchDirection.right),
                 ),
               },
-              child: RawKeyboardListener(
+              child: KeyboardListener(
                 focusNode: widget.focusNode ?? FocusNode(),
                 autofocus: true,
                 child: widget.child,
