@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 echo "start build yoyo.app"
 flutter build macos --release
 echo "cp yoyo.app to /Applications"
