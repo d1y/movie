@@ -16,7 +16,7 @@
     {
       "type": "shell",
       "label": "build to macos and install",
-      "command": "node",
+      "command": "bash",
       "args": [
         "script/bundle-mac"
       ],
