@@ -1,12 +1,12 @@
-import 'package:movie/spider/abstract/spider_movie.dart';
-import 'package:movie/spider/impl/mac_cms.dart';
-import 'package:movie/spider/shared/manage.dart';
-import 'package:movie/spider/models/mac_cms/source_data.dart';
+import 'package:movie/shared/manage.dart';
+import 'package:xi/abstract/spider_movie.dart';
+import 'package:xi/impl/mac_cms.dart';
+import 'package:xi/models/mac_cms/source_data.dart';
 
 class MirrorStatusStack {
   MirrorStatusStack._internal();
   factory MirrorStatusStack() => _instance;
-  static late final MirrorStatusStack _instance = MirrorStatusStack._internal();
+  static final MirrorStatusStack _instance = MirrorStatusStack._internal();
 
   final Map<String, bool> _stacks = {};
 
@@ -29,9 +29,9 @@ class MirrorStatusStack {
     List<SourceJsonData> data = _datas.map((e) {
       bool status = e.meta.status;
       String id = e.meta.id;
-      bool? _bStatus = getStack(id);
-      if (_bStatus != null) {
-        status = _bStatus;
+      bool? bStatus = getStack(id);
+      if (bStatus != null) {
+        status = bStatus;
       }
       return SourceJsonData(
         name: e.meta.name,

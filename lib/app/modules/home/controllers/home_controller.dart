@@ -8,10 +8,10 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:movie/app/modules/home/views/mirrortable.dart';
 import 'package:movie/app/shared/mirror_category.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
-import 'package:movie/spider/abstract/spider_movie.dart';
+import 'package:movie/shared/manage.dart';
+import 'package:xi/abstract/spider_movie.dart';
 import 'package:movie/isar/schema/parse_schema.dart';
-import 'package:movie/spider/shared/manage.dart';
-import 'package:movie/spider/abstract/spider_serialize.dart';
+import 'package:xi/abstract/spider_serialize.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 

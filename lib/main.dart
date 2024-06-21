@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:movie/config.dart';
 import 'package:movie/isar/repo.dart';
 import 'package:movie/shared/auto_injector.dart';
-import 'package:movie/spider/shared/manage.dart';
+import 'shared/manage.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:movie/utils/helper.dart';
 

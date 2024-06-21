@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:movie/app/extension.dart';
-import 'package:movie/spider/abstract/spider_movie.dart';
+import 'package:xi/abstract/spider_movie.dart';
 import 'package:movie/isar/repo.dart';
 import 'package:movie/isar/schema/mirror_schema.dart';
 import 'package:movie/shared/enum.dart';
 
-import '../impl/mac_cms.dart';
-import '../models/mac_cms/source_data.dart';
+import 'package:xi/impl/mac_cms.dart';
+import 'package:xi/models/mac_cms/source_data.dart';
 
 // 唉, 懒得改了, 又不是不能跑, 代码丑点怎么了?
 
