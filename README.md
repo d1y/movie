@@ -79,9 +79,9 @@ x86_64架构: [![](https://img.shields.io/badge/-点我下载-blue?logo=github)]
 
 ## 截图
 
-<img src="https://s2.loli.net/2023/06/10/U1WZuja7PVfo9sp.png" width="420" />
-<img src="https://s2.loli.net/2023/06/10/iX1kdqFBIpamAxj.png" width="420" />
-<img src="https://s2.loli.net/2023/06/10/ytAVfTH8RZ7Prem.png" width="420" />
+<img src="https://github.com/waifu-project/movie/assets/45585937/cf72d526-6643-4040-a265-41c8a5bcf2da" width="420" />
+<img src="https://github.com/waifu-project/movie/assets/45585937/f5f0ee2e-dfeb-44cd-9701-ac7c7bdf3584" width="420" />
+<img src="https://github.com/waifu-project/movie/assets/45585937/7caddd08-bc0a-4d7d-a433-147b20ab248a" width="420" />
 
 
 ## 小提示🥳
