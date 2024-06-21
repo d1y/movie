@@ -102,13 +102,14 @@ jobs:
         run: node script/draft-release-notes.js > release-notes.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: build apk(archs)
-        run: |
-          bash script/fetch_git_info.sh
-          flutter pub get
-          flutter pub run build_runner build
-          flutter pub deps
-          flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
+
+      # - name: build apk(archs)
+      #   run: |
+      #     bash script/fetch_git_info.sh
+      #     flutter pub get
+      #     flutter pub run build_runner build
+      #     flutter pub deps
+      #     flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
 
       - name: build all arch
         run: flutter build apk --release
