@@ -7,12 +7,12 @@ DESCRIBE=`git describe --tags --always`
 # https://gist.github.com/rponte/fdc0724dd984088606b0
 
 # increment the build number (ie 115 to 116)
-VERSION=`echo $DESCRIBE | awk '{split($0,a,"-"); print a[1]}'`
+# VERSION=`echo $DESCRIBE | awk '{split($0,a,"-"); print a[1]}'`
 BUILD=`echo $DESCRIBE | awk '{split($0,a,"-"); print a[2]}'`
 PATCH=`echo $DESCRIBE | awk '{split($0,a,"-"); print a[3]}'`
 
 if [[ "${DESCRIBE}" =~ ^[A-Fa-f0-9]+$ ]]; then
-    VERSION="0.0.0"
+    # VERSION="0.0.0"
     BUILD=`git rev-list HEAD --count`
     PATCH=${DESCRIBE}
 fi
