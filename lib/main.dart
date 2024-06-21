@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:get/get.dart';
-import 'package:movie/config.dart';
 import 'package:movie/isar/repo.dart';
 import 'package:movie/shared/auto_injector.dart';
 import 'shared/manage.dart';
@@ -64,7 +63,7 @@ void main() async {
   ThemeMode currentThemeMode = await runBefore();
   runApp(
     GetMaterialApp(
-      title: APP_TITLE,
+      title: "yoyo",
       scrollBehavior: DragonScrollBehavior(),
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,

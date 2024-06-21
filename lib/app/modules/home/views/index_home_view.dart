@@ -10,7 +10,6 @@ import 'package:movie/app/widget/k_empty_mirror.dart';
 import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/movie_card_item.dart';
 import 'package:movie/app/widget/window_appbar.dart';
-import 'package:movie/config.dart';
 import 'package:xi/abstract/spider_movie.dart';
 import 'package:xi/abstract/spider_serialize.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
@@ -127,7 +126,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
     try {
       return controller.currentMirrorItem.meta.name;
     } catch (e) {
-      return APP_TITLE;
+      return "yoyo";
     }
   }
 

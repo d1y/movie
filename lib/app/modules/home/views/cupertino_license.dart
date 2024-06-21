@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/widget/window_appbar.dart';
-import 'package:movie/config.dart';
 import 'package:movie/utils/helper.dart';
 import 'package:movie/widget/flutter_custom_license_page.dart';
 
@@ -46,7 +45,7 @@ Widget body(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: () {
-                LaunchURL(GITHUB_OPEN);
+                LaunchURL("https://github.com/waifu-project/movie");
               },
               child: Padding(
                 padding: const EdgeInsets.all(12),
