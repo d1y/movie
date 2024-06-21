@@ -277,7 +277,7 @@ packages:
   command_palette:
     dependency: "direct main"
     description:
-      path: "thirdparty/command_palette"
+      path: "packages/command_palette"
       relative: true
     source: path
     version: "0.7.3"
@@ -452,7 +452,7 @@ packages:
   flappy_search_bar:
     dependency: "direct main"
     description:
-      path: "thirdparty/flappy_search_bar_ns"
+      path: "packages/flappy_search_bar_ns"
       relative: true
     source: path
     version: "1.7.2"
@@ -472,7 +472,7 @@ packages:
   flutter_cupertino_settings:
     dependency: "direct main"
     description:
-      path: "thirdparty/flutter_cupertino_settings"
+      path: "packages/flutter_cupertino_settings"
       relative: true
     source: path
     version: "0.5.0"

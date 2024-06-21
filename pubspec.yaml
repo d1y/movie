@@ -15,7 +15,7 @@ dependencies:
   dio_cookie_manager: ^3.1.1
   html: ^0.15.4
   flutter_cupertino_settings:
-    path: ./thirdparty/flutter_cupertino_settings
+    path: packages/flutter_cupertino_settings
   webview_flutter: ^4.8.0
   xml2json: ^6.2.3
   modal_bottom_sheet: ^3.0.0
@@ -55,12 +55,12 @@ dependencies:
   dio_cache_interceptor: ^3.5.0
   executor: ^2.2.3
   flappy_search_bar:
-    path: ./thirdparty/flappy_search_bar_ns
+    path: packages//flappy_search_bar_ns
     # git:
     #   url: https://github.com/d1y/flappy_search_bar_ns
     #   branch: d1y
   command_palette:
-    path: ./thirdparty/command_palette
+    path: packages/command_palette
     # git:
     #   url: https://github.com/d1y/command_palette
     #   branch: d1y
