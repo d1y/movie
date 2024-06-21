@@ -58,3 +58,6 @@ git_info.dart
 
 # FVM Version Cache
 .fvm/
+
+flutter_export_environment.sh
+Flutter-Generated.xcconfig
