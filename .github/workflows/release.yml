@@ -26,7 +26,7 @@ jobs:
           flutter pub run build_runner build
       - name: Enable windows build
         run: flutter config --enable-windows-desktop
-      - name: Build artifacts
+      - name: Build windows
         run: flutter build windows --release
       - name: Archive Release
         uses: thedoctor0/zip-release@master
@@ -98,21 +98,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: generate release notes
+      - name: Generate release notes
         run: node script/draft-release-notes.js > release-notes.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: build apk(archs)
-      #   run: |
-      #     bash script/fetch_git_info.sh
-      #     flutter pub get
-      #     flutter pub run build_runner build
-      #     flutter pub deps
-      #     flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
-
-      - name: build all arch
-        run: flutter build apk --release
+      - name: Build android apk(muitple archs)
+        run: |
+          bash script/fetch_git_info.sh
+          flutter pub get
+          flutter pub run build_runner build
+          flutter pub deps
+          flutter build apk --release
+        # flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
 
       # 我的iOS都升到18.0了, 还搞鸡毛啊
       # - run: |
@@ -123,8 +121,9 @@ jobs:
       #     ln -s ../Runner.app
       #     cd ..
       #     zip -r app.ipa Payload
+      # output is build/ios/iphoneos/app.ipa
 
-      - name: build macos
+      - name: Build macos
         run: |
           flutter config --enable-macos-desktop
           flutter build macos --release
@@ -139,7 +138,6 @@ jobs:
         with:
           name: windows
 
-      # build/ios/iphoneos/app.ipa
       - uses: softprops/action-gh-release@v2
         with:
           body_path: release-notes.txt
