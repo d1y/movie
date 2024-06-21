@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:movie/app/extension.dart';
-import 'package:xi/abstract/spider_movie.dart';
+import 'package:xi/adapters/mac_cms.dart';
+import 'package:xi/xi.dart';
 import 'package:movie/isar/repo.dart';
 import 'package:movie/isar/schema/mirror_schema.dart';
 import 'package:movie/shared/enum.dart';
 
-import 'package:xi/impl/mac_cms.dart';
 import 'package:xi/models/mac_cms/source_data.dart';
 
 // 唉, 懒得改了, 又不是不能跑, 代码丑点怎么了?
@@ -17,14 +17,14 @@ class SpiderManage {
   SpiderManage._internal();
 
   /// 扩展的源
-  static List<ISpider> extend = [];
+  static List<ISpiderAdapter> extend = [];
 
   /// 内建支持的源
   /// 一般是需要自己去实现的源
-  static List<ISpider> builtin = [];
+  static List<ISpiderAdapter> builtin = [];
 
   /// 合并之后的数据
-  static List<ISpider> get data {
+  static List<ISpiderAdapter> get data {
     return [...extend, ...builtin];
   }
 
@@ -47,7 +47,7 @@ class SpiderManage {
   }
 
   /// 删除单个源
-  static removeItem(ISpider item) {
+  static removeItem(ISpiderAdapter item) {
     debugPrint("删除该源: $item");
     extend.remove(item);
     saveToCache(extend);
@@ -141,7 +141,7 @@ class SpiderManage {
   /// 保存缓存
   /// [该方法只可用来保存第三方源]
   /// 只适用于 [MacCMSSpider]
-  static saveToCache(List<ISpider> saves) {
+  static saveToCache(List<ISpiderAdapter> saves) {
     List<SourceJsonData> to = saves
         .map(
           (e) => SourceJsonData(

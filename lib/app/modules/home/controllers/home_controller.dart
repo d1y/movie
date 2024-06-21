@@ -9,16 +9,15 @@ import 'package:movie/app/modules/home/views/mirrortable.dart';
 import 'package:movie/app/shared/mirror_category.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
 import 'package:movie/shared/manage.dart';
-import 'package:xi/abstract/spider_movie.dart';
 import 'package:movie/isar/schema/parse_schema.dart';
-import 'package:xi/abstract/spider_serialize.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import 'package:movie/app/extension.dart';
+import 'package:xi/xi.dart';
 
 const kAllCategoryPoint = '-114514';
-var kAllCategoryData = SpiderQueryCategory('全部', kAllCategoryPoint);
+var kAllCategoryData = SourceSpiderQueryCategory('全部', kAllCategoryPoint);
 
 /// 历史记录处理类型
 enum UpdateSearchHistoryType {
@@ -77,7 +76,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   bool _iosCanBeUseSystemBrowser = true;
 
-  List<SpiderQueryCategory> get currentCategoryer {
+  List<SourceSpiderQueryCategory> get currentCategoryer {
     var data = mirrorCategoryPool.data(currentMirrorItemId);
     if (data.isNotEmpty) {
       return [kAllCategoryData, ...data];
@@ -89,9 +88,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     return mirrorCategoryPool.has(currentMirrorItemId);
   }
 
-  SpiderQueryCategory? currentCategoryerNow = kAllCategoryData;
+  SourceSpiderQueryCategory? currentCategoryerNow = kAllCategoryData;
 
-  setCurrentCategoryerNow(SpiderQueryCategory category) {
+  setCurrentCategoryerNow(SourceSpiderQueryCategory category) {
     currentCategoryerNow = category;
     updateHomeData(isFirst: true);
     update();
@@ -180,7 +179,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   /// 如果是在源之前的, 则 [index] = [mirrorIndex] - 1
   ///
   /// 如果是在源之后, 则 [index] = [mirrorIndex]
-  removeMirrorItemSync(ISpider item) {
+  removeMirrorItemSync(ISpiderAdapter item) {
     var index = mirrorList.indexOf(item);
     if (index == -1) return;
     var oldIndex = mirrorIndex;
@@ -197,7 +196,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     _mirrorIndex = index;
   }
 
-  ISpider get currentMirrorItem {
+  ISpiderAdapter get currentMirrorItem {
     return mirrorList[mirrorIndex];
   }
 
@@ -205,7 +204,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     return mirrorList.isEmpty;
   }
 
-  List<ISpider> get mirrorList {
+  List<ISpiderAdapter> get mirrorList {
     if (isNsfw) return SpiderManage.data;
     return SpiderManage.data.where((e) => !e.isNsfw).toList();
   }
@@ -213,7 +212,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   int page = 1;
   int limit = 10;
 
-  List<MirrorOnceItemSerialize> homedata = [];
+  List<VideoDetail> homedata = [];
 
   bool isLoading = true;
 
@@ -366,7 +365,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     update();
   }
 
-  Future<List<MirrorOnceItemSerialize>> updateSearchData(
+  Future<List<VideoDetail>> updateSearchData(
     String keyword, {
     page = 1,
     limit = 10,
@@ -449,7 +448,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         update();
       }
       debugPrint("get home data: $page, $limit");
-      List<MirrorOnceItemSerialize> data = await currentMirrorItem.getHome(
+      List<VideoDetail> data = await currentMirrorItem.getHome(
         page: page,
         limit: limit,
         category: onceCategory,
@@ -532,6 +531,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     update();
   }
 
-  final SearchBarController<MirrorOnceItemSerialize> searchBarController =
-      SearchBarController<MirrorOnceItemSerialize>();
+  final SearchBarController<VideoDetail> searchBarController =
+      SearchBarController<VideoDetail>();
 }

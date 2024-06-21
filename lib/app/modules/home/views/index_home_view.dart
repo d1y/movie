@@ -10,10 +10,9 @@ import 'package:movie/app/widget/k_empty_mirror.dart';
 import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/movie_card_item.dart';
 import 'package:movie/app/widget/window_appbar.dart';
-import 'package:xi/abstract/spider_movie.dart';
-import 'package:xi/abstract/spider_serialize.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
+import 'package:xi/xi.dart';
 
 class ScrollDownIntent extends Intent {}
 
@@ -60,7 +59,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
   /// 错误日志最大展示行数
   int get errorMsgMaxLines => 12;
 
-  handleClickItem(MirrorOnceItemSerialize subItem, HomeController cx) async {
+  handleClickItem(VideoDetail subItem, HomeController cx) async {
     var data = subItem;
     if (subItem.videos.isEmpty) {
       var id = subItem.id;
@@ -140,7 +139,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
     return controller.currentCategoryer.indexOf(now);
   }
 
-  switchCategory(SpiderQueryCategory curr) {
+  switchCategory(SourceSpiderQueryCategory curr) {
     if (curr == controller.currentCategoryerNow) {
       return;
     }
@@ -255,7 +254,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                         itemCount: controller.currentCategoryer.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: ((context, index) {
-                          SpiderQueryCategory curr =
+                          SourceSpiderQueryCategory curr =
                               controller.currentCategoryer[index];
                           bool isCurr = curr == controller.currentCategoryerNow;
                           return Padding(

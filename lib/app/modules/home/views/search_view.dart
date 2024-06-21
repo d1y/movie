@@ -19,7 +19,7 @@ import 'package:movie/app/widget/k_pagination.dart';
 import 'package:movie/app/widget/k_tag.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/isar/schema/history_schema.dart';
-import 'package:xi/abstract/spider_serialize.dart';
+import 'package:xi/xi.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({super.key});
@@ -32,7 +32,7 @@ class _SearchViewState extends State<SearchView>
     with AutomaticKeepAliveClientMixin {
   final HomeController home = Get.find<HomeController>();
 
-  extend_search_bar.SearchBarController<MirrorOnceItemSerialize>
+  extend_search_bar.SearchBarController<VideoDetail>
       get _searchBarController => home.searchBarController;
 
   List<String> _searchHistory = [];
@@ -165,7 +165,7 @@ class _SearchViewState extends State<SearchView>
                 width: _kEmptyMirrorWidth,
               );
             }
-            return extend_search_bar.SearchBar<MirrorOnceItemSerialize?>(
+            return extend_search_bar.SearchBar<VideoDetail?>(
               textStyle: TextStyle(
                 color: context.isDarkMode ? Colors.white : Colors.black,
               ),
@@ -485,7 +485,7 @@ class _SearchViewState extends State<SearchView>
 
   /// 默认就初始化为 [page]
   /// [isInitPage]
-  Future<List<MirrorOnceItemSerialize>> handleSearch(String? text) async {
+  Future<List<VideoDetail>> handleSearch(String? text) async {
     try {
       if (text == null) return [];
       setState(() {

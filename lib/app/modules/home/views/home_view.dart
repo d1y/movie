@@ -11,8 +11,8 @@ import 'package:movie/app/modules/home/views/index_home_view.dart';
 import 'package:movie/app/modules/home/views/search_view.dart';
 import 'package:movie/app/modules/home/views/settings_view.dart';
 import 'package:movie/shared/enum.dart';
-import 'package:xi/abstract/spider_movie.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:xi/xi.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -45,7 +45,7 @@ class HomeView extends GetView<HomeController> {
     },
   ];
 
-  List<ISpider> get mirror => home.mirrorList;
+  List<ISpiderAdapter> get mirror => home.mirrorList;
 
   int get mirrorIndex => home.mirrorIndex;
 

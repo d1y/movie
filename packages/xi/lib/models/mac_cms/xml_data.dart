@@ -1,4 +1,4 @@
-import '../../abstract/spider_movie.dart';
+import 'package:xi/xi.dart';
 
 class KBaseMovieXmlData {
   KBaseMovieXmlData({
@@ -25,7 +25,7 @@ class Rss {
   });
   late final ListX list;
   late final String version;
-  late final List<SpiderQueryCategory> category;
+  late final List<SourceSpiderQueryCategory> category;
 
   Rss.fromJson(Map<String, dynamic> json) {
     list = ListX.fromJson(json['list']);
@@ -38,11 +38,11 @@ class Rss {
     } else if (ty is Map) {
       data.add(ty);
     }
-    List<SpiderQueryCategory> _categorys = data.map((e) {
+    List<SourceSpiderQueryCategory> _categorys = data.map((e) {
       var map = Map<String, String>.from(e);
       var name = map['\$'] ?? "";
       var id = map['@id'] ?? "";
-      return SpiderQueryCategory(name, id);
+      return SourceSpiderQueryCategory(name, id);
     }).toList();
     category = _categorys;
   }

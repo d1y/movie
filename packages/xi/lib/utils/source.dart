@@ -2,14 +2,9 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import '../abstract/spider_movie.dart';
-import '../models/mac_cms/source_data.dart';
-import 'helper.dart';
-import 'http.dart';
-import 'json.dart';
-import 'xid.dart';
-
-import '../impl/mac_cms.dart';
+import 'package:xi/adapters/mac_cms.dart';
+import 'package:xi/xi.dart';
+import 'package:xi/models/mac_cms/source_data.dart';
 
 class SourceUtils {
   /// [rawString] 从输入框拿到值
@@ -244,7 +239,7 @@ class SourceUtils {
   ///
   /// => [List<KBaseMirrorMovie>]
   static dynamic mergeMirror(
-    List<ISpider> extend,
+    List<ISpiderAdapter> extend,
     List<MacCMSSpider> newSourceData, {
     bool diff = false,
   }) {

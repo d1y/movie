@@ -10,7 +10,7 @@ import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/shared/manage.dart';
-import 'package:xi/impl/mac_cms.dart';
+import 'package:xi/adapters/mac_cms.dart';
 import 'package:xi/utils/helper.dart';
 import 'package:xi/utils/http.dart';
 import 'package:xi/utils/json.dart';

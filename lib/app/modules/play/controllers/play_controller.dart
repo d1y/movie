@@ -11,10 +11,10 @@ import 'package:movie/app/modules/home/views/source_help.dart';
 import 'package:movie/app/modules/play/views/chewie_view.dart';
 import 'package:movie/app/modules/play/views/webview_view.dart';
 import 'package:movie/shared/auto_injector.dart';
-import 'package:xi/abstract/spider_movie.dart';
+import 'package:xi/adapters/mac_cms.dart';
+import 'package:xi/interface.dart';
+import 'package:xi/xi.dart';
 import 'package:movie/isar/schema/parse_schema.dart';
-import 'package:xi/impl/mac_cms.dart';
-import 'package:xi/abstract/spider_serialize.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:webplayer_embedded/webplayer_embedded.dart';
 
@@ -107,13 +107,13 @@ String easyGenParseVipUrl(String raw, ParseIsarModel model) {
 }
 
 class PlayController extends GetxController {
-  MirrorOnceItemSerialize movieItem = Get.arguments;
+  VideoDetail movieItem = Get.arguments;
 
   WebPlayerEmbedded webPlayerEmbedded = autoInjector.get<WebPlayerEmbedded>();
 
   HomeController home = Get.find<HomeController>();
 
-  ISpider get currentMovieInstance {
+  ISpiderAdapter get currentMovieInstance {
     var itemAs = home.currentMirrorItem;
     return itemAs;
   }
@@ -174,7 +174,7 @@ class PlayController extends GetxController {
 
   String webviewShowMessage = "请勿相信广告";
 
-  Future<bool> handleTapPlayerButtom(MirrorSerializeVideoInfo e) async {
+  Future<bool> handleTapPlayerButtom(VideoInfo e) async {
     var url = e.url;
     url = getPlayUrl(url);
 
@@ -223,7 +223,7 @@ class PlayController extends GetxController {
     /// https://github.com/MixinNetwork/flutter-plugins/tree/main/packages/desktop_webview_window
     /// 该插件支持 `windows` | `linux`(<然而[webview.launch]方法不支持:(>) | `macos`
     if (isWindows || isMacos) {
-      final bool typeIsM3u8 = e.type == MirrorSerializeVideoType.m3u8;
+      final bool typeIsM3u8 = e.type == VideoType.m3u8;
 
       if (isMacos && home.macosPlayUseIINA) {
         url.openToIINA(); // 家人们, 我们就假装安装了
@@ -303,8 +303,8 @@ class PlayController extends GetxController {
     }
 
     /// (`m3u8` | `mp4`) 资源
-    var canUseChewieView = e.type == MirrorSerializeVideoType.m3u8 ||
-        e.type == MirrorSerializeVideoType.mp4;
+    var canUseChewieView = e.type == VideoType.m3u8 ||
+        e.type == VideoType.mp4;
 
     /// iOS
     if (home.iosCanBeUseSystemBrowser) {
@@ -312,7 +312,7 @@ class PlayController extends GetxController {
       return true;
     }
 
-    if (e.type == MirrorSerializeVideoType.iframe) {
+    if (e.type == VideoType.iframe) {
       Get.to(
         () => const WebviewView(),
         arguments: url,

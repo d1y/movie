@@ -8,10 +8,9 @@ import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:movie/app/widget/helper.dart';
 import 'package:movie/app/widget/window_appbar.dart';
-import 'package:xi/impl/mac_cms.dart';
-import 'package:xi/abstract/spider_serialize.dart';
 import 'package:movie/widget/simple_html/flutter_html.dart';
-import 'package:xi/utils/helper.dart';
+import 'package:xi/adapters/mac_cms.dart';
+import 'package:xi/xi.dart';
 
 import '../controllers/play_controller.dart';
 
@@ -24,7 +23,7 @@ class PlayState {
 class PlayListData {
   final String title;
 
-  final List<MirrorSerializeVideoInfo> datas;
+  final List<VideoInfo> datas;
 
   PlayListData({
     required this.title,
@@ -64,7 +63,7 @@ class _PlayViewState extends State<PlayView> {
         if (urls.length >= 2) {
           output = urls
               .map(
-                (e) => MirrorSerializeVideoInfo(
+                (e) => VideoInfo(
                   url: e,
                   type: MacCMSSpider.easyGetVideoType(e),
                 ),
@@ -81,7 +80,7 @@ class _PlayViewState extends State<PlayView> {
           var title = subItem[0];
           var url = subItem[1];
           // var subType = subItem[2];
-          cache.datas.add(MirrorSerializeVideoInfo(
+          cache.datas.add(VideoInfo(
             name: title,
             url: url,
             type: MacCMSSpider.easyGetVideoType(url),

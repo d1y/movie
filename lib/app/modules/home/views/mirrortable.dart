@@ -11,10 +11,10 @@ import 'package:movie/app/modules/home/views/mirror_check.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
 import 'package:movie/app/widget/wechat_popmenu.dart';
 import 'package:movie/shared/manage.dart';
-import 'package:xi/abstract/spider_movie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:xi/utils/http.dart';
+import 'package:xi/xi.dart';
 
 enum MenuActionType {
   /// 检测源
@@ -49,11 +49,11 @@ class MirrorTableView extends StatefulWidget {
 class _MirrorTableViewState extends State<MirrorTableView> {
   final HomeController home = Get.find<HomeController>();
 
-  List<ISpider> get _mirrorList {
+  List<ISpiderAdapter> get _mirrorList {
     return home.mirrorList;
   }
 
-  List<ISpider> mirrorList = [];
+  List<ISpiderAdapter> mirrorList = [];
 
   ScrollController scrollController = ScrollController(
     initialScrollOffset: 0,
@@ -336,7 +336,7 @@ class MirrorCard extends StatelessWidget {
 
   final double maxHeight;
 
-  final ISpider item;
+  final ISpiderAdapter item;
 
   final bool current;
 
@@ -357,7 +357,7 @@ class MirrorCard extends StatelessWidget {
     return !current && !isBuiltin;
   }
 
-  /// 如果是 [ISpider.isNsfw] => [Colors.red]
+  /// 如果是 [ISpiderAdapter.isNsfw] => [Colors.red]
   /// 如果是 [current] => [Colors.blue] (优先级高一点)
   Color _color(bool isDark) {
     if (current) return Colors.blue;

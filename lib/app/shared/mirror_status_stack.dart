@@ -1,6 +1,6 @@
 import 'package:movie/shared/manage.dart';
-import 'package:xi/abstract/spider_movie.dart';
-import 'package:xi/impl/mac_cms.dart';
+import 'package:xi/adapters/mac_cms.dart';
+import 'package:xi/xi.dart';
 import 'package:xi/models/mac_cms/source_data.dart';
 
 class MirrorStatusStack {
@@ -12,7 +12,7 @@ class MirrorStatusStack {
 
   Map<String, bool> get getStacks => _stacks;
 
-  final List<ISpider> _datas = SpiderManage.extend;
+  final List<ISpiderAdapter> _datas = SpiderManage.extend;
 
   bool? getStack(String stack) {
     return _stacks[stack];

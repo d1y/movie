@@ -6,15 +6,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import '../abstract/spider_movie.dart';
-import '../abstract/spider_serialize.dart';
+import 'package:xi/xi.dart';
 import '../models/mac_cms/xml_data.dart';
 import '../models/mac_cms/xml_search_data.dart';
 import 'package:xml2json/xml2json.dart';
 import 'package:path/path.dart' as path;
-
-import '../utils/helper.dart';
-import '../utils/http.dart';
 
 /// 请求返回的内容
 enum ResponseCustomType {
@@ -26,7 +22,7 @@ enum ResponseCustomType {
   unknow
 }
 
-class MacCMSSpider extends ISpider {
+class MacCMSSpider extends ISpiderAdapter {
   final bool nsfw;
   final String jiexiUrl;
   final String name;
@@ -63,16 +59,16 @@ class MacCMSSpider extends ISpider {
   }
 
   /// 简单获取视频链接类型
-  static MirrorSerializeVideoType easyGetVideoType(String rawUrl) {
+  static VideoType easyGetVideoType(String rawUrl) {
     var ext = path.extension(rawUrl);
     switch (ext) {
       case '.m3u8':
       case '.m3u':
-        return MirrorSerializeVideoType.m3u8;
+        return VideoType.m3u8;
       case '.mp4':
-        return MirrorSerializeVideoType.mp4;
+        return VideoType.mp4;
       default:
-        return MirrorSerializeVideoType.iframe;
+        return VideoType.iframe;
     }
   }
 
@@ -111,7 +107,7 @@ class MacCMSSpider extends ISpider {
   }
 
   @override
-  Future<MirrorOnceItemSerialize> getDetail(String movieId) async {
+  Future<VideoDetail> getDetail(String movieId) async {
     var resp = await XHttp.dio.post(
       createUrl(suffix: api_path),
       queryParameters: {
@@ -129,15 +125,15 @@ class MacCMSSpider extends ISpider {
     var cards = video.map(
       (e) {
         var __dd = e.dl.dd;
-        List<MirrorSerializeVideoInfo> videos = __dd.map((item) {
-          return MirrorSerializeVideoInfo(
+        List<VideoInfo> videos = __dd.map((item) {
+          return VideoInfo(
             url: easyGetVideoURL(item.cData),
             name: item.flag,
             type: easyGetVideoType(item.cData),
           );
         }).toList();
         var pic = normalizeCoverImage(e.pic);
-        return MirrorOnceItemSerialize(
+        return VideoDetail(
           id: e.id,
           smallCoverImage: pic,
           title: e.name,
@@ -153,7 +149,7 @@ class MacCMSSpider extends ISpider {
   }
 
   @override
-  Future<List<MirrorOnceItemSerialize>> getHome({
+  Future<List<VideoDetail>> getHome({
     int page = 1,
     int limit = 10,
     String? category,
@@ -180,15 +176,15 @@ class MacCMSSpider extends ISpider {
     var cards = xml.rss.list.video.map(
       (e) {
         var __dd = e.dl.dd;
-        List<MirrorSerializeVideoInfo> videos = __dd.map((item) {
-          return MirrorSerializeVideoInfo(
+        List<VideoInfo> videos = __dd.map((item) {
+          return VideoInfo(
             url: easyGetVideoURL(item.cData),
             name: item.flag,
             type: easyGetVideoType(item.cData),
           );
         }).toList();
         var pic = normalizeCoverImage(e.pic);
-        return MirrorOnceItemSerialize(
+        return VideoDetail(
           id: e.id,
           smallCoverImage: pic,
           title: e.name,
@@ -255,7 +251,7 @@ class MacCMSSpider extends ISpider {
   }
 
   @override
-  Future<List<MirrorOnceItemSerialize>> getSearch({
+  Future<List<VideoDetail>> getSearch({
     required String keyword,
     int page = 1,
     int limit = 10,
@@ -277,9 +273,9 @@ class MacCMSSpider extends ISpider {
     var _json = x2j.toBadgerfish();
     KBaseMovieSearchXmlData searchData = kBaseMovieSearchXmlDataFromJson(_json);
     var defaultCoverImage = meta.logo;
-    List<MirrorOnceItemSerialize> result = searchData.rss?.list?.video!
+    List<VideoDetail> result = searchData.rss?.list?.video!
             .map(
-              (e) => MirrorOnceItemSerialize(
+              (e) => VideoDetail(
                 id: e.id ?? "",
                 smallCoverImage: defaultCoverImage,
                 title: e.name?.cdata ?? "",
@@ -294,7 +290,7 @@ class MacCMSSpider extends ISpider {
   bool get isNsfw => nsfw;
 
   @override
-  SpiderItemMetaData get meta => SpiderItemMetaData(
+  SourceItemMeta get meta => SourceItemMeta(
         name: name,
         logo: logo,
         desc: desc,
@@ -304,7 +300,7 @@ class MacCMSSpider extends ISpider {
       );
 
   @override
-  Future<List<SpiderQueryCategory>> getCategory() async {
+  Future<List<SourceSpiderQueryCategory>> getCategory() async {
     var path = createUrl(suffix: api_path);
     var resp = await XHttp.dio.get(path);
     dynamic data = resp.data;
