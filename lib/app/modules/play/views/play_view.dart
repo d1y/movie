@@ -33,7 +33,7 @@ class PlayListData {
 }
 
 class PlayView extends StatefulWidget {
-  const PlayView({Key? key}) : super(key: key);
+  const PlayView({super.key});
 
   @override
   State<PlayView> createState() => _PlayViewState();
@@ -79,12 +79,12 @@ class _PlayViewState extends State<PlayView> {
           var subItem = e.split("\$");
           if (subItem.length <= 1) continue;
           var title = subItem[0];
-          var _url = subItem[1];
+          var url = subItem[1];
           // var subType = subItem[2];
           cache.datas.add(MirrorSerializeVideoInfo(
             name: title,
-            url: _url,
-            type: MacCMSSpider.easyGetVideoType(_url),
+            url: url,
+            type: MacCMSSpider.easyGetVideoType(url),
           ));
         }
         result.add(cache);

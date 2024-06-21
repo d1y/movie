@@ -20,18 +20,14 @@ abstract class ReplacedElement extends StyledElement {
   PlaceholderAlignment alignment;
 
   ReplacedElement({
-    required String name,
-    required Style style,
-    required String elementId,
+    required super.name,
+    required super.style,
+    required super.elementId,
     List<StyledElement>? children,
-    dom.Element? node,
+    super.node,
     this.alignment = PlaceholderAlignment.aboveBaseline,
   }) : super(
-            name: name,
-            children: children ?? [],
-            style: style,
-            node: node,
-            elementId: elementId);
+            children: children ?? []);
 
   static List<String?> parseMediaSources(List<dom.Element> elements) {
     return elements
@@ -50,13 +46,12 @@ class TextContentElement extends ReplacedElement {
   dom.Node? node;
 
   TextContentElement({
-    required Style style,
+    required super.style,
     required this.text,
     this.node,
     dom.Element? element,
   }) : super(
             name: "[text]",
-            style: style,
             node: element,
             elementId: "[[No ID]]");
 
@@ -70,8 +65,8 @@ class TextContentElement extends ReplacedElement {
 }
 
 class EmptyContentElement extends ReplacedElement {
-  EmptyContentElement({String name = "empty"})
-      : super(name: name, style: Style(), elementId: "[[No ID]]");
+  EmptyContentElement({super.name = "empty"})
+      : super(style: Style(), elementId: "[[No ID]]");
 
   @override
   Widget? toWidget(_) => null;
@@ -83,14 +78,12 @@ class RubyElement extends ReplacedElement {
 
   RubyElement(
       {required this.element,
-      required List<StyledElement> children,
-      String name = "ruby"})
+      required List<StyledElement> super.children,
+      super.name = "ruby"})
       : super(
-            name: name,
             alignment: PlaceholderAlignment.middle,
             style: Style(),
-            elementId: element.id,
-            children: children);
+            elementId: element.id);
 
   @override
   Widget toWidget(RenderContext context) {
@@ -136,13 +129,13 @@ class RubyElement extends ReplacedElement {
             ContainerSpan(
                 newContext: context,
                 style: context.style,
+                children: node is TextContentElement
+                    ? null
+                    : [context.parser.parseTree(context, node)],
                 child: node is TextContentElement
                     ? Text((node).text?.trim() ?? "",
                         style: context.style.generateTextStyle())
-                    : null,
-                children: node is TextContentElement
-                    ? null
-                    : [context.parser.parseTree(context, node)]),
+                    : null),
           ],
         );
         widgets.add(widget);

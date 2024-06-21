@@ -24,7 +24,7 @@ enum KStatusCounter {
 typedef ValueImportCallback<T> = void Function(T value, List<dynamic> data);
 
 class ParseVipManagePageView extends StatefulWidget {
-  const ParseVipManagePageView({Key? key}) : super(key: key);
+  const ParseVipManagePageView({super.key});
 
   @override
   State<ParseVipManagePageView> createState() => _ParseVipManagePageViewState();
@@ -256,9 +256,9 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
 
 class ParseVipAddDialog extends StatefulWidget {
   const ParseVipAddDialog({
-    Key? key,
+    super.key,
     required this.onImport,
-  }) : super(key: key);
+  });
 
   final ValueImportCallback<List<ParseIsarModel>> onImport;
 
@@ -404,8 +404,8 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
                             setState(() {});
                           },
                           validator: (value) {
-                            var _b = value!.length >= 2;
-                            var msg = _b ? null : '名称最少2个字符';
+                            var b = value!.length >= 2;
+                            var msg = b ? null : '名称最少2个字符';
                             return msg;
                           },
                         ),

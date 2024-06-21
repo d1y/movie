@@ -17,7 +17,7 @@ class CustomLicensePage extends StatefulWidget {
   final Widget Function(BuildContext, AsyncSnapshot<LicenseData>) builder;
 
   @override
-  _CustomLicensePageState createState() => _CustomLicensePageState();
+  createState() => _CustomLicensePageState();
 }
 
 class _CustomLicensePageState extends State<CustomLicensePage> {

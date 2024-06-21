@@ -24,8 +24,8 @@ class CustomCupertinoControls extends StatefulWidget {
     required this.backgroundColor,
     required this.iconColor,
     this.showPlayButton = true,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Color backgroundColor;
   final Color iconColor;
@@ -144,11 +144,11 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
 
   @override
   void didChangeDependencies() {
-    final _oldController = _chewieController;
+    final oldController = _chewieController;
     _chewieController = ChewieController.of(context);
     controller = chewieController.videoPlayerController;
 
-    if (_oldController != chewieController) {
+    if (oldController != chewieController) {
       _dispose();
       _initialize();
     }
@@ -829,12 +829,10 @@ class _CustomCupertinoControlsState extends State<CustomCupertinoControls>
 
 class _PlaybackSpeedDialog extends StatelessWidget {
   const _PlaybackSpeedDialog({
-    Key? key,
     required List<double> speeds,
     required double selected,
   })  : _speeds = speeds,
-        _selected = selected,
-        super(key: key);
+        _selected = selected;
 
   final List<double> _speeds;
   final double _selected;

@@ -4,7 +4,7 @@ import 'package:movie/app/modules/home/views/home_config.dart';
 class KBody extends StatelessWidget {
   final Widget child;
 
-  const KBody({Key? key, required this.child}) : super(key: key);
+  const KBody({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {

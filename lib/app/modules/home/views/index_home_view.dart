@@ -34,10 +34,10 @@ shortcutCallback<T extends Intent>(int curr, VoidCallback cb) {
 }
 
 class IndexHomeView extends StatefulWidget {
-  const IndexHomeView({Key? key}) : super(key: key);
+  const IndexHomeView({super.key});
 
   @override
-  _IndexHomeViewState createState() => _IndexHomeViewState();
+  createState() => _IndexHomeViewState();
 }
 
 class _IndexHomeViewState extends State<IndexHomeView>
@@ -64,7 +64,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
     var data = subItem;
     if (subItem.videos.isEmpty) {
       var id = subItem.id;
-      var _textStyle =
+      var textStyle =
           Theme.of(Get.context as BuildContext).textTheme.bodyMedium!.copyWith(
                 color: CupertinoColors.systemBlue,
               );
@@ -82,7 +82,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
               ),
               Text(
                 "加载中",
-                style: _textStyle,
+                style: textStyle,
               ),
             ],
           ),
@@ -363,10 +363,6 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                             height: 24,
                                           ),
                                           CupertinoButton.filled(
-                                            child: const Text(
-                                              "重新加载",
-                                              style: TextStyle(fontSize: 12),
-                                            ),
                                             padding: const EdgeInsets.symmetric(
                                               vertical: 12.0,
                                               horizontal: 24.0,
@@ -375,6 +371,10 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                               homeview.updateHomeData(
                                                   isFirst: true);
                                             },
+                                            child: const Text(
+                                              "重新加载",
+                                              style: TextStyle(fontSize: 12),
+                                            ),
                                           ),
                                           const SizedBox(
                                             height: 6,
@@ -413,10 +413,10 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                 itemCount: homeview.homedata.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   var subItem = homeview.homedata[index];
-                                  var _scale = index % 2 == 0 ? 1 : .8;
-                                  var _h = _cardOnceHeight * _scale;
+                                  var scale = index % 2 == 0 ? 1 : .8;
+                                  var h = _cardOnceHeight * scale;
                                   return SizedBox(
-                                    height: _h,
+                                    height: h,
                                     child: MovieCardItem(
                                       imageUrl: subItem.smallCoverImage,
                                       title: subItem.title,

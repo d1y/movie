@@ -3,9 +3,6 @@ import 'package:movie/shared/enum.dart';
 
 part 'mirror_schema.g.dart';
 
-// FIXME: remove this!!!
-// The impl is stupid
-
 @embedded
 class MirrorApiIsardModel {
   late String root;

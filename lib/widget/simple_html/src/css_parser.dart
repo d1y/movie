@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:collection/collection.dart';
 import 'package:csslib/visitor.dart' as css;
 import 'package:csslib/parser.dart' as cssparser;
@@ -502,10 +500,11 @@ Style declarationsToStyle(Map<String, List<css.Expression>> declarations) {
                 ExpressionMapping.expressionToColor(textDecorationColor) ??
                     style.textDecorationColor;
           }
-          if (textDecorationStyle != null)
+          if (textDecorationStyle != null) {
             style.textDecorationStyle =
                 ExpressionMapping.expressionToTextDecorationStyle(
                     textDecorationStyle);
+          }
           break;
         case 'text-decoration-color':
           style.textDecorationColor =
@@ -1059,8 +1058,9 @@ class ExpressionMapping {
         }
       }
     }
-    if (decorationList.contains(TextDecoration.none))
+    if (decorationList.contains(TextDecoration.none)) {
       decorationList = [TextDecoration.none];
+    }
     return TextDecoration.combine(decorationList);
   }
 
@@ -1147,16 +1147,16 @@ class ExpressionMapping {
     return finalShadows;
   }
 
-  static Color stringToColor(String _text) {
-    var text = _text.replaceFirst('#', '');
+  static Color stringToColor(String cx) {
+    var text = cx.replaceFirst('#', '');
     if (text.length == 3) {
       text = text.replaceAllMapped(RegExp(r"[a-f]|\d", caseSensitive: false),
           (match) => '${match.group(0)}${match.group(0)}');
     }
     if (text.length > 6) {
-      text = "0x" + text;
+      text = "0x$text";
     } else {
-      text = "0xFF" + text;
+      text = "0xFF$text";
     }
     return Color(int.parse(text));
   }

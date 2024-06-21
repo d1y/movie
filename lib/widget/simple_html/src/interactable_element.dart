@@ -11,18 +11,14 @@ class InteractableElement extends StyledElement {
   String? href;
 
   InteractableElement({
-    required String name,
-    required List<StyledElement> children,
-    required Style style,
+    required super.name,
+    required super.children,
+    required super.style,
     required this.href,
     required dom.Node node,
-    required String elementId,
+    required super.elementId,
   }) : super(
-            name: name,
-            children: children,
-            style: style,
-            node: node as dom.Element?,
-            elementId: elementId);
+            node: node as dom.Element?);
 }
 
 /// A [Gesture] indicates the type of interaction by a user.

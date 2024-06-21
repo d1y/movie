@@ -4,10 +4,10 @@ import 'package:movie/app/modules/home/controllers/home_controller.dart';
 
 class KEmptyMirror extends StatelessWidget {
   const KEmptyMirror({
-    Key? key,
+    super.key,
     this.width,
     required this.cx,
-  }) : super(key: key);
+  });
 
   final double? width;
   final HomeController cx;

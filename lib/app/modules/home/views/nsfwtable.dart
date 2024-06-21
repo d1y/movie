@@ -14,10 +14,10 @@ const kAnswer2 = '3';
 // ===============
 
 class NsfwTableView extends StatefulWidget {
-  const NsfwTableView({Key? key}) : super(key: key);
+  const NsfwTableView({super.key});
 
   @override
-  _NsfwTableViewState createState() => _NsfwTableViewState();
+  createState() => _NsfwTableViewState();
 }
 
 class _NsfwTableViewState extends State<NsfwTableView> {

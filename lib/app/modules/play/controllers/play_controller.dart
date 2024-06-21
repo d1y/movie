@@ -260,17 +260,17 @@ class PlayController extends GetxController {
                   },
                 ),
                 CupertinoDialogAction(
+                  isDestructiveAction: true,
+                  onPressed: () {
+                    _kWindowsWebviewRuntimeLink.openToIINA();
+                    Get.back();
+                  },
                   child: const Text(
                     '去下载',
                     style: TextStyle(
                       color: Colors.blue,
                     ),
                   ),
-                  isDestructiveAction: true,
-                  onPressed: () {
-                    _kWindowsWebviewRuntimeLink.openToIINA();
-                    Get.back();
-                  },
                 )
               ],
             ),
@@ -356,14 +356,14 @@ class PlayController extends GetxController {
             },
           ),
           CupertinoDialogAction(
-            child: const Text(
-              '我知道了',
-              style: TextStyle(color: Colors.blue),
-            ),
             isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(context);
             },
+            child: const Text(
+              '我知道了',
+              style: TextStyle(color: Colors.blue),
+            ),
           )
         ],
       ),

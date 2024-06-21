@@ -40,10 +40,10 @@ class ItemModel {
 }
 
 class MirrorTableView extends StatefulWidget {
-  const MirrorTableView({Key? key}) : super(key: key);
+  const MirrorTableView({super.key});
 
   @override
-  _MirrorTableViewState createState() => _MirrorTableViewState();
+  createState() => _MirrorTableViewState();
 }
 
 class _MirrorTableViewState extends State<MirrorTableView> {
@@ -143,8 +143,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
           },
         );
         XHttp.changeTimeout();
-        bool _checkCanDone = checkCanDone ?? false;
-        if (_checkCanDone) {
+        if (checkCanDone ?? false) {
           updateMirrorStatusMap();
         }
         break;
@@ -213,17 +212,17 @@ class _MirrorTableViewState extends State<MirrorTableView> {
             },
           ),
           CupertinoDialogAction(
+            isDestructiveAction: true,
+            onPressed: () {
+              Get.back();
+              completer.complete(true);
+            },
             child: const Text(
               '确定',
               style: TextStyle(
                 color: Colors.red,
               ),
             ),
-            isDestructiveAction: true,
-            onPressed: () {
-              Get.back();
-              completer.complete(true);
-            },
           )
         ],
       ),
@@ -238,14 +237,6 @@ class _MirrorTableViewState extends State<MirrorTableView> {
       navigationBar: CupertinoNavigationBar(
         previousPageTitle: _title,
         trailing: CustomPopupMenu(
-          child: Container(
-            child: const Icon(
-              CupertinoIcons.command,
-              size: 24,
-              color: CupertinoColors.activeBlue,
-            ),
-            padding: const EdgeInsets.all(12),
-          ),
           menuBuilder: () => PopMenuBox(
             items: menuItems,
             onTap: (MenuActionType value) {
@@ -256,6 +247,14 @@ class _MirrorTableViewState extends State<MirrorTableView> {
           pressType: PressType.singleClick,
           verticalMargin: -10,
           controller: _controller,
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            child: const Icon(
+              CupertinoIcons.command,
+              size: 24,
+              color: CupertinoColors.activeBlue,
+            ),
+          ),
         ),
       ),
       child: SafeArea(
@@ -323,7 +322,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
 
 class MirrorCard extends StatelessWidget {
   const MirrorCard({
-    Key? key,
+    super.key,
     required this.item,
     this.current = false,
     required this.onTap,
@@ -331,7 +330,7 @@ class MirrorCard extends StatelessWidget {
     this.onDel,
     this.minHeight = 42.0,
     this.maxHeight = 81.0,
-  }) : super(key: key);
+  });
 
   final double minHeight;
 
@@ -367,10 +366,10 @@ class MirrorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color _borderColor = context.isDarkMode
+    Color borderColor = context.isDarkMode
         ? Colors.white.withOpacity(.1)
         : Colors.black.withOpacity(.1);
-    Color _textColor = _color(context.isDarkMode);
+    Color textColor = _color(context.isDarkMode);
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -399,7 +398,7 @@ class MirrorCard extends StatelessWidget {
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    color: _borderColor,
+                    color: borderColor,
                   ),
                 ),
               ),
@@ -407,6 +406,7 @@ class MirrorCard extends StatelessWidget {
                 vertical: 6,
               ),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const SizedBox(width: 12),
                   Expanded(
@@ -417,7 +417,7 @@ class MirrorCard extends StatelessWidget {
                         Text(
                           _title,
                           style: TextStyle(
-                            color: _textColor,
+                            color: textColor,
                             fontSize: 14,
                             decoration: TextDecoration.none,
                             fontWeight: FontWeight.w300,
@@ -431,7 +431,7 @@ class MirrorCard extends StatelessWidget {
                             : Text(
                                 _desc,
                                 style: TextStyle(
-                                  color: _textColor,
+                                  color: textColor,
                                   fontSize: 9,
                                   decoration: TextDecoration.none,
                                   fontWeight: FontWeight.w300,
@@ -456,7 +456,7 @@ class MirrorCard extends StatelessWidget {
                     children: [
                       Icon(
                         current ? Icons.done : CupertinoIcons.right_chevron,
-                        color: _textColor,
+                        color: textColor,
                       ),
                       const SizedBox(
                         width: 8,
@@ -464,7 +464,6 @@ class MirrorCard extends StatelessWidget {
                     ],
                   ),
                 ],
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
               ),
             ),
           ),
@@ -502,10 +501,10 @@ extension MovieStatusTypeExtension on MovieStatusType {
 
 class MovieStatusWidget extends StatelessWidget {
   const MovieStatusWidget({
-    Key? key,
+    super.key,
     this.status = MovieStatusType.available,
     required this.cacheStatus,
-  }) : super(key: key);
+  });
 
   final MovieStatusType status;
   final bool cacheStatus;
@@ -559,10 +558,10 @@ class MovieStatusWidget extends StatelessWidget {
 
 class PopMenuBox extends StatefulWidget {
   const PopMenuBox({
-    Key? key,
+    super.key,
     required this.items,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final List<ItemModel> items;
 

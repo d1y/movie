@@ -72,7 +72,6 @@ class XHttp {
         .add(DioCacheInterceptor(options: kHttpCacheMiddlewareOptions));
 
     /// https://pub.dev/packages/awesome_dio_interceptor
-    // ignore: dead_code
     // dio.interceptors.add(
     //   AwesomeDioInterceptor(
     //     logRequestTimeout: false,
@@ -136,17 +135,13 @@ class XHttp {
     #BBBBBBBBBBBBBBB#BB#####&&&&####&&&&&&@&&&&&&&&&#BBGGBGBGBBB##&&&&&&&@@@@@@@@@@@@@@@@@@@@&&&&&&&###B
     ############################################################################我去, 我劝年轻人要耗子尾汁🐴
     */ /* 生成地址: https://www.text-image.com/convert/result.cgi */
-    (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (
-      HttpClient client,
-    ) {
-      client.badCertificateCallback = (
-        X509Certificate cert,
-        String host,
-        int port,
-      ) =>
-          true;
-      return client;
-    };
+    dio.httpClientAdapter = IOHttpClientAdapter(
+      createHttpClient: () {
+        final client = HttpClient();
+        client.badCertificateCallback = (cert, host, port) => true;
+        return client;
+      },
+    );
   }
 
   /// get请求

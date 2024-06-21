@@ -52,7 +52,7 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     bool isDark = context.isDarkMode;
-    Color _color = isDark
+    Color color = isDark
         ? const Color.fromRGBO(0, 0, 0, .63)
         : const Color.fromRGBO(255, 255, 255, .63);
     return GetBuilder<HomeController>(
@@ -139,7 +139,7 @@ class HomeView extends GetView<HomeController> {
           ),
           bottomNavigationBar: BottomAppBar(
             elevation: 0,
-            color: _color,
+            color: color,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               child: SizedBox(

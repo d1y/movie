@@ -21,11 +21,11 @@ typedef KPaginationInputChangeCallback = void Function(
 
 class KPaginationActionButton extends StatelessWidget {
   KPaginationActionButton({
-    Key? key,
+    super.key,
     this.direction = KPaginationActionButtonDirection.l,
     this.disable = false,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final KPaginationActionButtonDirection direction;
   final bool disable;
@@ -111,16 +111,16 @@ class KPagination extends StatefulWidget {
   final TextEditingController textEditingController;
 
   const KPagination({
-    Key? key,
+    super.key,
     required this.onActionTap,
     required this.onJumpTap,
     required this.textEditingController,
     this.turnL = true,
     this.turnR = true,
-  }) : super(key: key);
+  });
 
   @override
-  _KPaginationState createState() => _KPaginationState();
+  createState() => _KPaginationState();
 }
 
 class _KPaginationState extends State<KPagination> {
@@ -184,13 +184,12 @@ class _KPaginationState extends State<KPagination> {
           Row(
             children: [
               SizedBox(
+                width: 66,
                 child: CupertinoTextField(
                   controller: textEditingController,
                   textAlign: TextAlign.center,
 
                   /// 怕不是要上天, 一个分页给爷整个几千页?
-                  /// 给爷稳一点
-                  /// @龙馨竹
                   maxLength: 4,
 
                   /// The content entered must be a number!!
@@ -208,7 +207,6 @@ class _KPaginationState extends State<KPagination> {
                     color: context.isDarkMode ? Colors.white : Colors.black,
                   ),
                 ),
-                width: 66,
               ),
               const SizedBox(
                 width: 6,

@@ -73,7 +73,7 @@ class CustomPopupMenu extends StatefulWidget {
   final bool enablePassEvent;
 
   @override
-  _CustomPopupMenuState createState() => _CustomPopupMenuState();
+  createState() => _CustomPopupMenuState();
 }
 
 class _CustomPopupMenuState extends State<CustomPopupMenu> {
@@ -85,12 +85,12 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
 
   _showMenu() {
     Widget arrow = ClipPath(
+      clipper: _ArrowClipper(),
       child: Container(
         width: widget.arrowSize,
         height: widget.arrowSize,
         color: widget.arrowColor,
       ),
-      clipper: _ArrowClipper(),
     );
 
     _overlayEntry = OverlayEntry(
@@ -130,8 +130,8 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Material(
-                        child: widget.menuBuilder(),
                         color: Colors.transparent,
+                        child: widget.menuBuilder(),
                       ),
                     ],
                   ),
@@ -215,6 +215,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
   @override
   Widget build(BuildContext context) {
     var child = Material(
+      color: Colors.transparent,
       child: InkWell(
         hoverColor: Colors.transparent,
         focusColor: Colors.transparent,
@@ -232,15 +233,13 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
           }
         },
       ),
-      color: Colors.transparent,
     );
     if (Platform.isIOS) {
       return child;
     } else {
-      return WillPopScope(
-        onWillPop: () {
+      return PopScope(
+        onPopInvoked: (_) {
           _hideMenu();
-          return Future.value(true);
         },
         child: child,
       );

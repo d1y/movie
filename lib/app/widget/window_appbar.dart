@@ -8,7 +8,7 @@ import 'mac.dart';
 double kMacPaddingTop = 16;
 
 class _MoveWindow extends StatelessWidget {
-  const _MoveWindow({Key? key, this.child}) : super(key: key);
+  const _MoveWindow({this.child});
   final Widget? child;
   @override
   Widget build(BuildContext context) {
@@ -32,9 +32,9 @@ class _MoveWindow extends StatelessWidget {
 class CustomMoveWindow extends StatelessWidget {
   final Widget? child;
   const CustomMoveWindow({
-    Key? key,
+    super.key,
     this.child,
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) {
     if (child == null) return const _MoveWindow();
@@ -47,11 +47,11 @@ class CustomMoveWindow extends StatelessWidget {
 class CupertinoEasyAppBar extends StatefulWidget
     implements ObstructingPreferredSizeWidget {
   const CupertinoEasyAppBar({
-    Key? key,
+    super.key,
     this.backgroundColor,
     this.child,
     this.parentContext,
-  }) : super(key: key);
+  });
 
   final Color? backgroundColor;
   final Widget? child;
@@ -59,10 +59,10 @@ class CupertinoEasyAppBar extends StatefulWidget
 
   @override
   bool shouldFullyObstruct(BuildContext context) {
-    var _context = parentContext ?? context;
+    var cx = parentContext ?? context;
     Color? easy = CupertinoDynamicColor.maybeResolve(
       this.backgroundColor,
-      _context,
+      cx,
     );
     Color? themeOf = CupertinoTheme.of(context).barBackgroundColor;
     final Color backgroundColor = easy ?? themeOf;
@@ -71,11 +71,11 @@ class CupertinoEasyAppBar extends StatefulWidget
 
   @override
   Size get preferredSize {
-    double _calc = kToolbarHeight;
+    double calc = kToolbarHeight;
     if (GetPlatform.isMacOS) {
-      _calc += kMacPaddingTop;
+      calc += kMacPaddingTop;
     }
-    return Size.fromHeight(_calc);
+    return Size.fromHeight(calc);
   }
 
   @override
@@ -149,15 +149,15 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   Widget titleWidget(Color purueColor) {
-    var _ = Get.context;
-    if (_ == null) {
+    var cx = Get.context;
+    if (cx == null) {
       return BackButton(
         color: purueColor,
       );
     }
     if (title != null) {
       return DefaultTextStyle(
-        style: Theme.of(_).appBarTheme.titleTextStyle ?? const TextStyle(),
+        style: Theme.of(cx).appBarTheme.titleTextStyle ?? const TextStyle(),
         child: title as Widget,
       );
     }
@@ -195,6 +195,7 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
       behavior: HitTestBehavior.opaque,
       child: CustomMoveWindow(
         child: PreferredSize(
+          preferredSize: preferredSize,
           child: Container(
             color: Theme.of(context).primaryColor,
             width: double.infinity,
@@ -239,15 +240,14 @@ class WindowAppBar extends StatelessWidget implements PreferredSizeWidget {
               ],
             ),
           ),
-          preferredSize: preferredSize,
         ),
       ),
     );
   }
 
   double get _top {
-    var _h = MediaQuery.of(Get.context!).padding.top;
-    return _h + _macosPaddingHeight;
+    var h = MediaQuery.of(Get.context!).padding.top;
+    return h + _macosPaddingHeight;
   }
 
   @override

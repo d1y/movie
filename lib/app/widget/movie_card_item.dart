@@ -11,14 +11,14 @@ class MovieCardItem extends StatefulWidget {
   final VoidCallback onTap;
 
   const MovieCardItem({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.title,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
-  _MovieCardItemState createState() => _MovieCardItemState();
+  createState() => _MovieCardItemState();
 }
 
 class _MovieCardItemState extends State<MovieCardItem> {

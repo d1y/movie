@@ -22,10 +22,10 @@ import 'package:movie/isar/schema/history_schema.dart';
 import 'package:xi/abstract/spider_serialize.dart';
 
 class SearchView extends StatefulWidget {
-  const SearchView({Key? key}) : super(key: key);
+  const SearchView({super.key});
 
   @override
-  _SearchViewState createState() => _SearchViewState();
+  createState() => _SearchViewState();
 }
 
 class _SearchViewState extends State<SearchView>
@@ -202,17 +202,17 @@ class _SearchViewState extends State<SearchView>
                 );
               }),
               onItemFound: (item, int index) {
-                String? _targetImage = item!.smallCoverImage;
+                String? targetImage = item!.smallCoverImage;
 
                 /// 比对 [item?.smallCoverImage] 和 [_defaultLogo] 是否相等来确认是否有封面图
-                bool canNotFindCover = _targetImage == _defaultLogo;
+                bool canNotFindCover = targetImage == _defaultLogo;
 
                 double w = 90;
 
                 double h = 100;
 
                 Widget coverWidget = CachedNetworkImage(
-                  imageUrl: _targetImage,
+                  imageUrl: targetImage,
                   width: w,
                   height: h,
                   fit: BoxFit.cover,
@@ -408,7 +408,6 @@ class _SearchViewState extends State<SearchView>
                             children: searchHistory
                                 .map(
                                   (e) => KTag(
-                                    child: Text(e),
                                     backgroundColor: context.isDarkMode
                                         ? Colors.black26
                                         : Colors.black12,
@@ -431,6 +430,7 @@ class _SearchViewState extends State<SearchView>
                                         default:
                                       }
                                     },
+                                    child: Text(e),
                                   ),
                                 )
                                 .toList(),
@@ -501,7 +501,7 @@ class _SearchViewState extends State<SearchView>
         cacheDataLength = data.length;
       });
       return data;
-    } on DioError catch (dioError) {
+    } on DioException catch (dioError) {
       setState(() {
         isTriggerSearch = false;
       });

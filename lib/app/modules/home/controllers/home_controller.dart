@@ -184,15 +184,15 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   ///
   /// 如果是在源之后, 则 [index] = [mirrorIndex]
   removeMirrorItemSync(ISpider item) {
-    var _index = mirrorList.indexOf(item);
-    if (_index == -1) return;
-    var _oldIndex = mirrorIndex;
-    var _afterIndex = _oldIndex;
-    if (_index < _oldIndex) {
-      _afterIndex = _oldIndex - 1;
+    var index = mirrorList.indexOf(item);
+    if (index == -1) return;
+    var oldIndex = mirrorIndex;
+    var afterIndex = oldIndex;
+    if (index < oldIndex) {
+      afterIndex = oldIndex - 1;
     }
-    mirrorIndex = _afterIndex;
-    _cacheMirrorIndex = _afterIndex;
+    mirrorIndex = afterIndex;
+    _cacheMirrorIndex = afterIndex;
     update();
   }
 
@@ -278,17 +278,17 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   /// // 每个卡片 69 * index
   /// ```
   initCacheMirrorTableScrollControllerOffset() {
-    double _h = Get.height - kToolbarHeight;
+    double h = Get.height - kToolbarHeight;
 
-    double _offset = mirrorIndex * 69.0;
+    double offset = mirrorIndex * 69.0;
 
-    bool _screenCheckFlag = _offset > _h;
+    bool screenCheckFlag = offset > h;
 
     // bool _lengthCheckFlag = mirrorList.length <= 9 || mirrorIndex <= 9;
     // if (_lengthCheckFlag) return;
 
-    if (_screenCheckFlag) {
-      updateCacheMirrorTableScrollControllerOffset(_offset);
+    if (screenCheckFlag) {
+      updateCacheMirrorTableScrollControllerOffset(offset);
     }
   }
 

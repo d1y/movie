@@ -12,10 +12,10 @@ import 'package:video_player/video_player.dart';
 import 'custom_play.dart';
 
 class ChewieView extends StatefulWidget {
-  const ChewieView({Key? key}) : super(key: key);
+  const ChewieView({super.key});
 
   @override
-  _ChewieViewState createState() => _ChewieViewState();
+  createState() => _ChewieViewState();
 }
 
 class _ChewieViewState extends State<ChewieView> {
@@ -39,19 +39,19 @@ class _ChewieViewState extends State<ChewieView> {
   }
 
   bool initFetchUrl() {
-    var _args = Get.arguments ?? {};
-    String _url = _args['url'] ?? "";
+    var args = Get.arguments ?? {};
+    String url = args['url'] ?? "";
     // NOTE: 如果都没有播放地址就直接跳回到上一个页面
-    if (_url.isEmpty) {
+    if (url.isEmpty) {
       Get.back();
     }
-    String _cover = _args['cover'] ?? "";
-    if (_url.isEmpty) {
+    String cover = args['cover'] ?? "";
+    if (url.isEmpty) {
       return false;
     }
     setState(() {
-      playUrl = _url;
-      cover = _cover;
+      playUrl = url;
+      cover = cover;
     });
     return true;
   }
@@ -61,8 +61,8 @@ class _ChewieViewState extends State<ChewieView> {
 
   init() {
     setState(() {
-      videoPlayerController = VideoPlayerController.network(
-        playUrl,
+      videoPlayerController = VideoPlayerController.networkUrl(
+        Uri.parse(playUrl),
       );
     });
     var controller = ChewieController(

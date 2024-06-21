@@ -41,7 +41,7 @@ class Macwindowctl extends StatefulWidget {
   });
 
   @override
-  _MacwindowctlState createState() => _MacwindowctlState();
+  createState() => _MacwindowctlState();
 }
 
 class _MacwindowctlState extends State<Macwindowctl> {
@@ -153,7 +153,7 @@ class _MacwindowctlState extends State<Macwindowctl> {
                     ),
                   ),
                 ))
-            .toList(),
+            ,
       ],
     );
   }

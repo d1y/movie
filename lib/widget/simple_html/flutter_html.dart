@@ -47,7 +47,7 @@ class Html extends StatefulWidget {
   /// **style** Pass in the style information for the Html here.
   /// See [its wiki page](https://github.com/Sub6Resources/flutter_html/wiki/Style) for more info.
   Html({
-    Key? key,
+    super.key,
     GlobalKey? anchorKey,
     required this.data,
     this.onLinkTap,
@@ -61,11 +61,10 @@ class Html extends StatefulWidget {
     this.style = const {},
   })  : documentElement = null,
         assert(data != null),
-        _anchorKey = anchorKey ?? GlobalKey(),
-        super(key: key);
+        _anchorKey = anchorKey ?? GlobalKey();
 
   Html.fromDom({
-    Key? key,
+    super.key,
     GlobalKey? anchorKey,
     @required dom.Document? document,
     this.onLinkTap,
@@ -80,11 +79,10 @@ class Html extends StatefulWidget {
   })  : data = null,
         assert(document != null),
         documentElement = document!.documentElement,
-        _anchorKey = anchorKey ?? GlobalKey(),
-        super(key: key);
+        _anchorKey = anchorKey ?? GlobalKey();
 
   Html.fromElement({
-    Key? key,
+    super.key,
     GlobalKey? anchorKey,
     @required this.documentElement,
     this.onLinkTap,
@@ -98,8 +96,7 @@ class Html extends StatefulWidget {
     this.style = const {},
   })  : data = null,
         assert(documentElement != null),
-        _anchorKey = anchorKey ?? GlobalKey(),
-        super(key: key);
+        _anchorKey = anchorKey ?? GlobalKey();
 
   /// A unique key for this Html widget to ensure uniqueness of anchors
   final GlobalKey _anchorKey;
@@ -231,7 +228,7 @@ class SelectableHtml extends StatefulWidget {
   /// do not work because we can't use the `ContainerSpan` class (it needs an enclosing `WidgetSpan`).
 
   SelectableHtml({
-    Key? key,
+    super.key,
     GlobalKey? anchorKey,
     required this.data,
     this.onLinkTap,
@@ -245,11 +242,10 @@ class SelectableHtml extends StatefulWidget {
     this.scrollPhysics,
   })  : documentElement = null,
         assert(data != null),
-        _anchorKey = anchorKey ?? GlobalKey(),
-        super(key: key);
+        _anchorKey = anchorKey ?? GlobalKey();
 
   SelectableHtml.fromDom({
-    Key? key,
+    super.key,
     GlobalKey? anchorKey,
     @required dom.Document? document,
     this.onLinkTap,
@@ -264,11 +260,10 @@ class SelectableHtml extends StatefulWidget {
   })  : data = null,
         assert(document != null),
         documentElement = document!.documentElement,
-        _anchorKey = anchorKey ?? GlobalKey(),
-        super(key: key);
+        _anchorKey = anchorKey ?? GlobalKey();
 
   SelectableHtml.fromElement({
-    Key? key,
+    super.key,
     GlobalKey? anchorKey,
     @required this.documentElement,
     this.onLinkTap,
@@ -282,8 +277,7 @@ class SelectableHtml extends StatefulWidget {
     this.scrollPhysics,
   })  : data = null,
         assert(documentElement != null),
-        _anchorKey = anchorKey ?? GlobalKey(),
-        super(key: key);
+        _anchorKey = anchorKey ?? GlobalKey();
 
   /// A unique key for this Html widget to ensure uniqueness of anchors
   final GlobalKey _anchorKey;

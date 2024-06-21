@@ -28,9 +28,9 @@ enum MirrorTabButtonStatus {
 
 class MirrorCheckView extends StatefulWidget {
   const MirrorCheckView({
-    Key? key,
+    super.key,
     required this.list,
-  }) : super(key: key);
+  });
 
   final List<ISpider> list;
 
@@ -294,14 +294,14 @@ class _MirrorCheckViewState extends State<MirrorCheckView> {
                     vertical: 8,
                     horizontal: 16,
                   ),
-                  child: Builder(builder: (context) {
-                    String _text = "暂停任务";
-                    if (!running) {
-                      _text = "继续任务";
-                    }
-                    return Text(_text);
-                  }),
                   onPressed: handleTapAction,
+                  child: Builder(builder: (context) {
+                    String text = "暂停任务";
+                    if (!running) {
+                      text = "继续任务";
+                    }
+                    return Text(text);
+                  }),
                 ),
               const SizedBox(
                 height: 8,

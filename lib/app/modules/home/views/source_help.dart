@@ -50,10 +50,10 @@ class SourceItemJSONData {
 }
 
 class SourceHelpTable extends StatefulWidget {
-  const SourceHelpTable({Key? key}) : super(key: key);
+  const SourceHelpTable({super.key});
 
   @override
-  _SourceHelpTableState createState() => _SourceHelpTableState();
+  createState() => _SourceHelpTableState();
 }
 
 class _SourceHelpTableState extends State<SourceHelpTable> {
@@ -204,7 +204,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       );
       return;
     }
-    var _collData = <String, List<MacCMSSpider>>{};
+    var collData = <String, List<MacCMSSpider>>{};
     for (var item in data) {
       String source = item[sourceKey] as String;
       String filename = item[filenameKey] as String;
@@ -224,13 +224,13 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
             });
         result.addAll(append);
       }
-      _collData[filename] = result;
+      collData[filename] = result;
     }
 
     String easyMessage = "";
     List<MacCMSSpider> stack = [];
 
-    _collData.forEach((k, v) async {
+    collData.forEach((k, v) async {
       int len = v.length;
       if (v.isNotEmpty) {
         stack.addAll(v);
@@ -244,21 +244,21 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       );
       return;
     } else {
-      var _easyData = SourceUtils.mergeMirror(
+      var easyData = SourceUtils.mergeMirror(
         SpiderManage.extend,
         stack,
         diff: true,
       );
-      var _diff = _easyData[0] as int;
-      if (_diff > 0) {
-        var newListData = _easyData[1] as dynamic;
+      var diff = easyData[0] as int;
+      if (diff > 0) {
+        var newListData = easyData[1] as dynamic;
         await SpiderManage.mergeSpider(newListData);
       }
-      var diffMsg = "本次共合并$_diff个源!";
-      if (_diff <= 0) {
+      var diffMsg = "本次共合并$diff个源!";
+      if (diff <= 0) {
         diffMsg = "本次未合并!没有新的源!";
       }
-      easyMessage += '\n' + diffMsg;
+      easyMessage += '\n$diffMsg';
       showEasyCupertinoDialog(
         content: Column(
           children: [
@@ -350,6 +350,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                         horizontal: 12,
                         vertical: 6,
                       ),
+                      onPressed: handleImportFiles,
                       child: Row(
                         children: [
                           const Icon(
@@ -370,7 +371,6 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                           ),
                         ],
                       ),
-                      onPressed: handleImportFiles,
                     ),
                   ),
                 ],
@@ -487,13 +487,13 @@ showEasyCupertinoDialog({
 
 class EasyShowModalWidget extends StatelessWidget {
   const EasyShowModalWidget({
-    Key? key,
+    super.key,
     this.onDone,
     required this.content,
     this.title = "提示",
     this.confirmText = "确定",
     this.confirmTextColor = Colors.red,
-  }) : super(key: key);
+  });
 
   final VoidCallback? onDone;
   final String title;

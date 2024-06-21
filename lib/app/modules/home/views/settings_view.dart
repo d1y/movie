@@ -39,10 +39,10 @@ enum HandleDiglogTapType {
 }
 
 class SettingsView extends StatefulWidget {
-  const SettingsView({Key? key}) : super(key: key);
+  const SettingsView({super.key});
 
   @override
-  _SettingsViewState createState() => _SettingsViewState();
+  createState() => _SettingsViewState();
 }
 
 class _SettingsViewState extends State<SettingsView> {

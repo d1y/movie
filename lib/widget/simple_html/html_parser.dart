@@ -108,7 +108,7 @@ class HtmlParser extends StatelessWidget {
       return StyledText.selectable(
         textSpan: parsedTree as TextSpan,
         style: cleanedTree.style,
-        textScaleFactor: MediaQuery.of(context).textScaleFactor,
+        textScaler: MediaQuery.of(context).textScaler,
         renderContext: RenderContext(
           buildContext: context,
           parser: this,
@@ -122,7 +122,7 @@ class HtmlParser extends StatelessWidget {
     return StyledText(
       textSpan: parsedTree,
       style: cleanedTree.style,
-      textScaleFactor: MediaQuery.of(context).textScaleFactor,
+      textScaler: MediaQuery.of(context).textScaler,
       renderContext: RenderContext(
         buildContext: context,
         parser: this,
@@ -620,7 +620,7 @@ class HtmlParser extends StatelessWidget {
               }
             }
           }
-          marker = olStack.last.data.toString() + ".";
+          marker = "${olStack.last.data}.";
           olStack.last.data = olStack.last.data.toString().nextLetter();
           break;
         case ListStyleType.UPPER_LATIN:
@@ -639,7 +639,7 @@ class HtmlParser extends StatelessWidget {
               }
             }
           }
-          marker = olStack.last.data.toString().toUpperCase() + ".";
+          marker = "${olStack.last.data.toString().toUpperCase()}.";
           olStack.last.data = olStack.last.data.toString().nextLetter();
           break;
         case ListStyleType.LOWER_ROMAN:
@@ -653,10 +653,9 @@ class HtmlParser extends StatelessWidget {
           if (olStack.last.data <= 0) {
             marker = '${olStack.last.data}.';
           } else {
-            marker = (olStack.last.data as int)
+            marker = "${(olStack.last.data as int)
                     .toRomanNumeralString()!
-                    .toLowerCase() +
-                ".";
+                    .toLowerCase()}.";
           }
           break;
         case ListStyleType.UPPER_ROMAN:
@@ -670,7 +669,7 @@ class HtmlParser extends StatelessWidget {
           if (olStack.last.data <= 0) {
             marker = '${olStack.last.data}.';
           } else {
-            marker = (olStack.last.data as int).toRomanNumeralString()! + ".";
+            marker = "${(olStack.last.data as int).toRomanNumeralString()!}.";
           }
           break;
       }
@@ -953,7 +952,7 @@ class ContainerSpan extends StatelessWidget {
 class StyledText extends StatelessWidget {
   final InlineSpan textSpan;
   final Style style;
-  final double textScaleFactor;
+  final TextScaler textScaler;
   final RenderContext renderContext;
   final AnchorKey? parseKey;
   final bool _selectable;
@@ -963,7 +962,7 @@ class StyledText extends StatelessWidget {
   const StyledText({
     required this.textSpan,
     required this.style,
-    this.textScaleFactor = 1.0,
+    this.textScaler = const TextScaler.linear(1.0),
     required this.renderContext,
     this.parseKey,
     this.selectionControls,
@@ -974,7 +973,7 @@ class StyledText extends StatelessWidget {
   const StyledText.selectable({
     required TextSpan this.textSpan,
     required this.style,
-    this.textScaleFactor = 1.0,
+    this.textScaler = const TextScaler.linear(1.0),
     required this.renderContext,
     this.parseKey,
     this.selectionControls,
@@ -990,7 +989,7 @@ class StyledText extends StatelessWidget {
         style: style.generateTextStyle(),
         textAlign: style.textAlign,
         textDirection: style.direction,
-        textScaleFactor: textScaleFactor,
+        textScaler: textScaler,
         maxLines: style.maxLines,
         selectionControls: selectionControls,
         scrollPhysics: scrollPhysics,
@@ -1003,7 +1002,7 @@ class StyledText extends StatelessWidget {
         style: style.generateTextStyle(),
         textAlign: style.textAlign,
         textDirection: style.direction,
-        textScaleFactor: textScaleFactor,
+        textScaler: textScaler,
         maxLines: style.maxLines,
         overflow: style.textOverflow,
       ),
@@ -1032,7 +1031,7 @@ extension IterateLetters on String {
         // If a string of length > 1 ends in Z/z,
         // increment the string (excluding the last Z/z) recursively,
         // and append A/a (depending on casing) to it
-        return sub.nextLetter() + 'a';
+        return '${sub.nextLetter()}a';
       } else {
         // (take till last char) append with (increment last char)
         return sub + String.fromCharCode(lastChar.codeUnitAt(0) + 1);

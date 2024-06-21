@@ -66,7 +66,7 @@ class SpiderManage {
     bool full = false,
   }) {
     // bool isNsfw = local.read(ConstDart.is_nsfw) ?? false;
-    List<SourceJsonData> _to = extend
+    List<SourceJsonData> to = extend
         .map(
           (e) => SourceJsonData(
             name: e.meta.name,
@@ -83,11 +83,11 @@ class SpiderManage {
         )
         .toList();
     if (!full) {
-      _to = _to.where((element) {
+      to = to.where((element) {
         return !(element.nsfw ?? false);
       }).toList();
     }
-    String result = jsonEncode(_to);
+    String result = jsonEncode(to);
     return result;
   }
 
@@ -142,7 +142,7 @@ class SpiderManage {
   /// [该方法只可用来保存第三方源]
   /// 只适用于 [MacCMSSpider]
   static saveToCache(List<ISpider> saves) {
-    List<SourceJsonData> _to = saves
+    List<SourceJsonData> to = saves
         .map(
           (e) => SourceJsonData(
             name: e.meta.name,
@@ -158,7 +158,7 @@ class SpiderManage {
           ),
         )
         .toList();
-    mergeSpider(_to);
+    mergeSpider(to);
   }
 
   static Future<void> mergeSpider(List<SourceJsonData> data) async {

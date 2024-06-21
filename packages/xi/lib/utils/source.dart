@@ -23,7 +23,6 @@ class SourceUtils {
     }).toList();
   }
 
-  /// TODO
   /// [url] 需要测试的链接
   /// 支持类型
   ///   github.com/d1y/1/2.json
@@ -32,7 +31,6 @@ class SourceUtils {
     return false;
   }
 
-  /// TODO
   /// 通过 [isGithubUrl] 判断
   /// 如果是 `github` 链接的话就通过这个方法
   /// 生成一个 `jsdelivr` cdn 链接用于下载

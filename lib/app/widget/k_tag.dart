@@ -23,7 +23,7 @@ class KTag extends StatelessWidget {
   final KTapOnTap onTap;
 
   const KTag({
-    Key? key,
+    super.key,
     this.padding = const EdgeInsets.symmetric(
       vertical: 6,
       horizontal: 15,
@@ -32,7 +32,7 @@ class KTag extends StatelessWidget {
     this.backgroundColor = Colors.black26,
     required this.child,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
