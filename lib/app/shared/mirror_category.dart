@@ -8,8 +8,7 @@ const kMirrorCategoryTryCountMax = 3;
 class MirrorCategoryPool {
   MirrorCategoryPool._internal();
   factory MirrorCategoryPool() => _instance;
-  static final MirrorCategoryPool _instance =
-      MirrorCategoryPool._internal();
+  static final MirrorCategoryPool _instance = MirrorCategoryPool._internal();
 
   Map<String, List<SpiderQueryCategory>> stacks = {};
 

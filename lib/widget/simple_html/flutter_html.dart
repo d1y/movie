@@ -146,7 +146,7 @@ class Html extends StatefulWidget {
     ..addAll(LAYOUT_ELEMENTS)
     ..addAll(TABLE_CELL_ELEMENTS)
     ..addAll(TABLE_DEFINITION_ELEMENTS);
-    // ..addAll(EXTERNAL_ELEMENTS);
+  // ..addAll(EXTERNAL_ELEMENTS);
 
   @override
   State<StatefulWidget> createState() => _HtmlState();

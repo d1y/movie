@@ -26,7 +26,12 @@ abstract class ReplacedElement extends StyledElement {
     List<StyledElement>? children,
     dom.Element? node,
     this.alignment = PlaceholderAlignment.aboveBaseline,
-  }) : super(name: name, children: children ?? [], style: style, node: node, elementId: elementId);
+  }) : super(
+            name: name,
+            children: children ?? [],
+            style: style,
+            node: node,
+            elementId: elementId);
 
   static List<String?> parseMediaSources(List<dom.Element> elements) {
     return elements
@@ -49,7 +54,11 @@ class TextContentElement extends ReplacedElement {
     required this.text,
     this.node,
     dom.Element? element,
-  }) : super(name: "[text]", style: style, node: element, elementId: "[[No ID]]");
+  }) : super(
+            name: "[text]",
+            style: style,
+            node: element,
+            elementId: "[[No ID]]");
 
   @override
   String toString() {
@@ -61,7 +70,8 @@ class TextContentElement extends ReplacedElement {
 }
 
 class EmptyContentElement extends ReplacedElement {
-  EmptyContentElement({String name = "empty"}) : super(name: name, style: Style(), elementId: "[[No ID]]");
+  EmptyContentElement({String name = "empty"})
+      : super(name: name, style: Style(), elementId: "[[No ID]]");
 
   @override
   Widget? toWidget(_) => null;
@@ -71,26 +81,32 @@ class RubyElement extends ReplacedElement {
   @override
   dom.Element element;
 
-  RubyElement({
-    required this.element,
-    required List<StyledElement> children,
-    String name = "ruby"
-  }) : super(name: name, alignment: PlaceholderAlignment.middle, style: Style(), elementId: element.id, children: children);
+  RubyElement(
+      {required this.element,
+      required List<StyledElement> children,
+      String name = "ruby"})
+      : super(
+            name: name,
+            alignment: PlaceholderAlignment.middle,
+            style: Style(),
+            elementId: element.id,
+            children: children);
 
   @override
   Widget toWidget(RenderContext context) {
     StyledElement? node;
     List<Widget> widgets = <Widget>[];
-    final rubySize = context.parser.style['rt']?.fontSize?.size ?? max(9.0, context.style.fontSize!.size! / 2);
+    final rubySize = context.parser.style['rt']?.fontSize?.size ??
+        max(9.0, context.style.fontSize!.size! / 2);
     final rubyYPos = rubySize + rubySize / 2;
     List<StyledElement> children = [];
     context.tree.children.forEachIndexed((index, element) {
-      if (!((element is TextContentElement)
-          && (element.text ?? "").trim().isEmpty
-          && index > 0
-          && index + 1 < context.tree.children.length
-          && context.tree.children[index - 1] is! TextContentElement
-          && context.tree.children[index + 1] is! TextContentElement)) {
+      if (!((element is TextContentElement) &&
+          (element.text ?? "").trim().isEmpty &&
+          index > 0 &&
+          index + 1 < context.tree.children.length &&
+          context.tree.children[index - 1] is! TextContentElement &&
+          context.tree.children[index + 1] is! TextContentElement)) {
         children.add(element);
       }
     });
@@ -103,8 +119,7 @@ class RubyElement extends ReplacedElement {
                 alignment: Alignment.bottomCenter,
                 child: Center(
                     child: Transform(
-                        transform:
-                        Matrix4.translationValues(0, -(rubyYPos), 0),
+                        transform: Matrix4.translationValues(0, -(rubyYPos), 0),
                         child: ContainerSpan(
                           newContext: RenderContext(
                             buildContext: context.buildContext,
@@ -121,9 +136,13 @@ class RubyElement extends ReplacedElement {
             ContainerSpan(
                 newContext: context,
                 style: context.style,
-                child: node is TextContentElement ? Text((node).text?.trim() ?? "",
-                    style: context.style.generateTextStyle()) : null,
-                children: node is TextContentElement ? null : [context.parser.parseTree(context, node)]),
+                child: node is TextContentElement
+                    ? Text((node).text?.trim() ?? "",
+                        style: context.style.generateTextStyle())
+                    : null,
+                children: node is TextContentElement
+                    ? null
+                    : [context.parser.parseTree(context, node)]),
           ],
         );
         widgets.add(widget);
@@ -136,12 +155,14 @@ class RubyElement extends ReplacedElement {
       child: Wrap(
         key: AnchorKey.of(context.parser.parseKey, this),
         runSpacing: rubySize,
-        children: widgets.map((e) => Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          textBaseline: TextBaseline.alphabetic,
-          mainAxisSize: MainAxisSize.min,
-          children: [e],
-        )).toList(),
+        children: widgets
+            .map((e) => Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  textBaseline: TextBaseline.alphabetic,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [e],
+                ))
+            .toList(),
       ),
     );
   }
@@ -154,17 +175,17 @@ ReplacedElement parseReplacedElement(
   switch (element.localName) {
     case "br":
       return TextContentElement(
-        text: "\n",
-        style: Style(whiteSpace: WhiteSpace.PRE),
-        element: element,
-        node: element
-      );
+          text: "\n",
+          style: Style(whiteSpace: WhiteSpace.PRE),
+          element: element,
+          node: element);
     case "ruby":
       return RubyElement(
         element: element,
         children: children,
       );
     default:
-      return EmptyContentElement(name: element.localName == null ? "[[No Name]]" : element.localName!);
+      return EmptyContentElement(
+          name: element.localName == null ? "[[No Name]]" : element.localName!);
   }
 }

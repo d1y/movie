@@ -55,10 +55,9 @@ class SpiderQueryCategory {
   String toString() {
     return '$id: $name';
   }
-  
+
   @override
   int get hashCode => name.hashCode;
-  
 }
 
 abstract class ISpider {

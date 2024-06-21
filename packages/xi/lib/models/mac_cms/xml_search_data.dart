@@ -42,9 +42,10 @@ class Rss {
     var _class = json['class'];
     return Rss(
       list: ListClass.fromJson(json["list"]),
-      rssClass: Class.fromJson(_class ?? {
-        "ty": [],
-      }),
+      rssClass: Class.fromJson(_class ??
+          {
+            "ty": [],
+          }),
       version: json["_version"],
     );
   }

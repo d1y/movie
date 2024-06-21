@@ -59,8 +59,7 @@ class SearchBarController<T> {
         onCancel: () => {},
       );
 
-      final List<T> items =
-          await (_cancelableOperation!.value);
+      final List<T> items = await (_cancelableOperation!.value);
       _lastSearchFunction = onSearch;
       _lastSearchedText = text;
       _list.clear();

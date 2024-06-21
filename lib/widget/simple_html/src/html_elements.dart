@@ -131,7 +131,15 @@ const TABLE_CELL_ELEMENTS = ["th", "td"];
 
 const TABLE_DEFINITION_ELEMENTS = ["col", "colgroup"];
 
-const EXTERNAL_ELEMENTS = ["audio", "iframe", "img", "math", "svg", "table", "video"];
+const EXTERNAL_ELEMENTS = [
+  "audio",
+  "iframe",
+  "img",
+  "math",
+  "svg",
+  "table",
+  "video"
+];
 
 const SELECTABLE_ELEMENTS = [
   "br",

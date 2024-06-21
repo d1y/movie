@@ -11,16 +11,15 @@ var MAGIC_END_SYMBOL = [
 ];
 
 enum JSONBodyType {
-
   /// 对象
-  /// 
+  ///
   /// ```
   /// {}
   /// ```
   obj,
 
   /// 数组
-  /// 
+  ///
   /// ```
   /// []
   /// ```
@@ -28,7 +27,7 @@ enum JSONBodyType {
 }
 
 /// 获取 [json] 的类型
-/// 
+///
 /// 使用 [verifyStringIsJSON] 判断是否是 [json] 字符串
 JSONBodyType? getJSONBodyType(String data) {
   data = data.trim();
@@ -52,7 +51,7 @@ bool verifyStringIsJSON(String vJSON) {
   String end = target[target.length - 1];
   return [0, 1].any((index) {
     bool startFlag = MAGIC_START_SYMBOL[index] == start;
-    bool endFlag = MAGIC_END_SYMBOL[index] == end; 
+    bool endFlag = MAGIC_END_SYMBOL[index] == end;
     return startFlag && endFlag;
   });
 }

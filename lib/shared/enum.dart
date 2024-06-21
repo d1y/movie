@@ -40,7 +40,6 @@ enum SettingsAllKey {
 
 /// 镜像源状态
 enum MirrorStatus {
-  
   /// 可用
   available,
 

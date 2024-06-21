@@ -6,7 +6,8 @@ const int kErrorStackMaxLine = 12;
 
 /// 错误栈展示 `widget`
 class KErrorStack extends StatelessWidget {
-  const KErrorStack({super.key, 
+  const KErrorStack({
+    super.key,
     this.msg = "",
     this.maxLine,
   });

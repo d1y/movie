@@ -40,13 +40,11 @@ class Style {
   /// Default: Theme.of(context).style.textTheme.body1.fontFamily
   String? fontFamily;
 
-
   /// The list of font families to fall back on when a glyph cannot be found in default font family.
   ///
   /// Inherited: yes,
   /// Default: null
   List<String>? fontFamilyFallback;
-
 
   /// CSS attribute "`font-feature-settings`"
   ///
@@ -246,16 +244,17 @@ class Style {
   }
 
   static Map<String, Style> fromThemeData(ThemeData theme) => {
-    'h1': Style.fromTextStyle(theme.textTheme.displayLarge!),
-    'h2': Style.fromTextStyle(theme.textTheme.displayMedium!),
-    'h3': Style.fromTextStyle(theme.textTheme.displaySmall!),
-    'h4': Style.fromTextStyle(theme.textTheme.headlineMedium!),
-    'h5': Style.fromTextStyle(theme.textTheme.headlineSmall!),
-    'h6': Style.fromTextStyle(theme.textTheme.titleLarge!),
-    'body': Style.fromTextStyle(theme.textTheme.bodyMedium!),
-  };
+        'h1': Style.fromTextStyle(theme.textTheme.displayLarge!),
+        'h2': Style.fromTextStyle(theme.textTheme.displayMedium!),
+        'h3': Style.fromTextStyle(theme.textTheme.displaySmall!),
+        'h4': Style.fromTextStyle(theme.textTheme.headlineMedium!),
+        'h5': Style.fromTextStyle(theme.textTheme.headlineSmall!),
+        'h6': Style.fromTextStyle(theme.textTheme.titleLarge!),
+        'body': Style.fromTextStyle(theme.textTheme.bodyMedium!),
+      };
 
-  static Map<String, Style> fromCss(String css, OnCssParseError? onCssParseError) {
+  static Map<String, Style> fromCss(
+      String css, OnCssParseError? onCssParseError) {
     final declarations = parseExternalCss(css, onCssParseError);
     Map<String, Style> styleMap = {};
     declarations.forEach((key, value) {
@@ -319,7 +318,6 @@ class Style {
       whiteSpace: other.whiteSpace,
       width: other.width,
       wordSpacing: other.wordSpacing,
-
       before: other.before,
       after: other.after,
       border: other.border,
@@ -332,18 +330,24 @@ class Style {
   }
 
   Style copyOnlyInherited(Style child) {
-    FontSize? finalFontSize = child.fontSize != null ?
-      fontSize != null && child.fontSize?.units == "em" ?
-        FontSize(child.fontSize!.size! * fontSize!.size!) : child.fontSize
-      : fontSize != null && fontSize!.size! < 0 ?
-        FontSize.percent(100) : fontSize;
-    LineHeight? finalLineHeight = child.lineHeight != null ?
-      child.lineHeight?.units == "length" ?
-        LineHeight(child.lineHeight!.size! / (finalFontSize == null ? 14 : finalFontSize.size!) * 1.2) : child.lineHeight
-      : lineHeight;
+    FontSize? finalFontSize = child.fontSize != null
+        ? fontSize != null && child.fontSize?.units == "em"
+            ? FontSize(child.fontSize!.size! * fontSize!.size!)
+            : child.fontSize
+        : fontSize != null && fontSize!.size! < 0
+            ? FontSize.percent(100)
+            : fontSize;
+    LineHeight? finalLineHeight = child.lineHeight != null
+        ? child.lineHeight?.units == "length"
+            ? LineHeight(child.lineHeight!.size! /
+                (finalFontSize == null ? 14 : finalFontSize.size!) *
+                1.2)
+            : child.lineHeight
+        : lineHeight;
     return child.copyWith(
-      backgroundColor: child.backgroundColor != Colors.transparent ?
-        child.backgroundColor : backgroundColor,
+      backgroundColor: child.backgroundColor != Colors.transparent
+          ? child.backgroundColor
+          : backgroundColor,
       color: child.color ?? color,
       direction: child.direction ?? direction,
       display: display == Display.NONE ? display : child.display,
@@ -358,9 +362,10 @@ class Style {
       listStyleType: child.listStyleType ?? listStyleType,
       listStylePosition: child.listStylePosition ?? listStylePosition,
       textAlign: child.textAlign ?? textAlign,
-      textDecoration: TextDecoration.combine(
-          [child.textDecoration ?? TextDecoration.none,
-            textDecoration ?? TextDecoration.none]),
+      textDecoration: TextDecoration.combine([
+        child.textDecoration ?? TextDecoration.none,
+        textDecoration ?? TextDecoration.none
+      ]),
       textShadow: child.textShadow ?? textShadow,
       whiteSpace: child.whiteSpace ?? whiteSpace,
       wordSpacing: child.wordSpacing ?? wordSpacing,
@@ -543,9 +548,11 @@ class ListStyleType {
 
   const ListStyleType(this.text, {this.type = "marker", this.widget});
 
-  factory ListStyleType.fromImage(String url) => ListStyleType(url, type: "image");
+  factory ListStyleType.fromImage(String url) =>
+      ListStyleType(url, type: "image");
 
-  factory ListStyleType.fromWidget(Widget widget) => ListStyleType("", widget: widget, type: "widget");
+  factory ListStyleType.fromWidget(Widget widget) =>
+      ListStyleType("", widget: widget, type: "widget");
 
   static const LOWER_ALPHA = ListStyleType("LOWER_ALPHA");
   static const UPPER_ALPHA = ListStyleType("UPPER_ALPHA");

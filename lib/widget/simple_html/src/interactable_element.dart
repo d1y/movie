@@ -17,7 +17,12 @@ class InteractableElement extends StyledElement {
     required this.href,
     required dom.Node node,
     required String elementId,
-  }) : super(name: name, children: children, style: style, node: node as dom.Element?, elementId: elementId);
+  }) : super(
+            name: name,
+            children: children,
+            style: style,
+            node: node as dom.Element?,
+            elementId: elementId);
 }
 
 /// A [Gesture] indicates the type of interaction by a user.
@@ -39,8 +44,7 @@ StyledElement parseInteractableElement(
               textDecoration: TextDecoration.underline,
             ),
             node: element,
-            elementId: element.id
-        );
+            elementId: element.id);
       }
       // When <a> tag have no href, it must be non clickable and without decoration.
       return StyledElement(
@@ -50,15 +54,15 @@ StyledElement parseInteractableElement(
         node: element,
         elementId: element.id,
       );
+
     /// will never be called, just to suppress missing return warning
     default:
       return InteractableElement(
-        name: element.localName!,
-        children: children,
-        node: element,
-        href: '',
-        style: Style(),
-        elementId: "[[No ID]]"
-      );
+          name: element.localName!,
+          children: children,
+          node: element,
+          href: '',
+          style: Style(),
+          elementId: "[[No ID]]");
   }
 }

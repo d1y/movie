@@ -8,8 +8,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-RegExp _ipv4Maybe =
-    RegExp(r'^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$');
+RegExp _ipv4Maybe = RegExp(r'^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$');
 RegExp _ipv6 =
     RegExp(r'^::|^::1|^([a-fA-F0-9]{1,4}::?){1,7}([a-fA-F0-9]{1,4})$');
 
@@ -169,9 +168,7 @@ bool isURL(String? str,
     } catch (e) {
       return false;
     }
-    if (!RegExp(r'^[0-9]+$').hasMatch(portStr) ||
-        port <= 0 ||
-        port > 65535) {
+    if (!RegExp(r'^[0-9]+$').hasMatch(portStr) || port <= 0 || port > 65535) {
       return false;
     }
   }

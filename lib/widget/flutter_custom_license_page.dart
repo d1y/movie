@@ -12,8 +12,7 @@ import 'package:flutter/widgets.dart' hide Flow;
 /// The licenses shown on the [CustomLicensePage] are those returned by the
 /// [LicenseRegistry] API, which can be used to add more licenses to the list.
 class CustomLicensePage extends StatefulWidget {
-  const CustomLicensePage(
-    this.builder, {super.key});
+  const CustomLicensePage(this.builder, {super.key});
 
   final Widget Function(BuildContext, AsyncSnapshot<LicenseData>) builder;
 

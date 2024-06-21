@@ -400,7 +400,8 @@ class _SearchViewState extends State<SearchView>
                           if (searchHistory.isEmpty) {
                             return const Text(
                               "暂无历史记录",
-                              style: TextStyle(fontSize: 13, color: Colors.grey),
+                              style:
+                                  TextStyle(fontSize: 13, color: Colors.grey),
                             );
                           }
                           return Wrap(

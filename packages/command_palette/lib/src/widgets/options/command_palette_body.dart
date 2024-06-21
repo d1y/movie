@@ -95,7 +95,8 @@ class _CommandPaletteBodyState extends State<CommandPaletteBody> {
                 var isFirst = index == 0;
                 if (/*isLast ||*/ isFirst) {
                   child = Padding(
-                    padding: EdgeInsets.only(top: isFirst ? 8 : 0, bottom: 0),// isLast ? 8 : 0),
+                    padding: EdgeInsets.only(
+                        top: isFirst ? 8 : 0, bottom: 0), // isLast ? 8 : 0),
                     child: child,
                   );
                 }
