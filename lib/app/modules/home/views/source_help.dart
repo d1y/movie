@@ -11,13 +11,12 @@ import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/shared/manage.dart';
 import 'package:xi/impl/mac_cms.dart';
+import 'package:xi/utils/helper.dart';
+import 'package:xi/utils/http.dart';
+import 'package:xi/utils/json.dart';
 import 'package:xi/utils/source.dart';
 import 'package:movie/shared/enum.dart';
-import 'package:movie/utils/helper.dart';
-import 'package:movie/utils/http.dart';
 import 'package:clipboard/clipboard.dart';
-import 'package:movie/utils/json.dart';
-
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 
 class SourceItemJSONData {

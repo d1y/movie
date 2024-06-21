@@ -16,7 +16,6 @@ import 'package:movie/isar/schema/parse_schema.dart';
 import 'package:xi/impl/mac_cms.dart';
 import 'package:xi/abstract/spider_serialize.dart';
 import 'package:movie/shared/enum.dart';
-import 'package:movie/utils/helper.dart';
 import 'package:webplayer_embedded/webplayer_embedded.dart';
 
 // https://www.bilibili.com/video/BV1cN411d73g
@@ -227,7 +226,7 @@ class PlayController extends GetxController {
       final bool typeIsM3u8 = e.type == MirrorSerializeVideoType.m3u8;
 
       if (isMacos && home.macosPlayUseIINA) {
-        easyPlayToIINA(url); // 家人们, 我们就假装安装了
+        url.openToIINA(); // 家人们, 我们就假装安装了
         return true;
       }
 
@@ -269,7 +268,7 @@ class PlayController extends GetxController {
                   ),
                   isDestructiveAction: true,
                   onPressed: () {
-                    LaunchURL(_kWindowsWebviewRuntimeLink);
+                    _kWindowsWebviewRuntimeLink.openToIINA();
                     Get.back();
                   },
                 )
@@ -309,7 +308,7 @@ class PlayController extends GetxController {
 
     /// iOS
     if (home.iosCanBeUseSystemBrowser) {
-      LaunchURL(url);
+      url.openURL();
       return true;
     }
 

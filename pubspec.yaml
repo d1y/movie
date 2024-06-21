@@ -61,6 +61,8 @@ dependencies:
       url: https://github.com/bitsdojo/bitsdojo_window
       path: bitsdojo_window
 
+  dio_cache_interceptor: ^3.5.0
+
 dev_dependencies:
   flutter_test: 
     sdk: flutter

@@ -9,8 +9,8 @@ import 'package:movie/app/widget/window_appbar.dart';
 import 'package:get/get.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:movie/isar/schema/parse_schema.dart';
-import 'package:movie/utils/helper.dart';
-import 'package:movie/utils/json.dart';
+import 'package:xi/utils/helper.dart';
+import 'package:xi/utils/json.dart';
 
 import '../controllers/home_controller.dart';
 import 'source_help.dart';

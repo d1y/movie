@@ -16,8 +16,8 @@ import 'package:movie/git_info.dart';
 import 'package:movie/isar/repo.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:movie/shared/manage.dart';
-import 'package:movie/utils/helper.dart';
 import 'package:movie/app/modules/home/views/cupertino_license.dart';
+import 'package:xi/utils/helper.dart';
 import 'package:xi/utils/source.dart';
 
 import 'nsfwtable.dart';

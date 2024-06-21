@@ -253,3 +253,10 @@ bool isBinaryAsPath(String path) {
   final file = File(path);
   return isBinaryAsFile(file);
 }
+
+/// 判断 `iina` 是否安装
+bool checkInstalledIINA() {
+  const iinaAPP = '/Applications/IINA.app';
+  // if (kDebugMode) return false;
+  return Directory(iinaAPP).existsSync();
+}
