@@ -78,7 +78,7 @@ dev_dependencies:
   # flutter_launcher_name 与 flutter_launcher_icons 冲突
   # flutter_launcher_name:
   #   git:
-  #     url: https://github.com/d1y/flutter_launcher_name
+  #     url: https://github.com/Dhanabhon/flutter_launcher_name
 
   flutter_launcher_icons: ^0.13.1
 
