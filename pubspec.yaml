@@ -68,6 +68,7 @@ dependencies:
     git: https://github.com/d1y/webplayer_embedded
 
   auto_injector: ^2.0.4
+  wakelock_web: ^0.4.0
 
 dev_dependencies:
 
