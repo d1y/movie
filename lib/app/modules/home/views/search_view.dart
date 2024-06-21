@@ -75,7 +75,7 @@ class _SearchViewState extends State<SearchView>
     String text, {
     type = UpdateSearchHistoryType.add,
   }) {
-    var oldData = _searchHistory; // TODO: 使用 isar 中的增删改查, 而不是自己去实现这个逻辑👀
+    var oldData = _searchHistory;
     switch (type) {
       case UpdateSearchHistoryType.add: // 添加
         oldData.remove(text);

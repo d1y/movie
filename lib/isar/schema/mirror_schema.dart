@@ -34,6 +34,5 @@ class MirrorIsarModel {
   @Enumerated(EnumType.ordinal)
   MirrorStatus status = MirrorStatus.unknow;
 
-  @Deprecated("remove this")
   String? jiexiUrl;
 }

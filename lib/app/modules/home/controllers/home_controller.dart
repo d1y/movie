@@ -93,10 +93,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   setCurrentCategoryerNow(SpiderQueryCategory category) {
     currentCategoryerNow = category;
-    // FIXME(d1y): 初始化
-    updateHomeData(
-      isFirst: true,
-    );
+    updateHomeData(isFirst: true);
     update();
   }
 
