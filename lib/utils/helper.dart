@@ -226,7 +226,7 @@ Brightness getWindowsThemeMode() {
       as Brightness;
 }
 
-class MyCustomScrollBehavior extends MaterialScrollBehavior {
+class DragonScrollBehavior extends MaterialScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices => {
         PointerDeviceKind.touch,

@@ -65,7 +65,7 @@ void main() async {
   runApp(
     GetMaterialApp(
       title: APP_TITLE,
-      scrollBehavior: MyCustomScrollBehavior(),
+      scrollBehavior: DragonScrollBehavior(),
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
