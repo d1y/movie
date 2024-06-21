@@ -1,12 +1,10 @@
 import 'dart:io';
 
-import 'package:awesome_dio_interceptor/awesome_dio_interceptor.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/io.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:flutter/foundation.dart';
 import 'package:movie/utils/path.dart';
 
 /// dio http 请求库缓存时间
@@ -68,7 +66,7 @@ class XHttp {
     /// 初始化cookie
     var value = await PathUtils.getDocumentsDirPath();
     var cookieJar = PersistCookieJar(
-      storage: FileStorage(value + "/.cookies/"),
+      storage: FileStorage("$value/.cookies/"),
     );
     dio.interceptors.add(CookieManager(cookieJar));
 
@@ -77,16 +75,14 @@ class XHttp {
 
     /// https://pub.dev/packages/awesome_dio_interceptor
     // ignore: dead_code
-    if (kDebugMode) {
-      dio.interceptors.add(
-        AwesomeDioInterceptor(
-          logRequestTimeout: false,
-          logRequestHeaders: false,
-          logResponseHeaders: false,
-          logger: debugPrint,
-        ),
-      );
-    }
+    // dio.interceptors.add(
+    //   AwesomeDioInterceptor(
+    //     logRequestTimeout: false,
+    //     logRequestHeaders: false,
+    //     logResponseHeaders: false,
+    //     logger: debugPrint,
+    //   ),
+    // );
 
     /*
     ---------------------------------------------------------------------证书啥的, 都是访问的盗版资源, 无所谓
