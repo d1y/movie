@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:movie/utils/screen_helper.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebviewView extends StatefulWidget {
@@ -19,7 +19,7 @@ class _WebviewViewState extends State<WebviewView> {
 
   @override
   void initState() {
-    Wakelock.enable();
+    WakelockPlus.enable();
     execScreenDirction(ScreenDirction.x);
     init();
     super.initState();
@@ -36,7 +36,7 @@ class _WebviewViewState extends State<WebviewView> {
   @override
   void dispose() {
     super.dispose();
-    Wakelock.disable();
+    WakelockPlus.disable();
     execScreenDirction(ScreenDirction.y);
   }
 
