@@ -9,8 +9,8 @@ import 'package:movie/app/widget/window_appbar.dart';
 import 'package:get/get.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:movie/isar/schema/parse_schema.dart';
-import 'package:movie/utils/helper.dart';
-import 'package:movie/utils/json.dart';
+import 'package:xi/utils/helper.dart';
+import 'package:xi/utils/json.dart';
 
 import '../controllers/home_controller.dart';
 import 'source_help.dart';
@@ -47,7 +47,8 @@ class _ParseVipManagePageViewState extends State<ParseVipManagePageView> {
         onImport: (data, statusCounter) {
           home.addMovieParseVip(data);
           setState(() {});
-          String msg = '''本次导入成功${statusCounter[0]}, 失败${statusCounter[1]}, 共${statusCounter[2]}''';
+          String msg =
+              '''本次导入成功${statusCounter[0]}, 失败${statusCounter[1]}, 共${statusCounter[2]}''';
           showEasyCupertinoDialog(
             title: '提示',
             content: msg,
@@ -327,8 +328,7 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
         } else if (jsonType == JSONBodyType.obj) {
           var onceData = ParseIsarModel.fromJson(json.decode(content));
           var canBeNext = isURL(onceData.url);
-          var point =
-              canBeNext ? KStatusCounter.success : KStatusCounter.fail;
+          var point = canBeNext ? KStatusCounter.success : KStatusCounter.fail;
           statusCounter[point.index]++;
           if (canBeNext) {
             data.add(onceData);

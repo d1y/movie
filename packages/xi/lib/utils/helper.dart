@@ -7,11 +7,8 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
-RegExp _ipv4Maybe =
-    RegExp(r'^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$');
+RegExp _ipv4Maybe = RegExp(r'^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$');
 RegExp _ipv6 =
     RegExp(r'^::|^::1|^([a-fA-F0-9]{1,4}::?){1,7}([a-fA-F0-9]{1,4})$');
 
@@ -171,9 +168,7 @@ bool isURL(String? str,
     } catch (e) {
       return false;
     }
-    if (!RegExp(r'^[0-9]+$').hasMatch(portStr) ||
-        port <= 0 ||
-        port > 65535) {
+    if (!RegExp(r'^[0-9]+$').hasMatch(portStr) || port <= 0 || port > 65535) {
       return false;
     }
   }
@@ -200,7 +195,7 @@ bool isURL(String? str,
 /// 参考:
 ///   => https://github.com/albertosottile/darkdetect/blob/master/darkdetect/_windows_detect.py
 Brightness getWindowsThemeMode() {
-  if (!GetPlatform.isWindows) return Brightness.light;
+  if (!Platform.isWindows) return Brightness.light;
 
   // PS C:\Users\PureBoy> reg query HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize /v AppsUseLightTheme /z /t REG_DWORD
   // HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize
@@ -235,23 +230,6 @@ class DragonScrollBehavior extends MaterialScrollBehavior {
       };
 }
 
-void LaunchURL(String _url) async => await canLaunchUrlString(_url)
-    ? await launchUrlString(_url)
-    : throw 'Could not launch $_url';
-
-/// 调用 `iina` 播放
-/// 用户需自行安装 :)
-easyPlayToIINA(String url) {
-  return LaunchURL('iina://weblink?url=$url&new_window=1');
-}
-
-/// 判断 `iina` 是否安装
-bool checkInstalledIINA() {
-  const iinaAPP = '/Applications/IINA.app';
-  // if (kDebugMode) return false;
-  return Directory(iinaAPP).existsSync();
-}
-
 /// check file is `binary`
 ///
 /// see: https://stackoverflow.com/a/66670519/10272586
@@ -271,4 +249,11 @@ bool isBinaryAsFile(File file) {
 bool isBinaryAsPath(String path) {
   final file = File(path);
   return isBinaryAsFile(file);
+}
+
+/// 判断 `iina` 是否安装
+bool checkInstalledIINA() {
+  const iinaAPP = '/Applications/IINA.app';
+  // if (kDebugMode) return false;
+  return Directory(iinaAPP).existsSync();
 }

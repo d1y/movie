@@ -8,10 +8,10 @@ import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:movie/app/widget/helper.dart';
 import 'package:movie/app/widget/window_appbar.dart';
-import 'package:movie/spider/impl/mac_cms.dart';
-import 'package:movie/spider/abstract/spider_serialize.dart';
-import 'package:movie/utils/helper.dart';
+import 'package:xi/impl/mac_cms.dart';
+import 'package:xi/abstract/spider_serialize.dart';
 import 'package:movie/widget/simple_html/flutter_html.dart';
+import 'package:xi/utils/helper.dart';
 
 import '../controllers/play_controller.dart';
 

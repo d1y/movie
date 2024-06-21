@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 typedef MacwindowctlEvent = void Function(MacwindowctlAction);
-enum MacwindowctlAction {
 
+enum MacwindowctlAction {
   /// 关闭
   close,
 
@@ -29,7 +29,8 @@ class Macwindowctl extends StatefulWidget {
 
   final bool? buttonReverse;
 
-  const Macwindowctl({super.key, 
+  const Macwindowctl({
+    super.key,
     this.buttonReverse,
     this.onClick,
     this.onExit,

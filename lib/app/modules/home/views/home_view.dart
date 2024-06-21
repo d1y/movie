@@ -11,7 +11,7 @@ import 'package:movie/app/modules/home/views/index_home_view.dart';
 import 'package:movie/app/modules/home/views/search_view.dart';
 import 'package:movie/app/modules/home/views/settings_view.dart';
 import 'package:movie/shared/enum.dart';
-import 'package:movie/spider/abstract/spider_movie.dart';
+import 'package:xi/abstract/spider_movie.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 import '../controllers/home_controller.dart';

@@ -1,4 +1,4 @@
-import 'package:movie/spider/abstract/spider_movie.dart';
+import '../../abstract/spider_movie.dart';
 
 class KBaseMovieXmlData {
   KBaseMovieXmlData({

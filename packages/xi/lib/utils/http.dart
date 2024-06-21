@@ -5,11 +5,9 @@ import 'package:dio/io.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:movie/utils/path.dart';
+import 'path.dart';
 
 /// dio http 请求库缓存时间
-///
-/// FIXME: `detail/search` 这种接口不能缓存👀
 const kHttpCacheTime = Duration(hours: 2);
 
 /// 默认所有的 `dio-http` 请求都持久化话([kHttpCacheTime])

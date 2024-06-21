@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:movie/spider/shared/manage.dart';
-import 'package:movie/spider/models/mac_cms/source_data.dart';
-import 'package:movie/utils/helper.dart';
-import 'package:movie/utils/http.dart';
-import 'package:movie/utils/json.dart';
-import 'package:movie/utils/xid.dart';
+import '../abstract/spider_movie.dart';
+import '../models/mac_cms/source_data.dart';
+import 'helper.dart';
+import 'http.dart';
+import 'json.dart';
+import 'xid.dart';
 
 import '../impl/mac_cms.dart';
 
@@ -246,26 +246,27 @@ class SourceUtils {
   ///
   /// => [List<KBaseMirrorMovie>]
   static dynamic mergeMirror(
+    List<ISpider> extend,
     List<MacCMSSpider> newSourceData, {
     bool diff = false,
   }) {
-    int len = SpiderManage.extend.length;
+    int len = extend.length;
 
     for (var element in newSourceData) {
       var newDataDomain = element.meta.domain;
-      SpiderManage.extend.removeWhere(
+      extend.removeWhere(
         (element) => element.meta.domain == newDataDomain,
       );
     }
 
-    SpiderManage.extend.addAll(newSourceData);
+    extend.addAll(newSourceData);
 
-    int newLen = SpiderManage.extend.length;
+    int newLen = extend.length;
 
     /// 如果比对之后发现没有改变, 则返回 [0, []]
     if (newLen <= 0 && diff) return [0, []];
 
-    var inputData = SpiderManage.extend;
+    var inputData = extend;
     inputData = inputData.map((e) {
       return e as MacCMSSpider;
     }).toList();

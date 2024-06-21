@@ -58,7 +58,7 @@ packages:
     source: hosted
     version: "2.0.4"
   awesome_dio_interceptor:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: awesome_dio_interceptor
       sha256: "9212bfbf70c6cd212941a7e19d2767792c77aecdd9a3032df74a8302bbf9393e"
@@ -290,7 +290,7 @@ packages:
     source: hosted
     version: "3.1.1"
   cookie_jar:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: cookie_jar
       sha256: a6ac027d3ed6ed756bfce8f3ff60cb479e266f3b0fdabd6242b804b6765e52de
@@ -362,7 +362,7 @@ packages:
     source: hosted
     version: "0.2.3"
   dio:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: dio
       sha256: "11e40df547d418cc0c4900a9318b26304e665da6fa4755399a9ff9efd09034b5"
@@ -378,7 +378,7 @@ packages:
     source: hosted
     version: "3.5.0"
   dio_cookie_manager:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: dio_cookie_manager
       sha256: e79498b0f632897ff0c28d6e8178b4bc6e9087412401f618c31fa0904ace050d
@@ -1388,6 +1388,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  xi:
+    dependency: "direct main"
+    description:
+      path: "packages/xi"
+      relative: true
+    source: path
+    version: "0.0.1"
   xml:
     dependency: transitive
     description:
@@ -1397,7 +1404,7 @@ packages:
     source: hosted
     version: "6.5.0"
   xml2json:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: xml2json
       sha256: "52b7c8d350fdce09545b058982c26689ee89f1eb188cc9910d585665bfe27bc0"

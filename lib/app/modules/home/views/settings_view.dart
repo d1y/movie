@@ -14,11 +14,11 @@ import 'package:movie/app/modules/home/views/source_help.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/git_info.dart';
 import 'package:movie/isar/repo.dart';
-import 'package:movie/spider/utils/source.dart';
-import 'package:movie/spider/shared/manage.dart';
 import 'package:movie/shared/enum.dart';
-import 'package:movie/utils/helper.dart';
+import 'package:movie/shared/manage.dart';
 import 'package:movie/app/modules/home/views/cupertino_license.dart';
+import 'package:xi/utils/helper.dart';
+import 'package:xi/utils/source.dart';
 
 import 'nsfwtable.dart';
 
@@ -214,13 +214,14 @@ class _SettingsViewState extends State<SettingsView> {
           EasyLoading.showError("获取的内容为空!");
           return;
         }
-        var _easyData = SourceUtils.mergeMirror(
+        var easyData = SourceUtils.mergeMirror(
+          SpiderManage.extend,
           data,
           diff: true,
         );
-        var addLen = _easyData[0];
+        var addLen = easyData[0];
         if (addLen > 0) {
-          var listData = _easyData[1];
+          var listData = easyData[1];
           SpiderManage.mergeSpider(listData);
         }
         var showMessage = "获取成功, 已合并$addLen个源!";
@@ -504,12 +505,12 @@ class _SettingsViewState extends State<SettingsView> {
                       },
                     ),
                     CupertinoDialogAction(
+                      isDestructiveAction: true,
+                      onPressed: handleCleanCache,
                       child: const Text(
                         '确定',
                         style: TextStyle(color: Colors.blue),
                       ),
-                      isDestructiveAction: true,
-                      onPressed: handleCleanCache,
                     )
                   ],
                 ),

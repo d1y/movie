@@ -2,9 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:movie/app/extension.dart';
 import 'package:movie/app/widget/window_appbar.dart';
-import 'package:movie/config.dart';
-import 'package:movie/utils/helper.dart';
 import 'package:movie/widget/flutter_custom_license_page.dart';
 
 CustomLicensePage cupertinoLicensePage = CustomLicensePage((
@@ -46,7 +45,7 @@ Widget body(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: () {
-                LaunchURL(GITHUB_OPEN);
+                "https://github.com/waifu-project/movie".openURL();
               },
               child: Padding(
                 padding: const EdgeInsets.all(12),

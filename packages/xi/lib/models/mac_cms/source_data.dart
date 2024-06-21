@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:movie/utils/xid.dart';
+import '../../utils/xid.dart';
 
 List<SourceJsonData> sourceJsonDataFromJson(String str) =>
     List<SourceJsonData>.from(

@@ -6,4 +6,5 @@ const kBarHeightWidget = SizedBox(
   height: kBarHeight,
 );
 
-const fetchMirrorAPI = "https://cdn.jsdelivr.net/gh/waifu-project/assets@latest/s.json";
+const fetchMirrorAPI =
+    "https://cdn.jsdelivr.net/gh/waifu-project/assets@latest/s.json";

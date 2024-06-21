@@ -5,6 +5,7 @@ import 'package:movie/isar/schema/mirror_schema.dart';
 import 'package:movie/isar/schema/parse_schema.dart';
 import 'package:movie/isar/schema/settings_schema.dart';
 import 'package:movie/shared/enum.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 /// remove this(mixin object 杀伤力太大)
 extension ISettingMixin on Object {
@@ -82,5 +83,17 @@ extension ISettingMixin on Object {
     IsarRepository().isar.writeTxnSync(() {
       settingAs.putSync(curr);
     });
+  }
+}
+
+extension Mixxxx on String {
+  openURL() async {
+    await canLaunchUrlString(this)
+        ? await launchUrlString(this)
+        : throw 'Could not launch $this';
+  }
+
+  openToIINA() async {
+    return 'iina://weblink?url=$this&new_window=1'.openURL();
   }
 }

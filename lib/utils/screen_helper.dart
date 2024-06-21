@@ -23,10 +23,14 @@ execScreenDirction(
     Future.delayed(beforeTime, () {
       switch (action) {
         case ScreenDirction.x:
-          SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
+          SystemChrome.setPreferredOrientations([
+            DeviceOrientation.landscapeLeft,
+            DeviceOrientation.landscapeRight
+          ]);
           break;
         case ScreenDirction.y:
-          SystemChrome.setPreferredOrientations([DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
+          SystemChrome.setPreferredOrientations(
+              [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
           break;
         default:
       }

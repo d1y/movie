@@ -9,15 +9,14 @@ import 'package:movie/app/extension.dart';
 import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/window_appbar.dart';
-import 'package:movie/spider/impl/mac_cms.dart';
-import 'package:movie/spider/utils/source.dart';
-import 'package:movie/spider/shared/manage.dart';
+import 'package:movie/shared/manage.dart';
+import 'package:xi/impl/mac_cms.dart';
+import 'package:xi/utils/helper.dart';
+import 'package:xi/utils/http.dart';
+import 'package:xi/utils/json.dart';
+import 'package:xi/utils/source.dart';
 import 'package:movie/shared/enum.dart';
-import 'package:movie/utils/helper.dart';
-import 'package:movie/utils/http.dart';
 import 'package:clipboard/clipboard.dart';
-import 'package:movie/utils/json.dart';
-
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 
 class SourceItemJSONData {
@@ -246,6 +245,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       return;
     } else {
       var _easyData = SourceUtils.mergeMirror(
+        SpiderManage.extend,
         stack,
         diff: true,
       );

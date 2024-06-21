@@ -1,4 +1,4 @@
-import 'package:movie/spider/abstract/spider_serialize.dart';
+import 'spider_serialize.dart';
 
 class SpiderItemMetaData {
   /// 图标, 默认为空将使用本地资源图标
@@ -55,10 +55,9 @@ class SpiderQueryCategory {
   String toString() {
     return '$id: $name';
   }
-  
+
   @override
   int get hashCode => name.hashCode;
-  
 }
 
 abstract class ISpider {

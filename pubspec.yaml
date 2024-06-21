@@ -1,80 +1,72 @@
 name: movie
-version: 2.1.0+2
+version: 2.5.0
 publish_to: none
-description: A new Flutter project.
+description: 支持扩展播放源的播放器
 environment: 
   sdk: '>=2.17.0 <3.0.0'
 
 dependencies: 
+  flutter: 
+    sdk: flutter
   cupertino_icons: ^1.0.8
   get: ^4.6.6
 
   salomon_bottom_bar: ^3.3.2
-  dio: ^5.4.3+1
-  cookie_jar: ^4.0.8
-  dio_cookie_manager: ^3.1.1
   html: ^0.15.4
-  flutter_cupertino_settings:
-    path: packages/flutter_cupertino_settings
   webview_flutter: ^4.8.0
-  xml2json: ^6.2.3
   modal_bottom_sheet: ^3.0.0
 
   # https://github.com/peng8350/flutter_pulltorefresh/issues/588
   pull_to_refresh_flutter3: ^2.0.2
 
   # cupertino_list_tile: ^0.2.0
+  # flutter_html: ^2.1.5
   cached_network_image: ^3.3.1
   chewie: ^1.8.1
   video_player: ^2.8.7
   path_provider: ^2.1.3
-  # flutter_html: ^2.1.5
   clipboard: ^0.1.3
   wakelock_plus: ^1.2.5
   desktop_webview_window: ^0.2.3
-  bitsdojo_window:
-    git:
-      url: https://github.com/bitsdojo/bitsdojo_window
-      path: bitsdojo_window
   url_launcher: ^6.3.0
   flutter_slidable: ^3.1.0
+  auto_injector: ^2.0.4
+  wakelock_web: ^0.4.0
 
   waterfall_flow: ^3.0.3
 
   file_picker: ^8.0.5
   share_plus: ^9.0.0
   
-  flutter: 
-    sdk: flutter
   equatable: ^2.0.5
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
   tuple: ^2.0.2
   flutter_easyloading: ^3.0.5
-  awesome_dio_interceptor: ^1.2.0
-  dio_cache_interceptor: ^3.5.0
   executor: ^2.2.3
+
+  flutter_cupertino_settings:
+    path: packages/flutter_cupertino_settings
   flappy_search_bar:
-    path: packages//flappy_search_bar_ns
-    # git:
-    #   url: https://github.com/d1y/flappy_search_bar_ns
-    #   branch: d1y
+    path: packages/flappy_search_bar_ns # https://github.com/d1y/flappy_search_bar_ns
   command_palette:
-    path: packages/command_palette
-    # git:
-    #   url: https://github.com/d1y/command_palette
-    #   branch: d1y
+    path: packages/command_palette # https://github.com/d1y/command_palette
+  xi:
+    path: packages/xi
+
   webplayer_embedded:
     git: https://github.com/d1y/webplayer_embedded
+  bitsdojo_window:
+    git:
+      url: https://github.com/bitsdojo/bitsdojo_window
+      path: bitsdojo_window
 
-  auto_injector: ^2.0.4
-  wakelock_web: ^0.4.0
+  dio_cache_interceptor: ^3.5.0
 
 dev_dependencies:
-
-  flutter_lints: ^4.0.0
   flutter_test: 
     sdk: flutter
+  flutter_lints: ^4.0.0
 
   # flutter_launcher_name 与 flutter_launcher_icons 冲突
   # flutter_launcher_name:

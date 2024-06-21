@@ -38,7 +38,8 @@ class CustomPopupMenuController extends ChangeNotifier {
 Rect _menuRect = Rect.zero;
 
 class CustomPopupMenu extends StatefulWidget {
-  const CustomPopupMenu({super.key, 
+  const CustomPopupMenu({
+    super.key,
     required this.child,
     required this.menuBuilder,
     required this.pressType,
@@ -280,7 +281,7 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
     Size contentSize = Size.zero;
     Size arrowSize = Size.zero;
     Offset contentOffset = const Offset(0, 0);
-    Offset arrowOffset =const  Offset(0, 0);
+    Offset arrowOffset = const Offset(0, 0);
 
     double anchorCenterX = anchorOffset.dx + anchorSize.width / 2;
     double anchorTopY = anchorOffset.dy;

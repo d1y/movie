@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
-import 'package:movie/spider/abstract/spider_movie.dart';
+import 'package:xi/abstract/spider_movie.dart';
 
 // 这里的代码借鉴(抄袭)了:
 //

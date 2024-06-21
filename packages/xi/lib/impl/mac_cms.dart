@@ -6,14 +6,15 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:movie/spider/abstract/spider_movie.dart';
-import 'package:movie/spider/abstract/spider_serialize.dart';
-import 'package:movie/spider/models/mac_cms/xml_data.dart';
-import 'package:movie/spider/models/mac_cms/xml_search_data.dart';
-import 'package:movie/utils/helper.dart';
-import 'package:movie/utils/http.dart';
+import '../abstract/spider_movie.dart';
+import '../abstract/spider_serialize.dart';
+import '../models/mac_cms/xml_data.dart';
+import '../models/mac_cms/xml_search_data.dart';
 import 'package:xml2json/xml2json.dart';
 import 'package:path/path.dart' as path;
+
+import '../utils/helper.dart';
+import '../utils/http.dart';
 
 /// 请求返回的内容
 enum ResponseCustomType {
