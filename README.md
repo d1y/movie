@@ -1,17 +1,20 @@
-<img src="design/logo_round.png" align="right" width="180">
-
+<div align="center" style="display: flex">
+  <img src="design/logo_round.png" width="120">
+</div>
 
 ## yoyo
+支持自定义源的轻量级视频播放器
 
-[![yyrelease](https://github.com/waifu-project/movie/actions/workflows/release.yml/badge.svg)](https://github.com/waifu-project/movie/actions/workflows/release.yml)
+<!--[![yyrelease](https://github.com/waifu-project/movie/actions/workflows/release.yml/badge.svg)](https://github.com/waifu-project/movie/actions/workflows/release.yml)-->
 
 使用 `Flutter` 构建, 支持 `Android` | `Windows` | `Macos` | `Linux`(浅浅的画个饼O(∩_∩)O)
 
-![](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=apple&logoColor=white)
-![](https://img.shields.io/badge/iOS-000000?style=for-the-badge&logo=ios&logoColor=white)
-![](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
-![](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
-![](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
+![](https://img.shields.io/badge/mac%20os-000000?style=flat&logo=apple&logoColor=white)
+![](https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black)
+![](https://img.shields.io/badge/Windows-0078D6?style=flat&logo=windows&logoColor=white)
+![](https://img.shields.io/badge/Android-3DDC84?style=flat&logo=android&logoColor=white)
+
+<!--![](https://img.shields.io/badge/iOS-000000?style=for-the-badge&logo=ios&logoColor=white)-->
 
 支持自定义源, 可自行添加源
 
@@ -34,20 +37,18 @@ brew install yoyo
 
 #### **Linux**
 
-Linux 下打包的二进制相对于其他平台会大 `15mb`, 由于在不同Linux(桌面)系统上字体渲染太糊(#32), 所以直接内置了一个 `CJK` 字体([LXGWWenKai](https://github.com/lxgw/LxgwWenKai))
+Linux 下打包的二进制相对于其他平台会大 `15mb`, 由于在不同Linux(桌面)系统上字体渲染太糊([#32](https://github.com/waifu-project/movie/issues/32)), 所以直接内置了一个 `CJK` 字体([LXGWWenKai](https://github.com/lxgw/LxgwWenKai))
 
 [![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/yy-linux-x86_64.tar.gz)
 
 Archlinux 需要安装两个包
 
-```bash
+```sh
+# TODO: 支持打包出 `appimage`
+# TODO: 支持 `AUR(archlinux)` 安装
 yay -S webkit2gtk-4.1
 yay -S xdg-user-dir xdg-utils
 ```
-
-TODO: 支持打包出 `appimage`
-
-TODO: 支持 `AUR(archlinux)` 安装
 
 #### **Windows**
 
@@ -59,13 +60,15 @@ TODO: 支持 `AUR(archlinux)` 安装
 
 通用(用这个就对了~): [![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/app-release.apk)
 
+<!--
 arm64-v8a架构: [![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/app-arm64-v8a-release.apk)
 
 armeabi-v7a架构: [![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/app-armeabi-v7a-release.apk)
 
 x86_64架构: [![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/app-x86_64-release.apk)
+-->
 
-
+<!--
 #### **iOS**
 
 `iOS` 下载 `ipa` 之后, 可以使用 [sideloadly](https://sideloadly.io/) | [TrollStore(推荐)](https://github.com/opa334/TrollStore) (签名)安装
@@ -76,6 +79,8 @@ x86_64架构: [![](https://img.shields.io/badge/-点我下载-blue?logo=github)]
 [![image](https://user-images.githubusercontent.com/45585937/197247561-0a60dbd6-1c91-4c22-a008-189819145e24.png)](https://github.com/opa334/TrollStore)
 
 > PS: 目前暂不支持 `iOS15+` 以及更高系统
+
+-->
 
 ## 截图
 
