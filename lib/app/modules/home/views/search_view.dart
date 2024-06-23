@@ -32,8 +32,8 @@ class _SearchViewState extends State<SearchView>
     with AutomaticKeepAliveClientMixin {
   final HomeController home = Get.find<HomeController>();
 
-  extend_search_bar.SearchBarController<VideoDetail>
-      get _searchBarController => home.searchBarController;
+  extend_search_bar.SearchBarController<VideoDetail> get _searchBarController =>
+      home.searchBarController;
 
   List<String> _searchHistory = [];
 

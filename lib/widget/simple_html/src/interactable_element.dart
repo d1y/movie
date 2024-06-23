@@ -17,8 +17,7 @@ class InteractableElement extends StyledElement {
     required this.href,
     required dom.Node node,
     required super.elementId,
-  }) : super(
-            node: node as dom.Element?);
+  }) : super(node: node as dom.Element?);
 }
 
 /// A [Gesture] indicates the type of interaction by a user.

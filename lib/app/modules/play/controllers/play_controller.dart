@@ -303,8 +303,7 @@ class PlayController extends GetxController {
     }
 
     /// (`m3u8` | `mp4`) 资源
-    var canUseChewieView = e.type == VideoType.m3u8 ||
-        e.type == VideoType.mp4;
+    var canUseChewieView = e.type == VideoType.m3u8 || e.type == VideoType.mp4;
 
     /// iOS
     if (home.iosCanBeUseSystemBrowser) {

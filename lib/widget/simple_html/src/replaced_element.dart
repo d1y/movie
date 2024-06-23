@@ -26,8 +26,7 @@ abstract class ReplacedElement extends StyledElement {
     List<StyledElement>? children,
     super.node,
     this.alignment = PlaceholderAlignment.aboveBaseline,
-  }) : super(
-            children: children ?? []);
+  }) : super(children: children ?? []);
 
   static List<String?> parseMediaSources(List<dom.Element> elements) {
     return elements
@@ -50,10 +49,7 @@ class TextContentElement extends ReplacedElement {
     required this.text,
     this.node,
     dom.Element? element,
-  }) : super(
-            name: "[text]",
-            node: element,
-            elementId: "[[No ID]]");
+  }) : super(name: "[text]", node: element, elementId: "[[No ID]]");
 
   @override
   String toString() {

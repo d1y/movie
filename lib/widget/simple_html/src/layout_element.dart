@@ -16,9 +16,7 @@ abstract class LayoutElement extends StyledElement {
     required super.children,
     String? elementId,
     super.node,
-  }) : super(
-            style: Style(),
-            elementId: elementId ?? "[[No ID]]");
+  }) : super(style: Style(), elementId: elementId ?? "[[No ID]]");
 
   Widget? toWidget(RenderContext context);
 }

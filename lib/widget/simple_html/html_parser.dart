@@ -653,9 +653,8 @@ class HtmlParser extends StatelessWidget {
           if (olStack.last.data <= 0) {
             marker = '${olStack.last.data}.';
           } else {
-            marker = "${(olStack.last.data as int)
-                    .toRomanNumeralString()!
-                    .toLowerCase()}.";
+            marker =
+                "${(olStack.last.data as int).toRomanNumeralString()!.toLowerCase()}.";
           }
           break;
         case ListStyleType.UPPER_ROMAN:
