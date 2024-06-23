@@ -84,6 +84,7 @@ dev_dependencies:
   flutter_native_splash: ^2.3.0
   isar_generator: ^3.1.0+1
   build_runner: ^2.4.4
+  test: ^1.25.2
   # icons_launcher: ^1.1.7
 
 # flutter pub run flutter_launcher_name:main
