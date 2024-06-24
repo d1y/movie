@@ -62,9 +62,7 @@ class SpiderManage {
   /// 导出文件
   ///
   /// [full] 是否全量导出(nsfw 是否导出)
-  static String export({
-    bool full = false,
-  }) {
+  static String export({bool full = false}) {
     // bool isNsfw = local.read(ConstDart.is_nsfw) ?? false;
     List<SourceJsonData> to = extend
         .map(
@@ -129,9 +127,7 @@ class SpiderManage {
   }
 
   /// 删除所有源
-  static cleanAll({
-    bool saveToCahe = false,
-  }) {
+  static cleanAll({bool saveToCahe = false}) {
     extend = [];
     if (saveToCahe) {
       mergeSpider([]);
