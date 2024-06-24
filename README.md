@@ -7,14 +7,13 @@
 
 <!--[![yyrelease](https://github.com/waifu-project/movie/actions/workflows/release.yml/badge.svg)](https://github.com/waifu-project/movie/actions/workflows/release.yml)-->
 
-使用 `Flutter` 构建, 支持 `Android` | `Windows` | `Macos` | `Linux`(浅浅的画个饼O(∩_∩)O)
+使用 `Flutter` 构建, 支持 `Android` | `Windows` | `Macos` | `iOS` | `Linux`(浅浅的画个饼O(∩_∩)O)
 
-![](https://img.shields.io/badge/mac%20os-000000?style=flat&logo=apple&logoColor=white)
+![](https://img.shields.io/badge/macOS-000000?style=flat&logo=apple&logoColor=white)
+![](https://img.shields.io/badge/iOS-000000?style=flat&logoColor=white)
 ![](https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black)
 ![](https://img.shields.io/badge/Windows-0078D6?style=flat&logo=windows&logoColor=white)
 ![](https://img.shields.io/badge/Android-3DDC84?style=flat&logo=android&logoColor=white)
-
-<!--![](https://img.shields.io/badge/iOS-000000?style=for-the-badge&logo=ios&logoColor=white)-->
 
 支持自定义源, 可自行添加源
 
@@ -24,7 +23,7 @@ TG吹水裙(有源分享): https://t.me/+xub6INGSHqczN2Jl
 
 #### **Macos**
 
-`macos` 可以使用 [homebrew](https://brew.sh) 快速安装, 也可自行下载安装
+`macos` 可以使用 [Homebrew](https://brew.sh) 快速安装, 也可自行下载安装
 
 [![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/yoyo.mac.zip)
 
@@ -58,7 +57,9 @@ yay -S xdg-user-dir xdg-utils
 
 #### **Android**
 
-通用(用这个就对了~): [![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/app-release.apk)
+[![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/app-release.apk)
+
+<!-- 通用(用这个就对了~):  -->
 
 <!--
 arm64-v8a架构: [![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/app-arm64-v8a-release.apk)
@@ -68,19 +69,12 @@ armeabi-v7a架构: [![](https://img.shields.io/badge/-点我下载-blue?logo=git
 x86_64架构: [![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/app-x86_64-release.apk)
 -->
 
-<!--
 #### **iOS**
 
-`iOS` 下载 `ipa` 之后, 可以使用 [sideloadly](https://sideloadly.io/) | [TrollStore(推荐)](https://github.com/opa334/TrollStore) (签名)安装
+`ipa` 需要自签, 可以使用 [sideloadly](https://sideloadly.io) | [TrollStore](https://github.com/opa334/TrollStore) | [NB助手(推荐)](https://nbtool8.com) 签名安装
+> 仅支持 iOS 14+ 以上系统
 
-[![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/app.ipa)
-
-[![image](https://user-images.githubusercontent.com/45585937/197248782-f173db3f-401f-4e15-b5ab-92d7928475ec.png)](https://sideloadly.io/)
-[![image](https://user-images.githubusercontent.com/45585937/197247561-0a60dbd6-1c91-4c22-a008-189819145e24.png)](https://github.com/opa334/TrollStore)
-
-> PS: 目前暂不支持 `iOS15+` 以及更高系统
-
--->
+[![](https://img.shields.io/badge/-点我下载-blue?logo=github)](https://github.com/waifu-project/movie/releases/latest/download/yoyo.ipa)
 
 ## 截图
 

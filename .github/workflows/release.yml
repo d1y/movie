@@ -112,16 +112,15 @@ jobs:
           flutter build apk --release
         # flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
 
-      # 我的iOS都升到18.0了, 还搞鸡毛啊
-      # - run: |
-      #     flutter build ios --release --no-codesign
-      #     cd build/ios/iphoneos
-      #     mkdir Payload
-      #     cd Payload
-      #     ln -s ../Runner.app
-      #     cd ..
-      #     zip -r app.ipa Payload
-      # output is build/ios/iphoneos/app.ipa
+      - name: Build iOS ipa
+        run: |
+          flutter build ios --release --no-codesign
+          cd build/ios/iphoneos
+          mkdir Payload
+          cd Payload
+          ln -s ../Runner.app
+          cd ..
+          zip -r yoyo.ipa Payload
 
       - name: Build macos
         run: |
@@ -142,6 +141,7 @@ jobs:
         with:
           body_path: release-notes.txt
           files: |
+            build/ios/iphoneos/yoyo.ipa
             build/app/outputs/flutter-apk/*.apk
             build/macos/Build/Products/Release/yoyo.mac.zip
             yy-linux-x86_64.tar.gz
