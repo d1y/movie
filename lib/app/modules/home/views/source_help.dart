@@ -44,7 +44,7 @@ class SourceItemJSONData {
     data['title'] = title;
     data['url'] = url;
     data['msg'] = msg;
-    data['nswf'] = nsfw;
+    data['nsfw'] = nsfw;
     return data;
   }
 }
