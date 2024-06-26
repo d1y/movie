@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:movie/app/extension.dart';
+import 'package:movie/builtin/maccms/maccms.dart';
 import 'package:xi/adapters/mac_cms.dart';
 import 'package:xi/xi.dart';
 import 'package:movie/isar/repo.dart';
@@ -21,7 +22,9 @@ class SpiderManage {
 
   /// 内建支持的源
   /// 一般是需要自己去实现的源
-  static List<ISpiderAdapter> builtin = [];
+  static List<ISpiderAdapter> builtin = [
+    ffzy,
+  ];
 
   /// 合并之后的数据
   static List<ISpiderAdapter> get data {
