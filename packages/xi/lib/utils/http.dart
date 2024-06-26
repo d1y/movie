@@ -25,7 +25,7 @@ const kHttpCacheTime = Duration(hours: 2);
 /// );
 ///```
 extension AnyInjectHttpCacheOptions on Object {
-  Options $toDioOptions(CachePolicy? cachePolicy) {
+  Options $toDioOptions([CachePolicy? cachePolicy]) {
     var options = kHttpCacheMiddlewareOptions
         .copyWith(policy: CachePolicy.noCache)
         .toOptions();

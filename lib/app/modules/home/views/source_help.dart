@@ -13,7 +13,6 @@ import 'package:movie/shared/manage.dart';
 import 'package:xi/adapters/mac_cms.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:clipboard/clipboard.dart';
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:xi/xi.dart';
 
 class SourceHelpTable extends StatefulWidget {
@@ -33,11 +32,22 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       _isLoadingFromAJAX = true;
     });
     try {
-      var resp = await XHttp.dio.get(
-        fetchMirrorAPI,
-        options: $toDioOptions(CachePolicy.noCache),
-      );
-      List<AssetSourceItemJSONData> data = List.from(resp.data).map((e) {
+      var resp = await XHttp.dio.get(fetchMirrorAPI, options: $toDioOptions());
+      late List<dynamic> list;
+      if (resp.data is List) {
+        list = resp.data;
+      } else if (resp.data is Map<String, dynamic>) {
+        var tmp = resp.data as Map<String, dynamic>;
+        // 只要有这些 key 就都可以解析
+        var keys = ["data", "list", "result", "items"];
+        for (var key in keys) {
+          if (tmp.containsKey(key)) {
+            list = tmp[key];
+            break;
+          }
+        }
+      }
+      List<AssetSourceItemJSONData> data = List.from(list).map((e) {
         return AssetSourceItemJSONData.fromJson(e as Map<String, dynamic>);
       }).toList();
       if (!showNSFW) {
@@ -74,7 +84,8 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     return "我知道了";
   }
 
-  handleCopyText({AssetSourceItemJSONData? item, bool canCopyAll = false}) async {
+  handleCopyText(
+      {AssetSourceItemJSONData? item, bool canCopyAll = false}) async {
     List<AssetSourceItemJSONData> actions = mirrors;
     if (!canCopyAll && item != null) actions = [item];
     var ctx = Get.context;
