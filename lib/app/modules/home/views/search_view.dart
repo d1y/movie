@@ -131,7 +131,7 @@ class _SearchViewState extends State<SearchView>
 
   PreferredSizeWidget? get _appBar {
     bool isDesktop = GetPlatform.isDesktop;
-    if (isDesktop) {
+    if (isDesktop && !home.mirrorListIsEmpty) {
       return const WindowAppBar(
         centerTitle: true,
         title: Text(
@@ -163,6 +163,7 @@ class _SearchViewState extends State<SearchView>
               return KEmptyMirror(
                 cx: home,
                 width: _kEmptyMirrorWidth,
+                context: context,
               );
             }
             return extend_search_bar.SearchBar<VideoDetail?>(

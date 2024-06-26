@@ -293,6 +293,7 @@ class _IndexHomeViewState extends State<IndexHomeView>
                           return KEmptyMirror(
                             cx: controller,
                             width: _calcImageWidth,
+                            context: context,
                           );
                         }
                         return SmartRefresher(

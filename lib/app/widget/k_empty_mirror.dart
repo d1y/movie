@@ -7,10 +7,12 @@ class KEmptyMirror extends StatelessWidget {
     super.key,
     this.width,
     required this.cx,
+    required this.context,
   });
 
   final double? width;
   final HomeController cx;
+  final BuildContext context;
 
   double get _width {
     if (width == null) {
@@ -20,11 +22,10 @@ class KEmptyMirror extends StatelessWidget {
   }
 
   TextStyle get _style {
-    var ctx = Get.context as BuildContext;
-    return Theme.of(ctx)
+    return Theme.of(context)
         .textTheme
         .titleLarge!
-        .copyWith(color: Theme.of(ctx).indicatorColor);
+        .copyWith(color: context.isDarkMode ? Colors.white : Colors.black);
   }
 
   @override
