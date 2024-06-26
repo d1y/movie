@@ -1,2 +1,1 @@
-// export all models
-// mac_cms named export
+export './spec.dart';

@@ -11,43 +11,10 @@ import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/shared/manage.dart';
 import 'package:xi/adapters/mac_cms.dart';
-import 'package:xi/utils/helper.dart';
-import 'package:xi/utils/http.dart';
-import 'package:xi/utils/json.dart';
-import 'package:xi/utils/source.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
-
-class SourceItemJSONData {
-  String? title;
-  String? url;
-  String? msg;
-  bool? nsfw;
-
-  SourceItemJSONData({
-    this.title,
-    this.url,
-    this.msg,
-    this.nsfw,
-  });
-
-  SourceItemJSONData.fromJson(Map<String, dynamic> json) {
-    title = json['title'];
-    url = json['url'];
-    msg = json['msg'];
-    nsfw = json['nsfw'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['title'] = title;
-    data['url'] = url;
-    data['msg'] = msg;
-    data['nsfw'] = nsfw;
-    return data;
-  }
-}
+import 'package:xi/xi.dart';
 
 class SourceHelpTable extends StatefulWidget {
   const SourceHelpTable({super.key});
@@ -70,9 +37,9 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
         fetchMirrorAPI,
         options: $toDioOptions(CachePolicy.noCache),
       );
-      List<SourceItemJSONData> data = List.from(resp.data)
-          .map((e) => SourceItemJSONData.fromJson(e as Map<String, dynamic>))
-          .toList();
+      List<AssetSourceItemJSONData> data = List.from(resp.data).map((e) {
+        return AssetSourceItemJSONData.fromJson(e as Map<String, dynamic>);
+      }).toList();
       if (!showNSFW) {
         data = data.where((element) {
           return !(element.nsfw ?? true);
@@ -84,7 +51,6 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
         _loadingErrorStack = "";
       });
     } catch (e) {
-      debugPrint(e.toString());
       setState(() {
         _isLoadingFromAJAX = false;
         _loadingErrorStack = e.toString();
@@ -96,7 +62,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
 
   String _loadingErrorStack = "";
 
-  List<SourceItemJSONData> mirrors = [];
+  List<AssetSourceItemJSONData> mirrors = [];
 
   @override
   void initState() {
@@ -108,15 +74,12 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     return "我知道了";
   }
 
-  handleCopyText({
-    SourceItemJSONData? item,
-    bool canCopyAll = false,
-  }) async {
-    List<SourceItemJSONData> actions = mirrors;
+  handleCopyText({AssetSourceItemJSONData? item, bool canCopyAll = false}) async {
+    List<AssetSourceItemJSONData> actions = mirrors;
     if (!canCopyAll && item != null) actions = [item];
     var ctx = Get.context;
     if (ctx == null) return;
-    await Future.forEach(actions, (SourceItemJSONData element) {
+    await Future.forEach(actions, (AssetSourceItemJSONData element) {
       var msg = element.msg ?? "";
       Completer completer = Completer();
       if (msg.isEmpty) {
