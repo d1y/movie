@@ -201,4 +201,33 @@ abstract class ISpiderAdapter {
   Future<VideoDetail> getDetail(String movieId);
 }
 
+/// 基本上它就是一个空的占位符
+class EmptySpiderAdapter implements ISpiderAdapter {
+  @override
+  Future<List<SourceSpiderQueryCategory>> getCategory() async {
+    return [];
+  }
+
+  @override
+  Future<VideoDetail> getDetail(String movieId) async {
+    return VideoDetail(id: '', title: '', smallCoverImage: '');
+  }
+
+  @override
+  Future<List<VideoDetail>> getHome({int page = 1, int limit = 10, String? category}) async {
+    return [];
+  }
+
+  @override
+  Future<List<VideoDetail>> getSearch({required String keyword, int page = 1, int limit = 10}) async {
+    return [];
+  }
+
+  @override
+  bool get isNsfw => false;
+
+  @override
+  SourceItemMeta get meta => SourceItemMeta(id: '', name: '', domain: '');
+}
+
 const VideoSize kDefaultVideoSize = VideoSize();

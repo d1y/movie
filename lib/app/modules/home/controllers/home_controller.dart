@@ -148,6 +148,10 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   set _mirrorIndex(int newVal) {
+    if (newVal >= mirrorList.length) {
+      // 如果新设置的索引大于 mirrorList 的长度的话, 则默认设置为 0
+      newVal = 0;
+    }
     mirrorIndex = newVal;
     _cacheMirrorIndex = newVal;
     searchBarController.clear();
@@ -197,7 +201,12 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   ISpiderAdapter get currentMirrorItem {
-    return mirrorList[mirrorIndex];
+    if (mirrorIndex <= mirrorList.length - 1) {
+      // 也有可能是 -1 吗?
+      if (mirrorIndex == -1) return EmptySpiderAdapter();
+      return mirrorList[mirrorIndex];
+    }
+    return EmptySpiderAdapter();
   }
 
   bool get mirrorListIsEmpty {

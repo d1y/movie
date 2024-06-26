@@ -24,7 +24,6 @@ class SettingsIsarModel {
   bool isNSFW = false;
 
   /// 当前源
-  @Deprecated("use mirror id, remove this")
   int mirrorIndex = 0;
 
   String mirrorTextarea = "";
