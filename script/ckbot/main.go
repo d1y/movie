@@ -250,6 +250,7 @@ var ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, l
 func init() {
 	req.SetUserAgent(ua)
 	req.SetTimeout(time.Second * 6)
+	req.EnableInsecureSkipVerify()
 }
 
 // https://github.com/golang-collections/collections/blob/master/set/set.go
@@ -271,12 +272,12 @@ func newSet(initial ...any) *Set {
 	return s
 }
 
-func (this *Set) Insert(element any) {
-	this.hash[element] = nothing{}
+func (s *Set) Insert(element any) {
+	s.hash[element] = nothing{}
 }
 
-func (this *Set) Check(body string) bool {
-	for cx := range this.hash {
+func (s *Set) Check(body string) bool {
+	for cx := range s.hash {
 		x := cx.(string)
 		if strings.Contains(body, x) {
 			return true
@@ -388,7 +389,9 @@ func getItemWithText(text string) []ParseResult {
 		if len(ss) <= 1 {
 			continue
 		}
-		result = append(result, ParseResult{ss[0], ss[1]})
+		var s1 = strings.TrimSpace(ss[0])
+		var s2 = strings.TrimSpace(ss[1])
+		result = append(result, ParseResult{s1, s2})
 	}
 	return result
 }
@@ -402,13 +405,12 @@ func runTaskCheck(pool *pool.Pool, list []ParseResult) []Result {
 			var result Result
 			result.Name = item.Text
 			if err != nil {
-				result.Reason = err.Error()
-				log.Error("检查资源失败", "名称", item.Text, "链接", item.URL)
+				log.Error("检查资源失败1", "名称", item.Text, "链接", item.URL, "reason", err)
 			} else {
 				var body, err = resp.ToString()
 				if err != nil {
 					result.OK = false
-					log.Error("检查资源失败", "名称", item.Text, "链接", item.URL)
+					log.Error("检查资源失败2", "名称", item.Text, "链接", item.URL, "reason", err)
 				} else {
 					if isOK(body) {
 						if pornWords.Check(body) {
