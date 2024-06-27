@@ -11,16 +11,9 @@ import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/movie_card_item.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:simple/x.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 import 'package:xi/xi.dart';
-
-class ScrollDownIntent extends Intent {}
-
-class ScrollUpIntent extends Intent {}
-
-class CategoryNextIntent extends Intent {}
-
-class CategoryPrevIntent extends Intent {}
 
 const scrollSize = 240;
 
@@ -199,28 +192,11 @@ class _IndexHomeViewState extends State<IndexHomeView>
           child: Actions(
             actions: {
               ScrollUpIntent: shortcutCallback(controller.currentBarIndex, () {
-                var curr = scrollController.offset;
-                if (curr == 0) return;
-                var exec = curr - scrollSize;
-                if (exec < 0) exec = 0;
-                scrollController.animateTo(
-                  exec,
-                  duration: const Duration(milliseconds: 420),
-                  curve: Curves.ease,
-                );
+                scrollUp(scrollController);
               }),
               ScrollDownIntent:
                   shortcutCallback(controller.currentBarIndex, () {
-                var curr = scrollController.offset;
-                var max = scrollController.position.maxScrollExtent;
-                if (curr == max) return;
-                var exec = curr + scrollSize;
-                if (exec > max) exec = max;
-                scrollController.animateTo(
-                  exec,
-                  duration: const Duration(milliseconds: 420),
-                  curve: Curves.ease,
-                );
+                scrollDown(scrollController);
               }),
               CategoryPrevIntent:
                   shortcutCallback(controller.currentBarIndex, () {

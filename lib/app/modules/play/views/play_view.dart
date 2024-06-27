@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:command_palette/command_palette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +10,7 @@ import 'package:movie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:movie/app/widget/helper.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/widget/simple_html/flutter_html.dart';
+import 'package:simple/x.dart';
 import 'package:xi/adapters/mac_cms.dart';
 import 'package:xi/xi.dart';
 
@@ -45,6 +47,8 @@ class _PlayViewState extends State<PlayView> {
   PlayState playState = const PlayState(-1, -1);
 
   FocusNode focusNode = FocusNode();
+
+  ScrollController scrollController = ScrollController();
 
   bool get canBeShowParseVipButton {
     return home.parseVipList.isNotEmpty;
@@ -163,10 +167,28 @@ class _PlayViewState extends State<PlayView> {
           ),
         ),
         body: Shortcuts(
-          shortcuts: const {
-            SingleActivator(LogicalKeyboardKey.escape): DismissIntent(),
-            SingleActivator(LogicalKeyboardKey.backspace): DismissIntent(),
-            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+          shortcuts: {
+            // esc
+            const SingleActivator(LogicalKeyboardKey.escape):
+                const DismissIntent(),
+            // backspace
+            const SingleActivator(LogicalKeyboardKey.backspace):
+                const DismissIntent(),
+            // enter
+            const SingleActivator(LogicalKeyboardKey.enter):
+                const ActivateIntent(),
+            // ctrl-p
+            const SingleActivator(LogicalKeyboardKey.keyP, control: true):
+                ScrollUpIntent(),
+            // ctrl-n
+            const SingleActivator(LogicalKeyboardKey.keyN, control: true):
+                ScrollDownIntent(),
+            // // cmd-shift-[
+            // const SingleActivator(LogicalKeyboardKey.braceLeft /* { */,
+            //     meta: true, shift: true): TabSwitchLeftIntent(),
+            // // cmd-shift-]
+            // const SingleActivator(LogicalKeyboardKey.braceRight /* } */,
+            //     meta: true, shift: true): TabSwitchRightIntent(),
           },
           child: Actions(
             actions: {
@@ -186,6 +208,18 @@ class _PlayViewState extends State<PlayView> {
                   return null;
                 },
               ),
+              ScrollUpIntent: CallbackAction<ScrollUpIntent>(
+                onInvoke: (_) {
+                  scrollUp(scrollController);
+                  return null;
+                },
+              ),
+              ScrollDownIntent: CallbackAction<ScrollDownIntent>(
+                onInvoke: (_) {
+                  scrollDown(scrollController);
+                  return null;
+                },
+              ),
             },
             child: Focus(
               autofocus: true,
@@ -196,6 +230,7 @@ class _PlayViewState extends State<PlayView> {
                     color: context.isDarkMode ? Colors.white : Colors.black,
                   ),
                   child: SingleChildScrollView(
+                    controller: scrollController,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -349,17 +384,21 @@ class _PlayViewState extends State<PlayView> {
                                     },
                                   );
                                 }
-                                return CupertinoSlidingSegmentedControl(
-                                  backgroundColor: Colors.black26,
-                                  thumbColor: context.isDarkMode
-                                      ? Colors.blue
-                                      : Colors.white,
-                                  onValueChanged: (value) {
-                                    if (value == null) return;
-                                    play.changeTabIndex(value);
-                                  },
-                                  groupValue: play.tabIndex,
-                                  children: tabviewData,
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12),
+                                  child: CupertinoSlidingSegmentedControl(
+                                    backgroundColor: Colors.black26,
+                                    thumbColor: context.isDarkMode
+                                        ? Colors.blue
+                                        : Colors.white,
+                                    onValueChanged: (value) {
+                                      if (value == null) return;
+                                      play.changeTabIndex(value);
+                                    },
+                                    groupValue: play.tabIndex,
+                                    children: tabviewData,
+                                  ),
                                 );
                               }),
                             ),
