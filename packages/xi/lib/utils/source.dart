@@ -194,8 +194,9 @@ class SourceUtils {
   static Future<List<MacCMSSpider>> runTaks(List<String> sources) async {
     List<MacCMSSpider> result = [];
     await Future.forEach(sources, (String element) async {
+      debugPrint("加载网络源: $element");
       try {
-        var time = const Duration(seconds: 1);
+        var time = const Duration(seconds: 9/* 秒 */);
         var resp = await XHttp.dio.get(
           element,
           options: Options(
