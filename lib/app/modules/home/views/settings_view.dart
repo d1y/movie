@@ -6,7 +6,6 @@ import 'package:flutter_cupertino_settings/flutter_cupertino_settings.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:get/get.dart';
-import 'package:isar/isar.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:movie/app/extension.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';

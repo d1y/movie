@@ -13,7 +13,6 @@ import 'package:movie/app/widget/wechat_popmenu.dart';
 import 'package:movie/shared/manage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:xi/utils/http.dart';
 import 'package:xi/xi.dart';
 
 enum MenuActionType {
