@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:movie/app/modules/home/views/home_config.dart';
 
 class KBody extends StatelessWidget {
   final Widget child;
@@ -13,7 +12,7 @@ class KBody extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(child: child),
-        kBarHeightWidget,
+        const SizedBox(height: 63),
       ],
     );
   }

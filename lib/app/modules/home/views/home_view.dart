@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:movie/app/extension.dart';
-import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/app/modules/home/views/index_home_view.dart';
 import 'package:movie/app/modules/home/views/search_view.dart';
 import 'package:movie/app/modules/home/views/settings_view.dart';
@@ -143,7 +142,7 @@ class HomeView extends GetView<HomeController> {
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               child: SizedBox(
-                height: kBarHeight,
+                height: 63,
                 child: ClipRect(
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),

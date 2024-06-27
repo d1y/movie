@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/extension.dart';
-import 'package:movie/app/modules/home/views/home_config.dart';
 import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/shared/manage.dart';
@@ -14,6 +13,9 @@ import 'package:xi/adapters/mac_cms.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:xi/xi.dart';
+
+const fetchMirrorAPI =
+    "https://cdn.jsdelivr.net/gh/waifu-project/v1@latest/x.json";
 
 class SourceHelpTable extends StatefulWidget {
   const SourceHelpTable({super.key});
