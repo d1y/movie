@@ -138,7 +138,13 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   int get mirrorIndex {
     if (_cacheMirrorIndex == -1) {
-      return getSettingAsKeyIdent<int>(SettingsAllKey.mirrorIndex);
+      try {
+        // 这里在清除缓存时会抛出索引异常, 主要是取 settingsSingleModel 取不到了
+        return getSettingAsKeyIdent<int>(SettingsAllKey.mirrorIndex);
+      } catch (e) {
+        // workaround: 因为有内置源的存在, 所以这里设置为 0 是不会出错的
+        return 0;
+      }
     }
     return _cacheMirrorIndex;
   }
