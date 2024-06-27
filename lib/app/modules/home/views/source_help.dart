@@ -6,12 +6,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie/app/extension.dart';
+import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/widget/k_error_stack.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/shared/manage.dart';
 import 'package:xi/adapters/mac_cms.dart';
 import 'package:movie/shared/enum.dart';
-import 'package:clipboard/clipboard.dart';
 import 'package:xi/xi.dart';
 
 const fetchMirrorAPI =
@@ -28,6 +28,8 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
   bool get showNSFW {
     return getSettingAsKeyIdent<bool>(SettingsAllKey.isNsfw);
   }
+
+  final home = Get.find<HomeController>();
 
   loadMirrorListApi() async {
     setState(() {
@@ -112,17 +114,40 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
       return completer.future;
     });
 
-    String result = actions[0].url ?? "";
-
+    List<String> result = [];
     if (canCopyAll) {
-      result = "";
       for (var element in actions) {
-        result += '${element.url}\n';
+        var cx = element.url ?? "";
+        if (cx.isNotEmpty) {
+          result.add(cx);
+        }
+      }
+    } else {
+      var cx = actions[0].url ?? "";
+      if (cx.isNotEmpty) {
+        result.add(cx);
       }
     }
-    if (result.isEmpty) return;
-    await FlutterClipboard.copy(result);
-    showEasyCupertinoDialog(content: '已复制到剪贴板!');
+    if (result.isEmpty /* 内容为空 */) return;
+    updateExtendMirrorList(result);
+    showEasyCupertinoDialog(content: '已添加到本地(=^-ω-^=)! \n请到 设置->视频源管理 中手动获取配置(源)');
+  }
+
+  updateExtendMirrorList(List<String> result) {
+    var old =
+        getSettingAsKeyIdent<String>(SettingsAllKey.mirrorTextarea).trim();
+    var lines = old.split('\n').where((element) {
+      var cx = element.trim();
+      return cx.isNotEmpty;
+    }).toList();
+    for (var element in result) {
+      // 这里要去重
+      if (!lines.contains(element)) {
+        lines.add(element);
+      }
+    }
+    var ext = lines.join("\n");
+    updateSetting(SettingsAllKey.mirrorTextarea, ext);
   }
 
   String get _wrapperAjaxStatusLable {
@@ -417,7 +442,7 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
                     ),
                     child: CupertinoButton.filled(
                       borderRadius: BorderRadius.circular(24),
-                      child: const Text("一键复制到剪贴板"),
+                      child: const Text("一键添加到本地"),
                       onPressed: () {
                         handleCopyText(canCopyAll: true);
                       },
