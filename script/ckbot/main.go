@@ -236,6 +236,14 @@ a%E7%89%87
 %E6%8F%92%E6%AD%BB
 `
 
+func decodeURL(uri string) string {
+	u, err := url.Parse(uri)
+	if err != nil {
+		return uri
+	}
+	return u.String()
+}
+
 var ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
 
 func init() {
@@ -442,7 +450,9 @@ func getPornWords() []string {
 	}
 	var lines = strings.Split(string(buf), "\n")
 	var porn1 = strings.Split(pornWord1, "\n")
-	lines = append(lines, porn1...)
+	for _, p := range porn1 {
+		lines = append(lines, decodeURL(p))
+	}
 	return lines
 }
 
