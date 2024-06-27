@@ -214,12 +214,14 @@ class EmptySpiderAdapter implements ISpiderAdapter {
   }
 
   @override
-  Future<List<VideoDetail>> getHome({int page = 1, int limit = 10, String? category}) async {
+  Future<List<VideoDetail>> getHome(
+      {int page = 1, int limit = 10, String? category}) async {
     return [];
   }
 
   @override
-  Future<List<VideoDetail>> getSearch({required String keyword, int page = 1, int limit = 10}) async {
+  Future<List<VideoDetail>> getSearch(
+      {required String keyword, int page = 1, int limit = 10}) async {
     return [];
   }
 

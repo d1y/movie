@@ -130,7 +130,9 @@ class _SourceHelpTableState extends State<SourceHelpTable> {
     }
     if (result.isEmpty /* 内容为空 */) return;
     updateExtendMirrorList(result);
-    showEasyCupertinoDialog(content: '已添加到本地(=^-ω-^=)! \n请到 设置->视频源管理 中手动获取配置(源)');
+    showEasyCupertinoDialog(
+      content: '已添加到本地(=^-ω-^=)! \n请到 设置->视频源管理 中手动获取配置(源)',
+    );
   }
 
   updateExtendMirrorList(List<String> result) {

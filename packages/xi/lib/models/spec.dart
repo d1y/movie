@@ -1,6 +1,5 @@
 /// 源列表导入列表, 一般来说是 waifu-project/assets 仓库维护的 .json 文件
 class AssetSourceItemJSONData {
-
   /// 源名称
   String? title;
 
