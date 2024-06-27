@@ -9,6 +9,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/charmbracelet/log"
 	"github.com/imroc/req/v3"
@@ -248,6 +249,7 @@ var ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, l
 
 func init() {
 	req.SetUserAgent(ua)
+	req.SetTimeout(time.Second * 6)
 }
 
 // https://github.com/golang-collections/collections/blob/master/set/set.go
