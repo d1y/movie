@@ -10,7 +10,6 @@ import 'package:movie/app/widget/helper.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/widget/simple_html/flutter_html.dart';
 import 'package:simple/x.dart';
-import 'package:xi/adapters/mac_cms.dart';
 import 'package:xi/xi.dart';
 
 import '../controllers/play_controller.dart';
@@ -19,17 +18,6 @@ class PlayState {
   const PlayState(this.tabIndex, this.index);
   final int tabIndex;
   final int index;
-}
-
-class PlayListData {
-  final String title;
-
-  final List<VideoInfo> datas;
-
-  PlayListData({
-    required this.title,
-    required this.datas,
-  });
 }
 
 class PlayView extends StatefulWidget {
@@ -59,48 +47,7 @@ class _PlayViewState extends State<PlayView> {
   }
 
   List<PlayListData> get playlist {
-    List<PlayListData> result = [];
-    var v = play.movieItem.videos;
-    for (var element in v) {
-      var url = element.url;
-      var hasUrl = isURL(url);
-      if (hasUrl) {
-        var output = [element];
-        result.add(PlayListData(title: element.name, datas: []));
-        var urls = url.split("#");
-        if (urls.length >= 2) {
-          output = urls
-              .map(
-                (e) => VideoInfo(
-                  url: e,
-                  type: MacCMSSpider.easyGetVideoType(e),
-                ),
-              )
-              .toList();
-        }
-        result.last.datas.addAll(output);
-      } else {
-        var movies = url.split("#");
-        var cache = PlayListData(title: element.name, datas: []);
-        for (var e in movies) {
-          var subItem = e.split("\$");
-          if (subItem.length <= 1) continue;
-          var title = subItem[0];
-          var url = subItem[1];
-          // var subType = subItem[2];
-          cache.datas.add(VideoInfo(
-            name: title,
-            url: url,
-            type: MacCMSSpider.easyGetVideoType(url),
-          ));
-        }
-        result.add(cache);
-      }
-    }
-    result = result.where((element) {
-      return element.datas.isNotEmpty;
-    }).toList();
-    return result;
+    return videoInfo2PlayListData(play.movieItem.videos);
   }
 
   get tabviewData {

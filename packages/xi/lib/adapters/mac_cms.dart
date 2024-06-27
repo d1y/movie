@@ -50,9 +50,7 @@ class MacCMSSpider extends ISpiderAdapter {
     return root_url + suffix;
   }
 
-  Options ops = Options(
-    responseType: ResponseType.plain,
-  );
+  Options ops = Options(responseType: ResponseType.plain);
 
   bool get hasJiexiUrl {
     return jiexiUrl.isNotEmpty;
@@ -92,18 +90,18 @@ class MacCMSSpider extends ISpiderAdapter {
 
   String get _responseParseFail => "接口返回值解析错误 :(";
 
-  /// 检测一下请求之后返回的内容
+  /// 获取结构类型并且检测一下请求之后返回的内容
   ///
   /// 如果是内容为 [ResponseCustomType.unknow] 则抛出异常
-  void beforeTestResponseData(dynamic data) {
+  ResponseCustomType getResponseTypeAndCheck(dynamic data) {
     ResponseCustomType _type = getResponseType(data);
     if (_type == ResponseCustomType.unknow) {
       throw AsyncError(
         _responseParseFail,
         StackTrace.fromString(_responseParseFail),
       );
-      // return Future.error('解析失败');
     }
+    return _type;
   }
 
   @override
@@ -116,36 +114,11 @@ class MacCMSSpider extends ISpiderAdapter {
       },
       options: ops,
     );
-    var x2j = Xml2Json();
-    x2j.parse(resp.data);
-    var _json = x2j.toBadgerfish();
-    var _ = json.decode(_json);
-    KBaseMovieXmlData xml = KBaseMovieXmlData.fromJson(_);
-    var video = xml.rss.list.video;
-    var cards = video.map(
-      (e) {
-        var __dd = e.dl.dd;
-        List<VideoInfo> videos = __dd.map((item) {
-          return VideoInfo(
-            url: easyGetVideoURL(item.cData),
-            name: item.flag,
-            type: easyGetVideoType(item.cData),
-          );
-        }).toList();
-        var pic = normalizeCoverImage(e.pic);
-        return VideoDetail(
-          id: e.id,
-          smallCoverImage: pic,
-          title: e.name,
-          videos: videos,
-          desc: e.des,
-        );
-      },
-    ).toList();
-    if (cards.isEmpty) {
-      throw UnimplementedError();
+    var _type = getResponseTypeAndCheck(resp.data);
+    if (_type == ResponseCustomType.json) {
+      return _parseDetailJSON(resp.data);
     }
-    return cards[0];
+    return _parseDetailXML(resp.data);
   }
 
   @override
@@ -167,33 +140,11 @@ class MacCMSSpider extends ISpiderAdapter {
       options: ops,
     );
     dynamic data = resp.data;
-    beforeTestResponseData(data);
-    var x2j = Xml2Json();
-    x2j.parse(data);
-    var _json = x2j.toBadgerfish();
-    var _ = json.decode(_json);
-    KBaseMovieXmlData xml = KBaseMovieXmlData.fromJson(_);
-    var cards = xml.rss.list.video.map(
-      (e) {
-        var __dd = e.dl.dd;
-        List<VideoInfo> videos = __dd.map((item) {
-          return VideoInfo(
-            url: easyGetVideoURL(item.cData),
-            name: item.flag,
-            type: easyGetVideoType(item.cData),
-          );
-        }).toList();
-        var pic = normalizeCoverImage(e.pic);
-        return VideoDetail(
-          id: e.id,
-          smallCoverImage: pic,
-          title: e.name,
-          videos: videos,
-          desc: e.des,
-        );
-      },
-    ).toList();
-    return cards;
+    var _type = getResponseTypeAndCheck(data);
+    if (_type == ResponseCustomType.json) {
+      return _parseHomeJSON(data);
+    }
+    return _parseHomeXML(data);
   }
 
   /// 匹配的规则:
@@ -239,15 +190,6 @@ class MacCMSSpider extends ISpiderAdapter {
     }
 
     return ResponseCustomType.unknow;
-
-    // String attrText = checkText.substring(0, 2);
-    // String jsonSyb = "{\"";
-    // String xmlSyb = "<?xml";
-    // String attrText = checkText.substring(0, 5);
-    // if (attrText == jsonSyb) {
-    //   return ResponseCustomType.json;
-    // }
-    // return ResponseCustomType.xml;
   }
 
   @override
@@ -267,23 +209,11 @@ class MacCMSSpider extends ISpiderAdapter {
       options: ops,
     );
     dynamic data = resp.data;
-    beforeTestResponseData(data);
-    var x2j = Xml2Json();
-    x2j.parse(data);
-    var _json = x2j.toBadgerfish();
-    KBaseMovieSearchXmlData searchData = kBaseMovieSearchXmlDataFromJson(_json);
-    var defaultCoverImage = meta.logo;
-    List<VideoDetail> result = searchData.rss?.list?.video!
-            .map(
-              (e) => VideoDetail(
-                id: e.id ?? "",
-                smallCoverImage: defaultCoverImage,
-                title: e.name?.cdata ?? "",
-              ),
-            )
-            .toList() ??
-        [];
-    return result;
+    var _type = getResponseTypeAndCheck(data);
+    if (_type == ResponseCustomType.json) {
+      return _parseSearchJSON(data);
+    }
+    return _parseSearchXML(data);
   }
 
   @override
@@ -304,13 +234,236 @@ class MacCMSSpider extends ISpiderAdapter {
     var path = createUrl(suffix: api_path);
     var resp = await XHttp.dio.get(path);
     dynamic data = resp.data;
-    beforeTestResponseData(data);
+    var _type = getResponseTypeAndCheck(data);
+    if (_type == ResponseCustomType.json) {
+      return _parseCategoryJSON(data);
+    }
+    return _parseCategoryXML(data);
+  }
+
+  _parseDetailJSON(dynamic data) {
+    if (data is! String) {
+      throw AsyncError(
+        _responseParseFail,
+        StackTrace.fromString(_responseParseFail),
+      );
+    }
+    var list = _getJSONList(data);
+    if (list.isEmpty) {
+      throw AsyncError(
+        _responseParseFail,
+        StackTrace.fromString(_responseParseFail),
+      );
+    }
+    return list[0];
+  }
+
+  _parseDetailXML(dynamic data) {
+    var x2j = Xml2Json();
+    x2j.parse(data);
+    var _json = x2j.toBadgerfish();
+    var _ = json.decode(_json);
+    KBaseMovieXmlData xml = KBaseMovieXmlData.fromJson(_);
+    var video = xml.rss.list.video;
+    var cards = video.map(
+      (e) {
+        var __dd = e.dl.dd;
+        List<VideoInfo> videos = __dd.map((item) {
+          return VideoInfo(
+            url: easyGetVideoURL(item.cData),
+            name: item.flag,
+            type: easyGetVideoType(item.cData),
+          );
+        }).toList();
+        var pic = normalizeCoverImage(e.pic);
+        return VideoDetail(
+          id: e.id,
+          smallCoverImage: pic,
+          title: e.name,
+          videos: videos,
+          desc: e.des,
+        );
+      },
+    ).toList();
+    if (cards.isEmpty) {
+      throw UnimplementedError();
+    }
+    return cards[0];
+  }
+
+  _parseSearchJSON(dynamic data) {
+    if (data is! String) {
+      throw AsyncError(
+        _responseParseFail,
+        StackTrace.fromString(_responseParseFail),
+      );
+    }
+    return _getJSONList(data);
+  }
+
+  _parseSearchXML(dynamic data) {
+    var x2j = Xml2Json();
+    x2j.parse(data);
+    var _json = x2j.toBadgerfish();
+    KBaseMovieSearchXmlData searchData = kBaseMovieSearchXmlDataFromJson(_json);
+    var defaultCoverImage = meta.logo;
+    List<VideoDetail> result = searchData.rss?.list?.video!
+            .map(
+              (e) => VideoDetail(
+                id: e.id ?? "",
+                smallCoverImage: defaultCoverImage,
+                title: e.name?.cdata ?? "",
+              ),
+            )
+            .toList() ??
+        [];
+    return result;
+  }
+
+  List<SourceSpiderQueryCategory> _parseCategoryJSON(dynamic data) {
+    if (data is! String) {
+      throw AsyncError(
+        _responseParseFail,
+        StackTrace.fromString(_responseParseFail),
+      );
+    }
+    var json = jsonDecode(data);
+    List<Map<String, dynamic>> cx = json['class'].cast<Map<String, dynamic>>();
+    var result = <SourceSpiderQueryCategory>[];
+    for (var item in cx) {
+      var name = item['type_name'] ?? "";
+      var _id = item['type_id'];
+      late String id;
+      if (_id is int) {
+        id = _id.toString();
+      } else {
+        id = _id;
+      }
+      result.add(SourceSpiderQueryCategory(name, id));
+    }
+    return result;
+  }
+
+  List<SourceSpiderQueryCategory> _parseCategoryXML(dynamic data) {
     var x2j = Xml2Json();
     x2j.parse(data);
     var _json = x2j.toBadgerfish();
     var _ = json.decode(_json);
     KBaseMovieXmlData xml = KBaseMovieXmlData.fromJson(_);
     return xml.rss.category;
+  }
+
+  List<VideoDetail> _parseHomeXML(dynamic data) {
+    var x2j = Xml2Json();
+    x2j.parse(data);
+    var _json = x2j.toBadgerfish();
+    var _ = json.decode(_json);
+    KBaseMovieXmlData xml = KBaseMovieXmlData.fromJson(_);
+    return xml.rss.list.video.map(
+      (e) {
+        var __dd = e.dl.dd;
+        List<VideoInfo> videos = __dd.map((item) {
+          return VideoInfo(
+            url: easyGetVideoURL(item.cData),
+            name: item.flag,
+            type: easyGetVideoType(item.cData),
+          );
+        }).toList();
+        var pic = normalizeCoverImage(e.pic);
+        return VideoDetail(
+          id: e.id,
+          smallCoverImage: pic,
+          title: e.name,
+          videos: videos,
+          desc: e.des,
+        );
+      },
+    ).toList();
+  }
+
+  List<VideoDetail> _parseHomeJSON(dynamic data) {
+    if (data is! String) {
+      throw AsyncError(
+        _responseParseFail,
+        StackTrace.fromString(_responseParseFail),
+      );
+    }
+    return _getJSONList(data);
+  }
+
+  _getJSONList(dynamic jsonData) {
+    var json = jsonDecode(jsonData);
+    var list = json['list']; //;
+    var result = <VideoDetail>[];
+    if (list is Map) {
+      var cx = list as Map<String, dynamic>;
+      result.add(__parseListItem(cx));
+    } else if (list is List) {
+      for (var item in list.cast<Map<String, dynamic>>()) {
+        result.add(__parseListItem(item));
+      }
+    }
+    return result;
+  }
+
+  __parseListItem(dynamic item) {
+    var videos = <VideoInfo>[];
+    // 参考格式: vod_play_from":"ukyun$$$ukm3u8","vod_play_server":"no$$$no","vod_play_note":"$$$","vod_play_url": "xxxx$$$xxxxx"
+    String vodFrom = item["vod_play_from"];
+    String vodNote = item['vod_play_note'];
+    String _vodURL = (item['vod_play_url'] ?? "");
+    late List<String> tags;
+    if (vodNote.isNotEmpty) {
+      tags = vodFrom.split(vodNote /* $$$ */);
+    } else {
+      tags = [vodFrom];
+    }
+    String vodURL = _vodURL.replaceAll(RegExp(r'#$'), '');
+    List<String> _t = vodURL.split(vodNote /* $$$ */);
+    if (tags.length >= 2) {
+      Map<String, List<VideoInfo>> _cx = {};
+      for (final (index, subItem) in _t.indexed) {
+        var _nameKey = tags[index];
+        List<VideoInfo> _map =
+            subItem.split("#").where((e) => e.trim().isNotEmpty).map((item) {
+          List<String> items = item.split("\$");
+          return VideoInfo(
+            name: items[0],
+            url: items[1],
+            type: easyGetVideoType(items[1]),
+          );
+        }).toList();
+        _cx[_nameKey] = _map;
+      }
+      _cx.forEach((key, value) {
+        var url = value
+            .map((item) {
+              /// 这里转成 [videoInfo2PlayListData] 需要的格式
+              return "${item.name}\$${item.url}";
+            })
+            .toList()
+            .join("#");
+        var video = VideoInfo(name: key, url: url);
+        videos.add(video);
+      });
+    } else if (tags.length == 1) {
+      videos.add(VideoInfo(name: tags[0], url: _vodURL));
+    }
+    var _id = item['vod_id'];
+    late String id;
+    if (_id is int) {
+      id = _id.toString();
+    } else {
+      id = _id;
+    }
+    var detail = VideoDetail(
+      id: id,
+      title: item['vod_name'] ?? "",
+      desc: item['vod_blurb'] ?? "",
+      smallCoverImage: item['vod_pic'] ?? "",
+      videos: videos,
+    );
+    return detail;
   }
 
   @override
