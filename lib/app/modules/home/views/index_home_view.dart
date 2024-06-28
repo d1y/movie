@@ -39,10 +39,10 @@ class _IndexHomeViewState extends State<IndexHomeView>
   ScrollController scrollController = ScrollController();
 
   int get cardCount {
-    bool isLandscape = Get.context!.isLandscape;
+    bool isLandscape = context.isLandscape;
     if (GetPlatform.isMobile && !isLandscape) return 3;
     var w = controller.windowLastSize.width;
-    if (w >= 1000) return 5;
+    if (w >= 1248) return 5;
     return 3;
   }
 
