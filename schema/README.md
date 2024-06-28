@@ -15,3 +15,25 @@
   ]
 }
 ```
+
+`v1.json` 是源列表格式
+
+```jsonc
+{
+  "$schema": "https://raw.githubusercontent.com/waifu-project/movie/dev/schema/v1.json",
+  "data": [
+    {
+      "logo": "图标",
+      "name": "名称",
+      "desc": "说明",
+      "api": {
+        "root": "根域名",
+        "path": "路径"
+      },
+      "nsfw": true,
+      "jiexiUrl": "解析地址",
+      "id": "id" // 填了没用, 会自动生成id
+    }
+  ]
+}
+```
