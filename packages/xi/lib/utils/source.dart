@@ -151,26 +151,29 @@ class SourceUtils {
         }).toList();
         return tryParseDynamic(cacheAsMap);
       } else {
-        var bindKey = 'mirrors';
+        // 如果是对象, 则尝试解析 .data / .mirrors 节点
+        var _rootKeys = ['mirrors', 'data'];
         var jsonDataAsMap = jsonData as Map<String, dynamic>;
-        if (jsonDataAsMap.containsKey(bindKey)) {
-          var cache = jsonDataAsMap[bindKey];
-          if (cache is List) {
-            List<Map<String, dynamic>> cacheAsMapList = cache
-                .map((item) {
-                  if (item is Map<String, dynamic>) return item;
-                  return null;
-                })
-                .toList()
-                .where((element) {
-                  return element != null;
-                })
-                .toList()
-                .map((e) {
-                  return e as Map<String, dynamic>;
-                })
-                .toList();
-            return tryParseDynamic(cacheAsMapList);
+        for (var key in _rootKeys) {
+          if (jsonDataAsMap.containsKey(key)) {
+            var cache = jsonDataAsMap[key];
+            if (cache is List) {
+              List<Map<String, dynamic>> cacheAsMapList = cache
+                  .map((item) {
+                    if (item is Map<String, dynamic>) return item;
+                    return null;
+                  })
+                  .toList()
+                  .where((element) {
+                    return element != null;
+                  })
+                  .toList()
+                  .map((e) {
+                    return e as Map<String, dynamic>;
+                  })
+                  .toList();
+              return tryParseDynamic(cacheAsMapList);
+            }
           }
         }
         return tryParseDynamic(jsonDataAsMap);
