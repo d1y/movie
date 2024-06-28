@@ -182,6 +182,12 @@ class _IndexHomeViewState extends State<IndexHomeView>
             // ctrl-n
             const SingleActivator(LogicalKeyboardKey.keyN, control: true):
                 ScrollDownIntent(),
+            // ctrl-k
+            const SingleActivator(LogicalKeyboardKey.keyK, control: true):
+                ScrollUpIntent(),
+            // ctrl-j
+            const SingleActivator(LogicalKeyboardKey.keyJ, control: true):
+                ScrollDownIntent(),
             // cmd-[
             const SingleActivator(LogicalKeyboardKey.bracketLeft, meta: true):
                 CategoryPrevIntent(),

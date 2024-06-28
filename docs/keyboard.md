@@ -9,6 +9,8 @@
 - `cmd + shift + ]`: 切换下一个 tabbar
 - `ctrl + p`: 向上滚动
 - `ctrl + n`: 向下滚动
+- `ctrl + k`: 向上滚动
+- `ctrl + j`: 向下滚动
 
 ## 详情
 
