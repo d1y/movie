@@ -139,6 +139,7 @@ class HomeView extends GetView<HomeController> {
           bottomNavigationBar: BottomAppBar(
             elevation: 0,
             color: color,
+            padding: EdgeInsets.zero,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               child: SizedBox(
