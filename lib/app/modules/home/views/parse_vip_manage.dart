@@ -1,9 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jsonc/jsonc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:get/get.dart';
@@ -326,7 +326,7 @@ class _ParseVipAddDialogState extends State<ParseVipAddDialog> {
             }
           }
         } else if (jsonType == JSONBodyType.obj) {
-          var onceData = ParseIsarModel.fromJson(json.decode(content));
+          var onceData = ParseIsarModel.fromJson(jsonc.decode(content));
           var canBeNext = isURL(onceData.url);
           var point = canBeNext ? KStatusCounter.success : KStatusCounter.fail;
           statusCounter[point.index]++;

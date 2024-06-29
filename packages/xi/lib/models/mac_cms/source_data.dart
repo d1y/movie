@@ -1,25 +1,4 @@
-// To parse this JSON data, do
-//
-//     final sourceJsonData = sourceJsonDataFromJson(jsonString);
-
-import 'dart:convert';
-
 import '../../utils/xid.dart';
-
-List<SourceJsonData> sourceJsonDataFromJson(String str) =>
-    List<SourceJsonData>.from(
-      json.decode(str).map(
-            (x) => SourceJsonData.fromJson(x),
-          ),
-    );
-
-String sourceJsonDataToJson(List<SourceJsonData> data) => json.encode(
-      List<dynamic>.from(
-        data.map(
-          (x) => x.toJson(),
-        ),
-      ),
-    );
 
 class SourceJsonData {
   SourceJsonData({

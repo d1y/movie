@@ -1,7 +1,6 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:jsonc/jsonc.dart';
 import 'package:xi/adapters/mac_cms.dart';
 import 'package:xi/xi.dart';
 import 'package:xi/models/mac_cms/source_data.dart';
@@ -143,7 +142,7 @@ class SourceUtils {
       if (!isJSON) return null;
       var typeAs = getJSONBodyType(data);
       if (typeAs == null) return null;
-      dynamic jsonData = jsonDecode(data);
+      dynamic jsonData = jsonc.decode(data);
       if (typeAs == JSONBodyType.array) {
         List<dynamic> cache = jsonData as List<dynamic>;
         List<Map<String, dynamic>> cacheAsMap = cache.map((item) {
