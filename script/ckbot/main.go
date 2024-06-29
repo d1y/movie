@@ -16,8 +16,6 @@ import (
 	"github.com/sourcegraph/conc/pool"
 )
 
-var pornWords = newSet()
-
 // https://github.com/takayama-lily/takayamabot/blob/9b19baf835823ccc117b13744010e34e82dcd84c/bridge.js#L268C15-L268C654
 var pornWord1 = `
 %E6%AF%8D%E7%8B%97
@@ -247,12 +245,6 @@ func decodeURL(uri string) string {
 
 var ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
 
-func init() {
-	req.SetUserAgent(ua)
-	req.SetTimeout(time.Second * 6)
-	req.EnableInsecureSkipVerify()
-}
-
 // https://github.com/golang-collections/collections/blob/master/set/set.go
 type (
 	Set struct {
@@ -351,9 +343,8 @@ func isOK(body string) bool {
 	return isXML(body) || isJSON(body)
 }
 
-func getGithubIssueComments(token string) []string {
-	// hard-code
-	var url = `https://api.github.com/repos/waifu-project/movie/issues/45/comments`
+func getGithubIssueComments(owner, repo, issueID, token string) []string {
+	var url = fmt.Sprintf("https://api.github.com/repos/%s/%s/issues/%s/comments", owner, repo, issueID)
 	var githubIssueComments []GithubIssueComment
 	req.SetQueryParam("per_page", "100").SetBearerAuthToken(token).SetSuccessResult(&githubIssueComments).MustGet(url)
 	var result []string
@@ -472,17 +463,28 @@ type v1API struct {
 	Path string `json:"path"`
 }
 
-func main() {
-	cx := pool.New().WithMaxGoroutines(12 /* 3 | 6 | 9 */)
-	log.Info("开始获取评论列表")
+var pornWords = newSet()
+
+func init() {
 	for _, item := range getPornWords() {
 		if len(item) == 0 || item == "伦理片" || item == "伦理电影" || item == "sm" || item == "写真" {
 			continue
 		}
 		pornWords.Insert(item)
 	}
+	req.SetUserAgent(ua)
+	req.SetTimeout(time.Second * 6)
+	req.EnableInsecureSkipVerify()
+}
+
+func main() {
+	cx := pool.New().WithMaxGoroutines(12 /* 3 | 6 | 9 */)
+	log.Info("开始获取评论列表")
 	var token = os.Getenv("GITHUB_TOKEN")
-	var commentBody = getGithubIssueComments(token)
+	if token == "" {
+		panic("GITHUB_TOKEN 不能为空")
+	}
+	var commentBody = getGithubIssueComments("waifu-project", "movie", "45", token)
 	log.Info("获取评论列表完成")
 	var list []ParseResult
 	for _, text := range commentBody {
