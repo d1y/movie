@@ -1,12 +1,13 @@
 package main
 
 import (
+	_ "embed"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/url"
 	"os"
 	"regexp"
-	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -15,6 +16,9 @@ import (
 	"github.com/imroc/req/v3"
 	"github.com/sourcegraph/conc/pool"
 )
+
+//go:embed template.html
+var htmlTemplate string
 
 // https://github.com/takayama-lily/takayamabot/blob/9b19baf835823ccc117b13744010e34e82dcd84c/bridge.js#L268C15-L268C654
 var pornWord1 = `
@@ -315,51 +319,90 @@ func isXML(message string) bool {
 }
 
 type Result struct {
-	OK     bool
-	Time   float64
-	Reason string
-	Data   string
-	Name   string
-	Nsfw   bool
-	URL    string
+	Idx          int         `json:"idx"`    // 索引(map会丢失)
+	Parse        ParseResult `json:"parse"`  // 上下文
+	OK           bool        `json:"ok"`     // 是否可用
+	Time         float64     `json:"time"`   // 耗时
+	Reason       string      `json:"reason"` // 原因
+	Nsfw         bool        `json:"nsfw"`   // 是否是18+源
+	Data         string      `json:"-"`      // 数据(为空就行)<暂时不用>
+	ResponseType string      `json:"-"`      // 响应类型(json 或者 xml)<暂时不用>
 }
 
+type GithubUser struct {
+	Avatar   string `json:"avatar_url"`
+	Login    string `json:"login"`
+	HomePage string `json:"html_url"`
+}
+
+// 参考数据结构: https://api.github.com/repos/waifu-project/movie/issues/45/comments
 type GithubIssueComment struct {
-	Body string `json:"body"`
+	ID        uint64      `json:"id"`
+	Body      string      `json:"body"`
+	User      *GithubUser `json:"user"`
+	CreatedAt string      `json:"created_at"`
+	UpdatedAt string      `json:"updated_at"`
+	Text      []ParseResult
 }
 
-func isOK(body string) bool {
+func isOK(body string) error {
 	var cx = strings.TrimSpace(body)
 	if len(cx) == 0 {
-		return false
+		return errors.New("body 为空, 该接口无响应")
 	}
-	// 错误的魔法值
-	if cx == "err{0}" {
-		return false
+	if cx == "err{0}" { // 错误的魔法值
+		return errors.New("body 为错误值(err{0})")
 	}
 	if isHTML(cx) {
-		return false
+		return errors.New("body 为 html 格式, 不支持或者该域名已经过期")
 	}
-	return isXML(body) || isJSON(body)
+	if isXML(body) || isJSON(body) {
+		return nil
+	}
+	return errors.New("body 不是 xml 或者 json 格式")
 }
 
-func getGithubIssueComments(owner, repo, issueID, token string) []string {
+func getGithubIssueComments(owner, repo, issueID, token string) map[uint64]GithubIssueComment {
 	var url = fmt.Sprintf("https://api.github.com/repos/%s/%s/issues/%s/comments", owner, repo, issueID)
-	var githubIssueComments []GithubIssueComment
-	req.SetQueryParam("per_page", "100").SetBearerAuthToken(token).SetSuccessResult(&githubIssueComments).MustGet(url)
-	var result []string
-	for _, comment := range githubIssueComments {
-		result = append(result, comment.Body)
+	var comments []GithubIssueComment
+	req.SetQueryParam("per_page", "100").SetBearerAuthToken(token).SetSuccessResult(&comments).MustGet(url)
+	var cx = make(map[uint64]GithubIssueComment)
+	for _, comment := range comments {
+		var texts = getItemWithText(comment.Body, cx)
+		if len(texts) == 0 {
+			// 如果全是重复的为空了, 那还要个毛线啊
+			continue
+		}
+		comment.Text = texts
+		cx[comment.ID] = comment
 	}
-	return result
+	return cx
 }
 
 type ParseResult struct {
-	Text string
-	URL  string
+	Text string `json:"name"`
+	URL  string `json:"url"`
 }
 
-func getItemWithText(text string) []ParseResult {
+// 判断数组中是否包含单个
+//
+// 自动去除 / 尾部, 我怕它重复了
+func resultIncludes(list []ParseResult, val ParseResult) bool {
+	var url2 = strings.TrimSuffix(val.URL, "/")
+	for _, item := range list {
+		var url1 = strings.TrimSuffix(item.URL, "/")
+		if url1 == url2 {
+			return true
+		}
+	}
+	return false
+}
+
+func getItemWithText(text string, cx map[uint64]GithubIssueComment) []ParseResult {
+	var context []ParseResult
+	for _, comment := range cx {
+		context = append(context, comment.Text...)
+	}
 	var result []ParseResult
 	var lines = strings.Split(strings.TrimSpace(text), "\n")
 	var skip = true
@@ -382,34 +425,56 @@ func getItemWithText(text string) []ParseResult {
 		}
 		var s1 = strings.TrimSpace(ss[0])
 		var s2 = strings.TrimSpace(ss[1])
-		result = append(result, ParseResult{s1, s2})
+		var now = ParseResult{
+			Text: s1,
+			URL:  s2,
+		}
+		if resultIncludes(context, now) { //重复了就不添加
+			continue
+		}
+		result = append(result, now)
 	}
 	return result
 }
 
-func runTaskCheck(pool *pool.Pool, list []ParseResult) []Result {
+func runTaskCheck(list []ParseResult, ccTaskCount int) []Result {
+	var pool = pool.New().WithMaxGoroutines(ccTaskCount)
 	var cx sync.Map // map[int][Result]
 	for idx, item := range list {
 		pool.Go(func() {
+			var start = time.Now()
 			resp, err := req.Get(item.URL)
-			log.Info("检查资源", "名称", item.Text, "链接", item.URL)
 			var result Result
-			result.Name = item.Text
+			defer func() {
+				if r := recover(); r != nil {
+					log.Error("Recovered", "err", r)
+					result.OK = false
+					result.Reason = fmt.Sprintf("panic: %v", r)
+				}
+				result.Time = time.Since(start).Seconds() // 以秒为单位
+			}()
+			result.Idx = idx
+			result.Parse = item
+			log.Info("检查资源", "名称", item.Text, "链接", item.URL)
 			if err != nil {
 				log.Error("检查资源失败1", "名称", item.Text, "链接", item.URL, "reason", err)
+				result.Reason = err.Error()
 			} else {
 				var body, err = resp.ToString()
 				if err != nil {
-					result.OK = false
-					log.Error("检查资源失败2", "名称", item.Text, "链接", item.URL, "reason", err)
+					log.Error("解析资源body失败", "名称", item.Text, "链接", item.URL, "reason", err)
+					result.Reason = err.Error()
 				} else {
-					if isOK(body) {
+					err := isOK(body)
+					if err != nil {
+						result.Reason = err.Error()
+						log.Error("验证资源body失败", "名称", item.Text, "链接", item.URL, "reason", err)
+					} else {
 						if pornWords.Check(body) {
 							result.Nsfw = true
 						}
-						result.URL = item.URL
-						log.Info("检查资源成功", "名称", item.Text, "链接", item.URL, "NSFW", result.Nsfw)
 						result.OK = true
+						log.Info("检查资源成功", "名称", item.Text, "链接", item.URL, "NSFW", result.Nsfw)
 					}
 				}
 			}
@@ -463,6 +528,78 @@ type v1API struct {
 	Path string `json:"path"`
 }
 
+type htmlDataStruct struct {
+	Data    []Result           `json:"data"`
+	Comment GithubIssueComment `json:"comment"`
+}
+type htmlStruct struct {
+	NowTime string                    `json:"now"`
+	Correct int                       `json:"correct"`
+	Err     int                       `json:"err"`
+	Data    map[uint64]htmlDataStruct `json:"data"`
+}
+
+func dumpToHTML(result map[uint64][]Result, cx map[uint64]GithubIssueComment, correct, err int) {
+	var data = make(map[uint64]htmlDataStruct)
+	for key, results := range result {
+		data[key] = htmlDataStruct{
+			Data:    results,
+			Comment: cx[key],
+		}
+	}
+	var output = htmlStruct{
+		NowTime: time.Now().Format("2006年01月02日 15时04分05秒"),
+		Data:    data,
+		Correct: correct,
+		Err:     err,
+	}
+	buf, e := json.Marshal(output)
+	if e != nil {
+		panic(err)
+	}
+	var code = string(buf)
+	var html = strings.Replace(htmlTemplate, "$$$$", code, -1)
+	var outHTML = os.Getenv("OUT_HTML")
+	if outHTML != "" {
+		os.WriteFile(outHTML, []byte(html), 0644)
+	}
+}
+
+func dumpToJSON(_result map[uint64][]Result) (int, int) {
+	var correct = 0
+	var err = 0
+	var output []v1
+	var result []Result
+	for _, val := range _result {
+		result = append(result, val...)
+	}
+	for _, val := range result {
+		if val.OK {
+			correct++
+			var cx, err = url.Parse(val.Parse.URL)
+			if err != nil {
+				panic(err)
+			}
+			var root = fmt.Sprintf("%s://%s", cx.Scheme, cx.Host)
+			var data = v1{Name: val.Parse.Text, Nsfw: val.Nsfw, API: v1API{Root: root, Path: cx.Path}, Status: true}
+			output = append(output, data)
+		} else {
+			err++
+		}
+	}
+	var humanSize = fmt.Sprintf("%d/%d", correct, len(result))
+	log.Info("检查完成", "当前可用", humanSize)
+	var outputFile = os.Getenv("OUTPUT")
+	if outputFile != "" {
+		buf, err := json.MarshalIndent(output, "", "\t")
+		if err != nil {
+			panic(err)
+		}
+		os.WriteFile(outputFile, buf, 0644)
+	}
+	return correct, err
+}
+
 var pornWords = newSet()
 
 func init() {
@@ -478,54 +615,23 @@ func init() {
 }
 
 func main() {
-	cx := pool.New().WithMaxGoroutines(12 /* 3 | 6 | 9 */)
 	log.Info("开始获取评论列表")
 	var token = os.Getenv("GITHUB_TOKEN")
 	if token == "" {
 		panic("GITHUB_TOKEN 不能为空")
 	}
-	var commentBody = getGithubIssueComments("waifu-project", "movie", "45", token)
-	log.Info("获取评论列表完成")
-	var list []ParseResult
-	for _, text := range commentBody {
-		for _, val := range getItemWithText(text) {
-			// 去重
-			if slices.ContainsFunc(list, func(r ParseResult) bool { return r.URL == val.URL }) {
-				continue
-			}
-			log.Info("添加单个资源到列表", "名称", val.Text, "链接", val.URL)
-			list = append(list, val)
-		}
+	var bodys = getGithubIssueComments("waifu-project", "movie", "45", token)
+	if len(bodys) == 0 {
+		panic("从 github 评论中未获取到资源")
 	}
-	if len(list) == 0 {
-		log.Error("从 github 评论中未获取到资源")
+	log.Infof("获取评论列表完成(解析到%d条评论)\n", len(bodys))
+	var result = make(map[uint64][]Result)
+	for _, item := range bodys {
+		log.Info("开始检查资源组", "id", item.ID, "数量", len(item.Text))
+		var data = runTaskCheck(item.Text, 12)
+		result[item.ID] = data
 	}
-	log.Info("开始检查资源(共", len(list), "个)")
-	var result = runTaskCheck(cx, list)
-	var correct = 0
-	var err = 0
-	var output []v1
-	for _, val := range result {
-		if val.OK {
-			correct++
-			var cx, err = url.Parse(val.URL)
-			if err != nil {
-				panic(err)
-			}
-			var root = fmt.Sprintf("%s://%s", cx.Scheme, cx.Host)
-			var data = v1{Name: val.Name, Nsfw: val.Nsfw, API: v1API{Root: root, Path: cx.Path}, Status: true}
-			output = append(output, data)
-		} else {
-			err++
-		}
-	}
-	log.Info("检查完成", "可用", correct, "不可用", err)
-	var outputFile = os.Getenv("OUTPUT")
-	if outputFile != "" {
-		buf, err := json.MarshalIndent(output, "", "\t")
-		if err != nil {
-			panic(err)
-		}
-		os.WriteFile(outputFile, buf, 0644)
-	}
+	var correct, err = dumpToJSON(result)
+	dumpToHTML(result, bodys, correct, err)
+	log.Info("完成")
 }
