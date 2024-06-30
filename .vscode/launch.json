@@ -15,6 +15,17 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
-    }
+    },
+    {
+      "name": "ck-debug",
+      "cwd": "${workspaceFolder}/script/ckbot",
+      "request": "launch",
+      "type": "go",
+      "mode": "auto",
+      "program": "script/ckbot/main.go",
+      "env": {
+        "GITHUB_TOKEN":"大傻春你在干什么"
+      }
+    },
   ]
 }
