@@ -15,10 +15,22 @@
     },
     {
       "type": "shell",
-      "label": "build to macos and install",
+      "label": "build to macOS and install",
       "command": "bash",
       "args": [
         "script/bundle-mac"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "type": "shell",
+      "label": "build to iOS",
+      "command": "bash",
+      "args": [
+        "script/bundle-ios"
       ],
       "group": {
         "kind": "build",
