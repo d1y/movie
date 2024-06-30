@@ -61,6 +61,10 @@ class IsarRepository {
     if (isar.settingsIsarModels.countSync() <= 0) {
       debugPrint("[logger] 初始化设置");
       var defaultSetting = SettingsIsarModel();
+      if (defaultSetting.mirrorTextarea.isEmpty) {
+        defaultSetting.mirrorTextarea =
+            "https://cdn.jsdelivr.net/gh/waifu-project/v1@latest/yoyo.json";
+      }
       isar.writeTxnSync(() {
         isar.settingsIsarModels.putSync(defaultSetting);
       });
