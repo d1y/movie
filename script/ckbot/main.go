@@ -569,6 +569,8 @@ type htmlStruct struct {
 	Data    map[uint64]htmlDataStruct `json:"data"`
 }
 
+var cstSh, _ = time.LoadLocation("Asia/Shanghai")
+
 func dumpToHTML(result map[uint64][]Result, cx map[uint64]GithubIssueComment, correct, err int) {
 	var data = make(map[uint64]htmlDataStruct)
 	for key, results := range result {
@@ -578,7 +580,7 @@ func dumpToHTML(result map[uint64][]Result, cx map[uint64]GithubIssueComment, co
 		}
 	}
 	var output = htmlStruct{
-		NowTime: time.Now().Format("2006年01月02日 15时04分05秒"),
+		NowTime: time.Now().In(cstSh).Format("2006年01月02日 15时04分05秒"),
 		Data:    data,
 		Correct: correct,
 		Err:     err,
