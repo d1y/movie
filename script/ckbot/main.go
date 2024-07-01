@@ -322,7 +322,7 @@ type Result struct {
 	Idx          int         `json:"idx"`    // 索引(map会丢失)
 	Parse        ParseResult `json:"parse"`  // 上下文
 	OK           bool        `json:"ok"`     // 是否可用
-	Time         float64     `json:"time"`   // 耗时
+	Time         string      `json:"time"`   // 耗时
 	Reason       string      `json:"reason"` // 原因
 	Nsfw         bool        `json:"nsfw"`   // 是否是18+源
 	Data         string      `json:"-"`      // 数据(为空就行)<暂时不用>
@@ -443,7 +443,6 @@ func runTaskCheck(list []ParseResult, ccTaskCount int) []Result {
 	for idx, item := range list {
 		pool.Go(func() {
 			var start = time.Now()
-			resp, err := req.Get(item.URL)
 			var result Result
 			defer func() {
 				if r := recover(); r != nil {
@@ -451,8 +450,8 @@ func runTaskCheck(list []ParseResult, ccTaskCount int) []Result {
 					result.OK = false
 					result.Reason = fmt.Sprintf("panic: %v", r)
 				}
-				result.Time = time.Since(start).Seconds() // 以秒为单位
 			}()
+			resp, err := req.Get(item.URL)
 			result.Idx = idx
 			result.Parse = item
 			log.Info("检查资源", "名称", item.Text, "链接", item.URL)
@@ -478,6 +477,8 @@ func runTaskCheck(list []ParseResult, ccTaskCount int) []Result {
 					}
 				}
 			}
+			var s = time.Since(start).Seconds()
+			result.Time = fmt.Sprintf("%.2f", s)
 			cx.Store(idx, result)
 		})
 	}
