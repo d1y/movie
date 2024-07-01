@@ -15,7 +15,7 @@
 ![](https://img.shields.io/badge/Windows-0078D6?style=flat&logo=windows&logoColor=white)
 ![](https://img.shields.io/badge/Android-3DDC84?style=flat&logo=android&logoColor=white)
 
-支持自定义源, 可自行添加源
+支持自定义源, 可自行添加源, 官方源参考: https://github.com/waifu-project/movie/issues/45
 
 TG吹水裙(有源分享): https://t.me/+xub6INGSHqczN2Jl
 
