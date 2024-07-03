@@ -67,7 +67,7 @@ class XHttp {
   }
 
   /// 初始化dio
-  static Future<void> init() async {
+  static Future<void> init({ enableLog = false }) async {
     /// 初始化cookie
     var value = await PathUtils.getDocumentsDirPath();
     var cookieJar = PersistCookieJar(
@@ -78,8 +78,7 @@ class XHttp {
     dio.interceptors
         .add(DioCacheInterceptor(options: kHttpCacheMiddlewareOptions));
 
-    // ignore: dead_code
-    if (false) {
+    if (enableLog) {
       dio.interceptors.add(
         AwesomeDioInterceptor(
           logRequestTimeout: false,
