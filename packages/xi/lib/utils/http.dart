@@ -12,6 +12,9 @@ import 'path.dart';
 /// dio http 请求库缓存时间
 const kHttpCacheTime = Duration(hours: 2);
 
+const kConnectTimeout = Duration(seconds: 12);
+const kReceiveTimeout = Duration(seconds: 12);
+
 /// 默认所有的 `dio-http` 请求都持久化话([kHttpCacheTime])
 ///
 /// 此扩展可以修改 `options` 控制缓存行为
@@ -53,12 +56,14 @@ class XHttp {
     receiveTimeout: const Duration(seconds: 13),
   ));
 
-  static changeTimeout({
-    int connectTimeout = 15,
-    int receiveTimeout = 13,
-  }) {
-    dio.options.connectTimeout = Duration(seconds: connectTimeout);
-    dio.options.receiveTimeout = Duration(seconds: receiveTimeout);
+  static setDefaultTImeout() {
+    dio.options.connectTimeout = kConnectTimeout;
+    dio.options.receiveTimeout = kReceiveTimeout;
+  }
+
+  static setTimeout(int connect, int receive) {
+    dio.options.connectTimeout = Duration(seconds: connect);
+    dio.options.receiveTimeout = Duration(seconds: receive);
   }
 
   /// 初始化dio

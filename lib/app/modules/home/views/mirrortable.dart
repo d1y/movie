@@ -130,7 +130,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
   handleClickSubMenu(MenuActionType action) async {
     switch (action) {
       case MenuActionType.check:
-        XHttp.changeTimeout(connectTimeout: 1200, receiveTimeout: 1200);
+        XHttp.setTimeout(24, 24);
         bool? checkCanDone = await showCupertinoDialog(
           barrierDismissible: false,
           context: context,
@@ -141,7 +141,7 @@ class _MirrorTableViewState extends State<MirrorTableView> {
             );
           },
         );
-        XHttp.changeTimeout();
+        XHttp.setDefaultTImeout();
         if (checkCanDone ?? false) {
           updateMirrorStatusMap();
         }
