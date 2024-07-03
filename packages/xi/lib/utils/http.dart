@@ -94,26 +94,24 @@ class XHttp {
     );
   }
 
-  /// get请求
-  static Future get(String url, [Map<String, dynamic>? params]) async {
+  static Future<T> get<T>(String url, [Map<String, dynamic>? params]) async {
     Response response;
     if (params != null) {
-      response = await dio.get(url, queryParameters: params);
+      response = await dio.get<T>(url, queryParameters: params);
     } else {
-      response = await dio.get(url);
+      response = await dio.get<T>(url);
     }
     return response.data;
   }
 
-  /// post 表单请求
-  static Future post(String url, [Map<String, dynamic>? params]) async {
-    Response response = await dio.post(url, queryParameters: params);
+  static Future<T> post<T>(String url, [Map<String, dynamic>? params]) async {
+    Response response = await dio.post<T>(url, queryParameters: params);
     return response.data;
   }
 
-  /// post body请求
-  static Future postJson(String url, [Map<String, dynamic>? data]) async {
-    Response response = await dio.post(url, data: data);
+  static Future<T> postWithBody<T>(String url,
+      [Map<String, dynamic>? data]) async {
+    Response response = await dio.post<T>(url, data: data);
     return response.data;
   }
 }
