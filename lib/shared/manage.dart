@@ -22,9 +22,7 @@ class SpiderManage {
 
   /// 内建支持的源
   /// 一般是需要自己去实现的源
-  static List<ISpiderAdapter> builtin = [
-    ffzy,
-  ];
+  static List<ISpiderAdapter> builtin = list$;
 
   /// 合并之后的数据
   static List<ISpiderAdapter> get data {
