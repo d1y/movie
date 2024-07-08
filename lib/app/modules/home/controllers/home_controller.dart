@@ -11,6 +11,7 @@ import 'package:movie/app/shared/mirror_status_stack.dart';
 import 'package:movie/shared/manage.dart';
 import 'package:movie/isar/schema/parse_schema.dart';
 import 'package:movie/shared/enum.dart';
+import 'package:protocol_handler/protocol_handler.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import 'package:movie/app/extension.dart';
@@ -43,7 +44,8 @@ Function _showLoading(String msg) {
   return EasyLoading.dismiss;
 }
 
-class HomeController extends GetxController with WidgetsBindingObserver {
+class HomeController extends GetxController
+    with WidgetsBindingObserver, ProtocolListener {
   final FocusScopeNode focusNode = FocusScopeNode();
   final FocusNode homeFocusNode = FocusNode();
 
@@ -51,10 +53,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   var currentBarIndex = 0;
 
-  PageController currentBarController = PageController(
-    initialPage: 0,
-    keepPage: true,
-  );
+  var currentBarController = PageController(initialPage: 0, keepPage: true);
 
   int _currentParseVipIndex = 0;
   List<ParseIsarModel> _parseVipList = [];
@@ -66,6 +65,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }
     return parseVipList[currentParseVipIndex];
   }
+
+  final searchBarController = SearchBarController<VideoDetail>();
 
   final mirrorCategoryPool = MirrorCategoryPool();
 
@@ -351,7 +352,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   @override
   void onInit() {
-    super.onInit();
+    protocolHandler.addListener(this);
     updateWindowLastSize();
     WidgetsBinding.instance.addObserver(this);
     updateNsfwSetting();
@@ -360,6 +361,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     updateHomeData(isFirst: true);
     initCacheMirrorTableScrollControllerOffset();
     initMovieParseVipList();
+    super.onInit();
   }
 
   updateWindowLastSize() {
@@ -504,6 +506,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   @override
   void onClose() {
     WidgetsBinding.instance.removeObserver(this);
+    protocolHandler.removeListener(this);
   }
 
   @override
@@ -546,6 +549,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     update();
   }
 
-  final SearchBarController<VideoDetail> searchBarController =
-      SearchBarController<VideoDetail>();
+  @override
+  onProtocolUrlReceived(String url) {
+    debugPrint("url is $url");
+  }
 }
