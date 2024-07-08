@@ -6,6 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:movie/isar/repo.dart';
 import 'package:movie/shared/auto_injector.dart';
+import 'package:protocol_handler/protocol_handler.dart';
 import 'package:xi/utils/helper.dart';
 import 'package:xi/utils/http.dart';
 import 'shared/manage.dart';
@@ -32,6 +33,10 @@ ThemeData applyTheme({isDark = true}) {
 /// 返回当前主题 -> [ThemeMode]
 Future<ThemeMode> runBefore() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Register a custom protocol
+  // For macOS platform needs to declare the scheme in ios/Runner/Info.plist
+  await protocolHandler.register('yoyo');
+
   await XHttp.init();
   await IsarRepository().init();
   await SpiderManage.init();
