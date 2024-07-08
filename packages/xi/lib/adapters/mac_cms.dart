@@ -5,7 +5,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:xi/xi.dart';
 import '../models/mac_cms/xml_data.dart';
 import '../models/mac_cms/xml_search_data.dart';

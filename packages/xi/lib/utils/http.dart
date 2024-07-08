@@ -67,7 +67,7 @@ class XHttp {
   }
 
   /// 初始化dio
-  static Future<void> init({ enableLog = false }) async {
+  static Future<void> init({enableLog = false}) async {
     /// 初始化cookie
     var value = await PathUtils.getDocumentsDirPath();
     var cookieJar = PersistCookieJar(
