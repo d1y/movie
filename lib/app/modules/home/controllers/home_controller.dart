@@ -1,5 +1,6 @@
 import 'package:command_palette/command_palette.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:movie/app/modules/home/views/mirrortable.dart';
 import 'package:movie/app/shared/mirror_category.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
+import 'package:movie/isar/repo.dart';
 import 'package:movie/shared/manage.dart';
 import 'package:movie/isar/schema/parse_schema.dart';
 import 'package:movie/shared/enum.dart';
@@ -311,25 +313,29 @@ class HomeController extends GetxController
   }
 
   bool addMovieParseVip(dynamic model) {
-    bool tryBetter = false;
+    bool isOK = false;
     if (model is List<ParseIsarModel>) {
       _parseVipList.addAll(model);
       _currentParseVipIndex = 0;
-      tryBetter = true;
+      isOK = true;
     } else if (model is ParseIsarModel) {
       _parseVipList.insert(0, model);
       if (_parseVipList.length >= 2) {
         _currentParseVipIndex++;
       }
-      tryBetter = true;
+      isOK = true;
+    } else if (model is List<String>) {
+      var m = ParseIsarModel(model[0], model[1]);
+      _parseVipList.insert(0, m);
+      isOK = true;
     }
-    if (tryBetter) {
+    if (isOK) {
       update();
       isarInstance.writeTxnSync(() {
         parseAs.putAllSync(_parseVipList);
       });
     }
-    return tryBetter;
+    return isOK;
   }
 
   removeMovieParseVipOnce(int index) {
@@ -549,8 +555,146 @@ class HomeController extends GetxController
     update();
   }
 
+  void clearCache() async {
+    await SpiderManage.cleanAll();
+    easyCleanCacheHook();
+    IsarRepository().safeWrite(() {
+      isarInstance.clearSync();
+    });
+  }
+
+  bool _isProtocolUrlReceived = false;
+
+  /// unstable method
+  ///
+  /// 嘛钱不钱的，乐呵乐呵得了。
+  /// ![mmp](http://k.sinaimg.cn/n/translate/288/w662h426/20190916/a339-ietnfsp5148644.jpg/w700d1q75cms.jpg)
+  Future<bool> confirmAlert(
+    String content, {
+    BuildContext? context,
+    showCancel = true,
+    title = "提示",
+    cancelText = "取消",
+    confirmText = "确认",
+  }) async {
+    late BuildContext cx;
+    if (context != null) {
+      cx = context;
+    } else {
+      // 怎么可能为空? 我觉得这是一种自信
+      // https://steamcommunity.com/sharedfiles/filedetails/?id=2899834211
+      cx = Get.context!;
+    }
+    var flag = await showCupertinoDialog<bool>(
+      context: cx,
+      builder: (ctx) {
+        return CupertinoAlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: <CupertinoDialogAction>[
+            if (showCancel)
+              CupertinoDialogAction(
+                child: Text(
+                  cancelText,
+                  style: const TextStyle(
+                    color: Colors.red,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(ctx).pop(false);
+                },
+              ),
+            CupertinoDialogAction(
+              isDestructiveAction: true,
+              onPressed: () {
+                Navigator.of(ctx).pop(true);
+              },
+              child: Text(confirmText),
+            )
+          ],
+        );
+      },
+    );
+    if (flag == null || !flag) return false;
+    return true;
+  }
+
   @override
-  onProtocolUrlReceived(String url) {
-    debugPrint("url is $url");
+  onProtocolUrlReceived(String url) async {
+    // https://github.com/waifu-project/movie/pull/50
+    if (_isProtocolUrlReceived) return;
+    _isProtocolUrlReceived = true;
+    var cx = Uri.tryParse(url);
+    if (cx == null) return;
+    var authority = cx.authority;
+    var qs = cx.queryParameters;
+    var realURL = qs["url"] ?? "";
+    if (realURL.isNotEmpty) {
+      realURL = decodeURL(realURL);
+    }
+    switch (authority) {
+      case "reset":
+        var flag = await confirmAlert("重置后将清空缓存, 包括视频源和一些设置");
+        if (!flag) break;
+        clearCache();
+        await confirmAlert(
+          "已删除缓存, 部分内容重启之后生效!",
+          showCancel: false,
+          confirmText: "我知道了",
+        );
+        break;
+      case "sub":
+        if (realURL.isEmpty || !realURL.isURL) {
+          break; // TODO: need show error toast
+        }
+        var flag = await confirmAlert("将添加订阅源: $realURL");
+        if (!flag) break;
+        List<String> text =
+            getSettingAsKeyIdent(SettingsAllKey.mirrorTextarea).split("\n");
+        if (text.contains(realURL) /* 重复了*/) break;
+        text.add(realURL);
+        var newText = text.join(realURL);
+        updateSetting(SettingsAllKey.mirrorTextarea, newText);
+        await confirmAlert(
+          "已添加订阅源, 添加之后请在 设置->视频源 更新配置",
+          showCancel: false,
+          confirmText: "我知道了",
+        );
+        break;
+      case "jiexi":
+        var name = qs['name'] ?? "";
+        if (realURL.isEmpty || !realURL.isURL || name.isEmpty) break;
+        var flag = await confirmAlert("将添加解析源: $realURL");
+        if (!flag) break;
+        List<String> model = [name, realURL];
+        // 默认添加到 0 位置, 但还是需要手动设置默认才行!
+        if (!addMovieParseVip(model)) {
+          // 理论上不可能哈
+        }
+        await confirmAlert(
+          "已添加解析源, 要启用请在 设置->解析源管理中 更新配置",
+          showCancel: false,
+          confirmText: "我知道了",
+        );
+        break;
+      case "nsfw":
+        int nsfw = int.tryParse(qs["enable"] ?? "") ?? 0;
+        if (nsfw == 1) {
+          isNsfw = true;
+        } else {
+          isNsfw = false;
+        }
+        break;
+      case "search":
+        // TODO: 我需要这种东西吗?
+        break;
+      default:
+        confirmAlert(
+          "未知协议: $authority",
+          showCancel: false,
+          confirmText: "我知道了",
+        );
+    }
+    _isProtocolUrlReceived = false;
   }
 }

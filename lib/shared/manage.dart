@@ -158,7 +158,7 @@ class SpiderManage {
     mergeSpider(to);
   }
 
-  static Future<void> mergeSpider(List<SourceJsonData> data) async {
+  static mergeSpider(List<SourceJsonData> data) {
     var output = data.map((item) {
       var api = MirrorApiIsardModel();
       api.root = item.api?.root ?? "";

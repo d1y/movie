@@ -13,7 +13,6 @@ import 'package:movie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:movie/app/modules/home/views/source_help.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/git_info.dart';
-import 'package:movie/isar/repo.dart';
 import 'package:movie/shared/enum.dart';
 import 'package:movie/shared/manage.dart';
 import 'package:movie/app/modules/home/views/cupertino_license.dart';
@@ -253,31 +252,12 @@ class _SettingsViewState extends State<SettingsView> {
     home.macosPlayUseIINA = newVal;
   }
 
-  handleCleanCache() async {
-    SpiderManage.cleanAll();
-    home.easyCleanCacheHook();
-    _editingController.text = "";
-    IsarRepository().safeWrite(() {
-      isarInstance.clearSync();
-    });
-    Get.back();
-    showCupertinoDialog(
-      builder: (context) => CupertinoAlertDialog(
-        content: const Text("已删除缓存, 部分内容重启之后生效!"),
-        actions: [
-          CupertinoDialogAction(
-            child: const Text(
-              '我知道了',
-              style: TextStyle(
-                color: Colors.red,
-              ),
-            ),
-            onPressed: () {
-              Get.back();
-            },
-          ),
-        ],
-      ),
+  handleCleanCache() {
+    home.clearCache();
+    home.confirmAlert(
+      "已删除缓存, 部分内容重启之后生效!",
+      showCancel: false,
+      confirmText: "我知道了",
       context: context,
     );
   }
@@ -512,12 +492,15 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                     CupertinoDialogAction(
                       isDestructiveAction: true,
-                      onPressed: handleCleanCache,
+                      onPressed: () {
+                        Get.back();
+                        handleCleanCache();
+                      },
                       child: const Text(
                         '确定',
                         style: TextStyle(color: Colors.blue),
                       ),
-                    )
+                    ),
                   ],
                 ),
                 context: ctx,
