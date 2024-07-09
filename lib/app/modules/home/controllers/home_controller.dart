@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:movie/app/modules/home/views/mirrortable.dart';
+import 'package:movie/app/shared/bus.dart';
 import 'package:movie/app/shared/mirror_category.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
 import 'package:movie/isar/repo.dart';
@@ -679,15 +680,18 @@ class HomeController extends GetxController
         break;
       case "nsfw":
         int nsfw = int.tryParse(qs["enable"] ?? "") ?? 0;
-        if (nsfw == 1) {
-          isNsfw = true;
-        } else {
-          isNsfw = false;
-        }
+        var enable = nsfw == 1;
+        var flag = await confirmAlert("将${enable ? '开启' : '关闭'}nsfw设置");
+        if (!flag) break;
+        isNsfw = enable;
+        $bus.fire(SettingEvent(nsfw: enable));
+        await confirmAlert(
+          "已更新nsfw设置",
+          showCancel: false,
+          confirmText: "我知道了",
+        );
         break;
-      case "search":
-        // TODO: 我需要这种东西吗?
-        break;
+      // case "search":
       default:
         confirmAlert(
           "未知协议: $authority",

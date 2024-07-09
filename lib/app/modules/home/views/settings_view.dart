@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ import 'package:movie/app/extension.dart';
 import 'package:movie/app/modules/home/controllers/home_controller.dart';
 import 'package:movie/app/modules/home/views/parse_vip_manage.dart';
 import 'package:movie/app/modules/home/views/source_help.dart';
+import 'package:movie/app/shared/bus.dart';
 import 'package:movie/app/widget/window_appbar.dart';
 import 'package:movie/git_info.dart';
 import 'package:movie/shared/enum.dart';
@@ -46,6 +49,8 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   final HomeController home = Get.find<HomeController>();
+
+  late StreamSubscription $$bus;
 
   Future<String> loadAsset() async {
     return await rootBundle.loadString('assets/data/source_help.txt');
@@ -105,13 +110,25 @@ class _SettingsViewState extends State<SettingsView> {
     });
     loadSourceHelp();
     addMirrorMangerTextareaLister();
+    $$bus = $bus.on<SettingEvent>().listen((event) {
+      updateNSFW(event.nsfw, onlyUpdate: true);
+    });
     super.initState();
   }
 
   @override
   void dispose() {
     _editingController.dispose();
+    $$bus.cancel();
     super.dispose();
+  }
+
+  updateNSFW(bool flag, {bool onlyUpdate = false}) {
+    home.isNsfw = flag;
+    if (!onlyUpdate) {
+      showNSFW = flag;
+    }
+    home.update();
   }
 
   addMirrorMangerTextareaLister() {
@@ -416,15 +433,11 @@ class _SettingsViewState extends State<SettingsView> {
                           ),
                         );
                         if (result == GetBackResultType.success) {
-                          home.isNsfw = true;
-                          showNSFW = true;
-                          home.update();
+                          updateNSFW(true);
                           return;
                         }
                       }
-                      showNSFW = false;
-                      home.isNsfw = false;
-                      home.update();
+                      updateNSFW(false);
                     },
                   ),
                   style: const CSWidgetStyle(
