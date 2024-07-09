@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"math/rand"
 	"net/url"
 	"os"
 	"strings"
@@ -310,23 +309,6 @@ func isXML(body string) bool {
 	return docStart == "<?xml"
 }
 
-var (
-	source = rand.NewSource(time.Now().UnixNano())
-	random = rand.New(source)
-)
-
-// standard characters used by uniuri
-const letterBytes = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-
-// from https://stackoverflow.com/a/31832326
-func randomString(n int) string {
-	b := make([]byte, n)
-	for i := range b {
-		b[i] = letterBytes[random.Intn(len(letterBytes))]
-	}
-	return string(b)
-}
-
 type ResponseType int
 
 const (
@@ -548,16 +530,6 @@ type v1API struct {
 	Path string `json:"path"`
 }
 
-// 参考: https://github.com/Hiram-Wong/ZyPlayer/pull/287
-type zySite struct {
-	ID     string       `json:"id"`     // id唯一值不可重复,不能数字,建议 uuid
-	Name   string       `json:"name"`   // 名称
-	API    string       `json:"api"`    // 站点源地址
-	Search int          `json:"search"` // 0:关闭 1:聚合搜索 2:本站搜索
-	Group  string       `json:"group"`  // 分组
-	Type   ResponseType `json:"type"`   // 接口类型
-}
-
 type htmlDataStruct struct {
 	Data    []Result           `json:"data"`
 	Comment GithubIssueComment `json:"comment"`
@@ -602,7 +574,6 @@ func dumpToJSON(_result map[uint64][]Result) (int, int) {
 	var err = 0
 	var pipe []Result
 	var yoyoJSON []v1
-	var zySites []zySite
 
 	{
 		for _, val := range _result {
@@ -615,19 +586,9 @@ func dumpToJSON(_result map[uint64][]Result) (int, int) {
 				if err != nil {
 					panic(err)
 				}
-				{
-					var root = fmt.Sprintf("%s://%s", cx.Scheme, cx.Host)
-					var data = v1{Name: val.Parse.Text, Nsfw: val.Nsfw, API: v1API{Root: root, Path: cx.Path}, Status: true}
-					yoyoJSON = append(yoyoJSON, data)
-				}
-				{
-					var id = randomString(8)
-					var data = zySite{ID: id, Name: val.Parse.Text, API: val.Parse.URL, Type: val.Type}
-					if val.Nsfw {
-						data.Group = "18🈲"
-					}
-					zySites = append(zySites, data)
-				}
+				var root = fmt.Sprintf("%s://%s", cx.Scheme, cx.Host)
+				var data = v1{Name: val.Parse.Text, Nsfw: val.Nsfw, API: v1API{Root: root, Path: cx.Path}, Status: true}
+				yoyoJSON = append(yoyoJSON, data)
 			} else {
 				err++
 			}
@@ -637,28 +598,15 @@ func dumpToJSON(_result map[uint64][]Result) (int, int) {
 	var humanSize = fmt.Sprintf("%d/%d", correct, len(pipe))
 	log.Info("检查完成", "当前可用", humanSize)
 
-	{
-		var zy = make(map[string]any)
-		var sites = make(map[string]any)
-		sites["default"] = zySites[0].ID
-		sites["data"] = zySites
-		zy["$schema"] = "https://raw.githubusercontent.com/Hiram-Wong/ZyPlayer/main/schema/easy.json"
-		zy["sites"] = sites
-		var list = []struct {
-			Data any
-			Key  string
-		}{{yoyoJSON, "OUTPUT"}, {zy, "OUTPUT_ZY"}}
-		for _, item := range list {
-			var file = os.Getenv(item.Key)
-			if file != "" {
-				cx, err := json.MarshalIndent(item.Data, "", "\t")
-				if err != nil {
-					panic(err)
-				}
-				os.WriteFile(file, cx, 0644)
-			}
+	var file = os.Getenv("OUTPUT")
+	if file != "" {
+		cx, err := json.MarshalIndent(yoyoJSON, "", "\t")
+		if err != nil {
+			panic(err)
 		}
+		os.WriteFile(file, cx, 0644)
 	}
+
 	return correct, err
 }
 
