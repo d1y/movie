@@ -18,6 +18,7 @@ import 'package:protocol_handler/protocol_handler.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import 'package:movie/app/extension.dart';
+import 'package:window_manager/window_manager.dart';
 import 'package:xi/xi.dart';
 
 const kAllCategoryPoint = '-114514';
@@ -622,6 +623,10 @@ class HomeController extends GetxController
 
   @override
   onProtocolUrlReceived(String url) async {
+    if (GetPlatform.isDesktop) {
+      await windowManager.show();
+      await windowManager.focus();
+    }
     // https://github.com/waifu-project/movie/pull/50
     if (_isProtocolUrlReceived) return;
     _isProtocolUrlReceived = true;

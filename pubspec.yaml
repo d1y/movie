@@ -71,6 +71,7 @@ dependencies:
   csslib: ^1.0.0
   protocol_handler: ^0.2.0
   event_bus: ^2.0.0
+  window_manager: ^0.3.9
 
 dev_dependencies:
   flutter_test:
