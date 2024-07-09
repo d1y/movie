@@ -5,8 +5,6 @@
 ## yoyo
 支持自定义源的轻量级视频播放器
 
-<!--[![yyrelease](https://github.com/waifu-project/movie/actions/workflows/release.yml/badge.svg)](https://github.com/waifu-project/movie/actions/workflows/release.yml)-->
-
 使用 `Flutter` 构建, 支持 `Android` | `Windows` | `Macos` | `iOS` | `Linux`(浅浅的画个饼O(∩_∩)O)
 
 ![](https://img.shields.io/badge/macOS-000000?style=flat&logo=apple&logoColor=white)
@@ -84,6 +82,16 @@ x86_64架构: [![](https://img.shields.io/badge/-点我下载-blue?logo=github)]
 
 
 ## 小提示🥳
+
+### 为什么我的 nsfw🔞 源没有显示?
+
+因为默认禁用了啊, 你需要手动开启
+
+需要在设置中点击版本号10次, 然后开启 nsfw 即可(答案是 [2/3](https://github.com/waifu-project/movie/blob/schema/lib/app/modules/home/views/nsfwtable.dart#L11-L14))
+
+或者可以使用: yoyo://nsfw?enable=1 开启
+
+> 我们注册了一个 yoyo:// 协议, 参见 [docs/protocol.md](./docs/protocol.md)
 
 ### 桌面端有键盘快捷键吗?
 
