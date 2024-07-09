@@ -19,6 +19,7 @@ import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import 'package:movie/app/extension.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:xi/adapters/mac_cms.dart';
 import 'package:xi/xi.dart';
 
 const kAllCategoryPoint = '-114514';
@@ -639,6 +640,50 @@ class HomeController extends GetxController
       realURL = decodeURL(realURL);
     }
     switch (authority) {
+      // yoyo://import?name=非凡资源&url=http://api.ffzyapi.com/api.php/provide/vod/at/xml&nsfw=false
+      // yoyo://import?name=卧龙&url=https://collect.wolongzyw.com/api.php/provide/vod/at/json&nsfw=false
+      case "import":
+        String name = qs["name"] ?? "";
+        late bool nsfw;
+        var $qs = qs["nsfw"] ?? "false";
+        if ($qs == "true") {
+          nsfw = true;
+        } else {
+          nsfw = false;
+        }
+        var $url = Uri.parse(realURL);
+        var msg = "将添加视频源\n名称: $name\n源地址: $realURL\n类型: ${nsfw ? '18+' : '-'}";
+        var flag = await confirmAlert(msg);
+        if (!flag) break;
+        var $id = Xid().toString();
+        var cms = MacCMSSpider(
+          name: name,
+          nsfw: nsfw,
+          root_url: $url.origin,
+          api_path: $url.path,
+          id: $id,
+        );
+        if (!SpiderManage.addItem(cms)) {
+          await confirmAlert(
+            "源已经存在了, 无法添加",
+            showCancel: false,
+            confirmText: "我知道了",
+          );
+          break;
+        }
+        await confirmAlert(
+          "视频源添加成功",
+          showCancel: false,
+          confirmText: "我知道了",
+        );
+
+        /// [SpiderManage.data] 中的顺序是 <扩展 + 内建>
+        /// 所以当添加了源之后, 如果只有一个源的话(即当前添加的), 需要手动刷新一下
+        if (SpiderManage.extend.length == 1) {
+          updateHomeData(isFirst: true);
+        }
+        break;
+      // yoyo://reset
       case "reset":
         var flag = await confirmAlert("重置后将清空缓存, 包括视频源和一些设置");
         if (!flag) break;
@@ -648,18 +693,30 @@ class HomeController extends GetxController
           showCancel: false,
           confirmText: "我知道了",
         );
+        if (SpiderManage.extend.isEmpty) {
+          updateHomeData(isFirst: true);
+        }
         break;
+      // yoyo://sub?url=https://cdn.jsdelivr.net/gh/waifu-project/v1@latest/yoyo.json
+      // yoyo://sub?url=https://raw.githubusercontent.com/hd9211/Tvbox1/main/zy.json
       case "sub":
-        if (realURL.isEmpty || !realURL.isURL) {
+        if (realURL.isEmpty || Uri.tryParse(realURL) == null) {
           break; // TODO: need show error toast
         }
         var flag = await confirmAlert("将添加订阅源: $realURL");
         if (!flag) break;
         List<String> text =
             getSettingAsKeyIdent(SettingsAllKey.mirrorTextarea).split("\n");
-        if (text.contains(realURL) /* 重复了*/) break;
+        if (text.contains(realURL)) {
+          await confirmAlert(
+            "该订阅源已存在!",
+            showCancel: false,
+            confirmText: "我知道",
+          );
+          break;
+        }
         text.add(realURL);
-        var newText = text.join(realURL);
+        var newText = text.join("\n");
         updateSetting(SettingsAllKey.mirrorTextarea, newText);
         await confirmAlert(
           "已添加订阅源, 添加之后请在 设置->视频源 更新配置",
@@ -667,9 +724,10 @@ class HomeController extends GetxController
           confirmText: "我知道了",
         );
         break;
+      // yoyo://jiexi?name=云解析&url=https://yparse.ik9.cc/index.php?url=
       case "jiexi":
         var name = qs['name'] ?? "";
-        if (realURL.isEmpty || !realURL.isURL || name.isEmpty) break;
+        if (realURL.isEmpty || Uri.tryParse(realURL) == null || name.isEmpty) break;
         var flag = await confirmAlert("将添加解析源: $realURL");
         if (!flag) break;
         List<String> model = [name, realURL];
@@ -683,6 +741,7 @@ class HomeController extends GetxController
           confirmText: "我知道了",
         );
         break;
+      // yoyo://nsfw?enable=1
       case "nsfw":
         int nsfw = int.tryParse(qs["enable"] ?? "") ?? 0;
         var enable = nsfw == 1;
