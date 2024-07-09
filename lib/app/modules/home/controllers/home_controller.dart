@@ -749,11 +749,12 @@ class HomeController extends GetxController
         if (!flag) break;
         isNsfw = enable;
         $bus.fire(SettingEvent(nsfw: enable));
-        await confirmAlert(
-          "已更新nsfw设置",
-          showCancel: false,
-          confirmText: "我知道了",
-        );
+        // show simple toast
+        // await confirmAlert(
+        //   "已更新nsfw设置",
+        //   showCancel: false,
+        //   confirmText: "我知道了",
+        // );
         break;
       // case "search":
       default:
