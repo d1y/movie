@@ -257,3 +257,11 @@ bool checkInstalledIINA() {
   // if (kDebugMode) return false;
   return Directory(iinaAPP).existsSync();
 }
+
+String encodeURL(String raw) {
+  return Uri.encodeFull(raw);
+}
+
+String decodeURL(String raw) {
+  return Uri.decodeFull(raw);
+}

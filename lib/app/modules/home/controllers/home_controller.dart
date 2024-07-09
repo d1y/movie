@@ -1,19 +1,25 @@
 import 'package:command_palette/command_palette.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:isar/isar.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:movie/app/modules/home/views/mirrortable.dart';
+import 'package:movie/app/shared/bus.dart';
 import 'package:movie/app/shared/mirror_category.dart';
 import 'package:movie/app/shared/mirror_status_stack.dart';
+import 'package:movie/isar/repo.dart';
 import 'package:movie/shared/manage.dart';
 import 'package:movie/isar/schema/parse_schema.dart';
 import 'package:movie/shared/enum.dart';
+import 'package:protocol_handler/protocol_handler.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import 'package:movie/app/extension.dart';
+import 'package:window_manager/window_manager.dart';
+import 'package:xi/adapters/mac_cms.dart';
 import 'package:xi/xi.dart';
 
 const kAllCategoryPoint = '-114514';
@@ -43,7 +49,8 @@ Function _showLoading(String msg) {
   return EasyLoading.dismiss;
 }
 
-class HomeController extends GetxController with WidgetsBindingObserver {
+class HomeController extends GetxController
+    with WidgetsBindingObserver, ProtocolListener {
   final FocusScopeNode focusNode = FocusScopeNode();
   final FocusNode homeFocusNode = FocusNode();
 
@@ -51,10 +58,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   var currentBarIndex = 0;
 
-  PageController currentBarController = PageController(
-    initialPage: 0,
-    keepPage: true,
-  );
+  var currentBarController = PageController(initialPage: 0, keepPage: true);
 
   int _currentParseVipIndex = 0;
   List<ParseIsarModel> _parseVipList = [];
@@ -66,6 +70,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }
     return parseVipList[currentParseVipIndex];
   }
+
+  final searchBarController = SearchBarController<VideoDetail>();
 
   final mirrorCategoryPool = MirrorCategoryPool();
 
@@ -310,25 +316,29 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   bool addMovieParseVip(dynamic model) {
-    bool tryBetter = false;
+    bool isOK = false;
     if (model is List<ParseIsarModel>) {
       _parseVipList.addAll(model);
       _currentParseVipIndex = 0;
-      tryBetter = true;
+      isOK = true;
     } else if (model is ParseIsarModel) {
       _parseVipList.insert(0, model);
       if (_parseVipList.length >= 2) {
         _currentParseVipIndex++;
       }
-      tryBetter = true;
+      isOK = true;
+    } else if (model is List<String>) {
+      var m = ParseIsarModel(model[0], model[1]);
+      _parseVipList.insert(0, m);
+      isOK = true;
     }
-    if (tryBetter) {
+    if (isOK) {
       update();
       isarInstance.writeTxnSync(() {
         parseAs.putAllSync(_parseVipList);
       });
     }
-    return tryBetter;
+    return isOK;
   }
 
   removeMovieParseVipOnce(int index) {
@@ -351,7 +361,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   @override
   void onInit() {
-    super.onInit();
+    protocolHandler.addListener(this);
     updateWindowLastSize();
     WidgetsBinding.instance.addObserver(this);
     updateNsfwSetting();
@@ -360,6 +370,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     updateHomeData(isFirst: true);
     initCacheMirrorTableScrollControllerOffset();
     initMovieParseVipList();
+    super.onInit();
   }
 
   updateWindowLastSize() {
@@ -504,6 +515,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   @override
   void onClose() {
     WidgetsBinding.instance.removeObserver(this);
+    protocolHandler.removeListener(this);
   }
 
   @override
@@ -546,6 +558,212 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     update();
   }
 
-  final SearchBarController<VideoDetail> searchBarController =
-      SearchBarController<VideoDetail>();
+  void clearCache() async {
+    await SpiderManage.cleanAll();
+    easyCleanCacheHook();
+    IsarRepository().safeWrite(() {
+      isarInstance.clearSync();
+    });
+  }
+
+  bool _isProtocolUrlReceived = false;
+
+  /// unstable method
+  ///
+  /// 嘛钱不钱的，乐呵乐呵得了。
+  /// ![mmp](http://k.sinaimg.cn/n/translate/288/w662h426/20190916/a339-ietnfsp5148644.jpg/w700d1q75cms.jpg)
+  Future<bool> confirmAlert(
+    String content, {
+    BuildContext? context,
+    showCancel = true,
+    title = "提示",
+    cancelText = "取消",
+    confirmText = "确认",
+  }) async {
+    late BuildContext cx;
+    if (context != null) {
+      cx = context;
+    } else {
+      // 怎么可能为空? 我觉得这是一种自信
+      // https://steamcommunity.com/sharedfiles/filedetails/?id=2899834211
+      cx = Get.context!;
+    }
+    var flag = await showCupertinoDialog<bool>(
+      context: cx,
+      builder: (ctx) {
+        return CupertinoAlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: <CupertinoDialogAction>[
+            if (showCancel)
+              CupertinoDialogAction(
+                child: Text(
+                  cancelText,
+                  style: const TextStyle(
+                    color: Colors.red,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(ctx).pop(false);
+                },
+              ),
+            CupertinoDialogAction(
+              isDestructiveAction: true,
+              onPressed: () {
+                Navigator.of(ctx).pop(true);
+              },
+              child: Text(confirmText),
+            )
+          ],
+        );
+      },
+    );
+    if (flag == null || !flag) return false;
+    return true;
+  }
+
+  @override
+  onProtocolUrlReceived(String url) async {
+    if (GetPlatform.isDesktop) {
+      await windowManager.show();
+      await windowManager.focus();
+    }
+    // https://github.com/waifu-project/movie/pull/50
+    if (_isProtocolUrlReceived) return;
+    _isProtocolUrlReceived = true;
+    var cx = Uri.tryParse(url);
+    if (cx == null) return;
+    var authority = cx.authority;
+    var qs = cx.queryParameters;
+    var realURL = qs["url"] ?? "";
+    if (realURL.isNotEmpty) {
+      realURL = decodeURL(realURL);
+    }
+    switch (authority) {
+      // yoyo://import?name=非凡资源&url=http://api.ffzyapi.com/api.php/provide/vod/at/xml&nsfw=false
+      // yoyo://import?name=卧龙&url=https://collect.wolongzyw.com/api.php/provide/vod/at/json&nsfw=false
+      case "import":
+        String name = qs["name"] ?? "";
+        late bool nsfw;
+        var $qs = qs["nsfw"] ?? "false";
+        if ($qs == "true") {
+          nsfw = true;
+        } else {
+          nsfw = false;
+        }
+        var $url = Uri.parse(realURL);
+        var msg = "将添加视频源\n名称: $name\n源地址: $realURL\n类型: ${nsfw ? '18+' : '-'}";
+        var flag = await confirmAlert(msg);
+        if (!flag) break;
+        var $id = Xid().toString();
+        var cms = MacCMSSpider(
+          name: name,
+          nsfw: nsfw,
+          root_url: $url.origin,
+          api_path: $url.path,
+          id: $id,
+        );
+        if (!SpiderManage.addItem(cms)) {
+          await confirmAlert(
+            "源已经存在了, 无法添加",
+            showCancel: false,
+            confirmText: "我知道了",
+          );
+          break;
+        }
+        await confirmAlert(
+          "视频源添加成功",
+          showCancel: false,
+          confirmText: "我知道了",
+        );
+
+        /// [SpiderManage.data] 中的顺序是 <扩展 + 内建>
+        /// 所以当添加了源之后, 如果只有一个源的话(即当前添加的), 需要手动刷新一下
+        if (SpiderManage.extend.length == 1) {
+          updateHomeData(isFirst: true);
+        }
+        break;
+      // yoyo://reset
+      case "reset":
+        var flag = await confirmAlert("重置后将清空缓存, 包括视频源和一些设置");
+        if (!flag) break;
+        clearCache();
+        await confirmAlert(
+          "已删除缓存, 部分内容重启之后生效!",
+          showCancel: false,
+          confirmText: "我知道了",
+        );
+        if (SpiderManage.extend.isEmpty) {
+          updateHomeData(isFirst: true);
+        }
+        break;
+      // yoyo://sub?url=https://cdn.jsdelivr.net/gh/waifu-project/v1@latest/yoyo.json
+      // yoyo://sub?url=https://raw.githubusercontent.com/hd9211/Tvbox1/main/zy.json
+      case "sub":
+        if (realURL.isEmpty || Uri.tryParse(realURL) == null) {
+          break; // TODO: need show error toast
+        }
+        var flag = await confirmAlert("将添加订阅源: $realURL");
+        if (!flag) break;
+        List<String> text =
+            getSettingAsKeyIdent(SettingsAllKey.mirrorTextarea).split("\n");
+        if (text.contains(realURL)) {
+          await confirmAlert(
+            "该订阅源已存在!",
+            showCancel: false,
+            confirmText: "我知道",
+          );
+          break;
+        }
+        text.add(realURL);
+        var newText = text.join("\n");
+        updateSetting(SettingsAllKey.mirrorTextarea, newText);
+        await confirmAlert(
+          "已添加订阅源, 添加之后请在 设置->视频源 更新配置",
+          showCancel: false,
+          confirmText: "我知道了",
+        );
+        break;
+      // yoyo://jiexi?name=云解析&url=https://yparse.ik9.cc/index.php?url=
+      case "jiexi":
+        var name = qs['name'] ?? "";
+        if (realURL.isEmpty || Uri.tryParse(realURL) == null || name.isEmpty) break;
+        var flag = await confirmAlert("将添加解析源: $realURL");
+        if (!flag) break;
+        List<String> model = [name, realURL];
+        // 默认添加到 0 位置, 但还是需要手动设置默认才行!
+        if (!addMovieParseVip(model)) {
+          // 理论上不可能哈
+        }
+        await confirmAlert(
+          "已添加解析源, 要启用请在 设置->解析源管理中 更新配置",
+          showCancel: false,
+          confirmText: "我知道了",
+        );
+        break;
+      // yoyo://nsfw?enable=1
+      case "nsfw":
+        int nsfw = int.tryParse(qs["enable"] ?? "") ?? 0;
+        var enable = nsfw == 1;
+        var flag = await confirmAlert("将${enable ? '开启' : '关闭'}nsfw设置");
+        if (!flag) break;
+        isNsfw = enable;
+        $bus.fire(SettingEvent(nsfw: enable));
+        // show simple toast
+        // await confirmAlert(
+        //   "已更新nsfw设置",
+        //   showCancel: false,
+        //   confirmText: "我知道了",
+        // );
+        break;
+      // case "search":
+      default:
+        confirmAlert(
+          "未知协议: $authority",
+          showCancel: false,
+          confirmText: "我知道了",
+        );
+    }
+    _isProtocolUrlReceived = false;
+  }
 }

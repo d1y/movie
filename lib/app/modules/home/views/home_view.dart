@@ -18,8 +18,6 @@ import '../controllers/home_controller.dart';
 class HomeView extends GetView<HomeController> {
   HomeView({super.key});
 
-  final HomeController home = Get.find();
-
   final List<Widget> _views = [
     const IndexHomeView(),
     const SearchView(),
@@ -44,9 +42,9 @@ class HomeView extends GetView<HomeController> {
     },
   ];
 
-  List<ISpiderAdapter> get mirror => home.mirrorList;
+  List<ISpiderAdapter> get mirror => controller.mirrorList;
 
-  int get mirrorIndex => home.mirrorIndex;
+  int get mirrorIndex => controller.mirrorIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +54,7 @@ class HomeView extends GetView<HomeController> {
         : const Color.fromRGBO(255, 255, 255, .63);
     return GetBuilder<HomeController>(
       builder: (homeview) => CommandPalette(
-        focusNode: home.focusNode,
+        focusNode: controller.focusNode,
         config: CommandPaletteConfig(
           transitionCurve: Curves.easeOutQuart,
           style: CommandPaletteStyle(
@@ -70,12 +68,12 @@ class HomeView extends GetView<HomeController> {
           ),
           showInstructions: true,
         ),
-        onTabSwitch: home.switchTabview,
+        onTabSwitch: controller.switchTabview,
         onClose: () {
           if (homeview.currentBarIndex == 0) {
             Future.delayed(const Duration(milliseconds: 100), () {
-              home.focusNode.requestFocus();
-              home.homeFocusNode.requestFocus();
+              controller.focusNode.requestFocus();
+              controller.homeFocusNode.requestFocus();
             });
           }
         },
@@ -87,10 +85,10 @@ class HomeView extends GetView<HomeController> {
               var currIndex = mirror.indexOf(e);
               return CommandPaletteAction.single(
                 label: e.meta.name,
-                description: currIndex == home.mirrorIndex ? '当前使用' : '',
+                description: currIndex == controller.mirrorIndex ? '当前使用' : '',
                 onSelect: () {
                   var idx = mirror.indexOf(e);
-                  home.updateMirrorIndex(idx);
+                  controller.updateMirrorIndex(idx);
                   Get.back();
                 },
               );
@@ -109,7 +107,7 @@ class HomeView extends GetView<HomeController> {
               updateSetting(SettingsAllKey.themeMode, newTheme);
               Get.changeThemeMode(
                   !context.isDarkMode ? ThemeMode.dark : ThemeMode.light);
-              home.update();
+              controller.update();
             },
           )
         ],
@@ -120,19 +118,12 @@ class HomeView extends GetView<HomeController> {
               return _views[index];
             },
             itemCount: _views.length,
-
-            // NOTE:
-            // => 2022年/05月/14日 14:51
-            // => 滑动的实在太生硬了
-            // => 而且在桌面端会和窗口拖动冲突
-            // => 所以放弃了滚动
             physics: const NeverScrollableScrollPhysics(),
-
             onPageChanged: (index) {
               // fix ios keyboard auto up
               var currentFocus = FocusScope.of(context);
               currentFocus.unfocus();
-              home.focusNode.requestFocus();
+              controller.focusNode.requestFocus();
               homeview.changeCurrentBarIndex(index);
             },
           ),

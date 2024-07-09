@@ -3,11 +3,11 @@ name: movie
 version: 2.5.0
 publish_to: none
 description: 支持扩展播放源的播放器
-environment: 
+environment:
   sdk: '>=2.17.0 <3.0.0'
 
-dependencies: 
-  flutter: 
+dependencies:
+  flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
   get: ^4.6.6
@@ -38,7 +38,7 @@ dependencies:
 
   file_picker: ^8.0.5
   share_plus: ^9.0.0
-  
+
   equatable: ^2.0.5
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
@@ -69,9 +69,12 @@ dependencies:
   dio: ^5.4.3+1
   collection: ^1.18.0
   csslib: ^1.0.0
+  protocol_handler: ^0.2.0
+  event_bus: ^2.0.0
+  window_manager: ^0.3.9
 
 dev_dependencies:
-  flutter_test: 
+  flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
 
@@ -101,7 +104,7 @@ flutter_native_splash:
   ios: true
   android: true
 
-flutter: 
+flutter:
   uses-material-design: true
 
   assets:

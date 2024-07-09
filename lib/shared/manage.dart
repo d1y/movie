@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:movie/app/extension.dart';
 import 'package:movie/builtin/maccms/maccms.dart';
@@ -11,8 +10,6 @@ import 'package:movie/isar/schema/mirror_schema.dart';
 import 'package:movie/shared/enum.dart';
 
 import 'package:xi/models/mac_cms/source_data.dart';
-
-// 唉, 懒得改了, 又不是不能跑, 代码丑点怎么了?
 
 class SpiderManage {
   SpiderManage._internal();
@@ -47,9 +44,34 @@ class SpiderManage {
     extend = result;
   }
 
+  /// 添加源
+  ///
+  /// 返回 false 可能是源已经存在过
+  static bool addItem(ISpiderAdapter item) {
+    var wasAdd = true;
+    if (item is MacCMSSpider) {
+      var isExist = [...extend, ...builtin].any(($item) {
+        if ($item is MacCMSSpider) {
+          // FIXME: 如果 name 相同了怎么办👀?
+          return $item.root_url == item.root_url &&
+              $item.api_path == item.api_path;
+        }
+        return false;
+      });
+      if (isExist) {
+        wasAdd = false;
+      } else {
+        extend.add(item);
+      }
+    } else {
+      extend.add(item);
+    }
+    saveToCache(extend);
+    return wasAdd;
+  }
+
   /// 删除单个源
   static removeItem(ISpiderAdapter item) {
-    debugPrint("删除该源: $item");
     extend.remove(item);
     saveToCache(extend);
   }
@@ -158,7 +180,7 @@ class SpiderManage {
     mergeSpider(to);
   }
 
-  static Future<void> mergeSpider(List<SourceJsonData> data) async {
+  static mergeSpider(List<SourceJsonData> data) {
     var output = data.map((item) {
       var api = MirrorApiIsardModel();
       api.root = item.api?.root ?? "";
