@@ -15,8 +15,6 @@
 
 支持自定义源, 可自行添加源, 官方源参考: https://github.com/waifu-project/movie/issues/45
 
-TG吹水裙(有源分享): https://t.me/+xub6INGSHqczN2Jl
-
 ### 安装
 
 #### **Macos**
