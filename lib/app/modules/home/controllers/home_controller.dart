@@ -727,7 +727,9 @@ class HomeController extends GetxController
       // yoyo://jiexi?name=云解析&url=https://yparse.ik9.cc/index.php?url=
       case "jiexi":
         var name = qs['name'] ?? "";
-        if (realURL.isEmpty || Uri.tryParse(realURL) == null || name.isEmpty) break;
+        if (realURL.isEmpty || Uri.tryParse(realURL) == null || name.isEmpty) {
+          break;
+        }
         var flag = await confirmAlert("将添加解析源: $realURL");
         if (!flag) break;
         List<String> model = [name, realURL];
